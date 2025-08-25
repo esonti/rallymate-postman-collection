@@ -1,0 +1,665 @@
+{
+    "info": {
+        "_postman_id": "users-rest-collection-001",
+        "name": "RallyMate Users REST API",
+        "description": "User management endpoints for RallyMate API - CRUD operations for users and memberships",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+        "_exporter_id": "rallymate-users"
+    },
+    "item": [
+        {
+            "name": "User Management",
+            "item": [
+                {
+                    "name": "Create User",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test(\"Status code is 201\", function () {",
+                                    "    pm.response.to.have.status(201);",
+                                    "});",
+                                    "",
+                                    "pm.test(\"Response has user data\", function () {",
+                                    "    var jsonData = pm.response.json();",
+                                    "    pm.expect(jsonData).to.have.property('user');",
+                                    "    pm.expect(jsonData.user).to.have.property('id');",
+                                    "    pm.expect(jsonData.user).to.have.property('phone_number');",
+                                    "    pm.expect(jsonData.user).to.have.property('name');",
+                                    "    ",
+                                    "    // Store user ID for subsequent requests",
+                                    "    pm.environment.set(\"created_user_id\", jsonData.user.id);",
+                                    "});"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{session_token}}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"phone_number\": \"+1987654321\",\n  \"name\": \"Test User\",\n  \"email\": \"testuser@example.com\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/api/users",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "users"
+                            ]
+                        },
+                        "description": "Create a new user"
+                    }
+                },
+                {
+                    "name": "Get Users",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test(\"Status code is 200\", function () {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});",
+                                    "",
+                                    "pm.test(\"Response has users array\", function () {",
+                                    "    var jsonData = pm.response.json();",
+                                    "    pm.expect(jsonData).to.have.property('users');",
+                                    "    pm.expect(jsonData.users).to.be.an('array');",
+                                    "});",
+                                    "",
+                                    "pm.test(\"Response has pagination info\", function () {",
+                                    "    var jsonData = pm.response.json();",
+                                    "    pm.expect(jsonData).to.have.property('page');",
+                                    "    pm.expect(jsonData).to.have.property('page_size');",
+                                    "    pm.expect(jsonData).to.have.property('total');",
+                                    "});"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{session_token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/users?page=1&page_size=10",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "users"
+                            ],
+                            "query": [
+                                {
+                                    "key": "page",
+                                    "value": "1"
+                                },
+                                {
+                                    "key": "page_size",
+                                    "value": "10"
+                                }
+                            ]
+                        },
+                        "description": "Get list of users with pagination"
+                    }
+                },
+                {
+                    "name": "Get User Profile",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test(\"Status code is 200\", function () {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});",
+                                    "",
+                                    "pm.test(\"Response has user data\", function () {",
+                                    "    var jsonData = pm.response.json();",
+                                    "    pm.expect(jsonData).to.have.property('user');",
+                                    "    pm.expect(jsonData.user).to.have.property('id');",
+                                    "    pm.expect(jsonData.user).to.have.property('phone_number');",
+                                    "});",
+                                    "",
+                                    "pm.test(\"Response has memberships\", function () {",
+                                    "    var jsonData = pm.response.json();",
+                                    "    pm.expect(jsonData).to.have.property('memberships');",
+                                    "    pm.expect(jsonData.memberships).to.be.an('array');",
+                                    "});"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{session_token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/users/profile",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "users",
+                                "profile"
+                            ]
+                        },
+                        "description": "Get current user's profile and memberships"
+                    }
+                },
+                {
+                    "name": "Update User Profile",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test(\"Status code is 200\", function () {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});",
+                                    "",
+                                    "pm.test(\"Response has updated user data\", function () {",
+                                    "    var jsonData = pm.response.json();",
+                                    "    pm.expect(jsonData).to.have.property('user');",
+                                    "    pm.expect(jsonData.user).to.have.property('name');",
+                                    "});"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{session_token}}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"name\": \"Updated Test User\",\n  \"email\": \"updated.testuser@example.com\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/api/users/profile",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "users",
+                                "profile"
+                            ]
+                        },
+                        "description": "Update current user's profile"
+                    }
+                },
+                {
+                    "name": "Get User by ID",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test(\"Status code is 200\", function () {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});",
+                                    "",
+                                    "pm.test(\"Response has user data\", function () {",
+                                    "    var jsonData = pm.response.json();",
+                                    "    pm.expect(jsonData).to.have.property('user');",
+                                    "    pm.expect(jsonData.user).to.have.property('id');",
+                                    "    pm.expect(jsonData.user.id).to.equal(parseInt(pm.environment.get('created_user_id')));",
+                                    "});"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{session_token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/users/{{created_user_id}}",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "users",
+                                "{{created_user_id}}"
+                            ]
+                        },
+                        "description": "Get user by ID"
+                    }
+                },
+                {
+                    "name": "Get User by Phone",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test(\"Status code is 200\", function () {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});",
+                                    "",
+                                    "pm.test(\"Response has user data\", function () {",
+                                    "    var jsonData = pm.response.json();",
+                                    "    pm.expect(jsonData).to.have.property('user');",
+                                    "    pm.expect(jsonData.user).to.have.property('phone_number');",
+                                    "});"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{session_token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/users/phone/+1987654321",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "users",
+                                "phone",
+                                "+1987654321"
+                            ]
+                        },
+                        "description": "Get user by phone number"
+                    }
+                }
+            ],
+            "description": "Basic user CRUD operations"
+        },
+        {
+            "name": "User Memberships",
+            "item": [
+                {
+                    "name": "Create User Membership",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test(\"Status code is 201\", function () {",
+                                    "    pm.response.to.have.status(201);",
+                                    "});",
+                                    "",
+                                    "pm.test(\"Response has membership data\", function () {",
+                                    "    var jsonData = pm.response.json();",
+                                    "    pm.expect(jsonData).to.have.property('membership');",
+                                    "    pm.expect(jsonData.membership).to.have.property('id');",
+                                    "    pm.expect(jsonData.membership).to.have.property('user_id');",
+                                    "    pm.expect(jsonData.membership).to.have.property('facility_id');",
+                                    "    pm.expect(jsonData.membership).to.have.property('role');",
+                                    "    ",
+                                    "    // Store membership ID for subsequent requests",
+                                    "    pm.environment.set(\"created_membership_id\", jsonData.membership.id);",
+                                    "});"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{session_token}}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"user_id\": {{created_user_id}},\n  \"facility_id\": 1,\n  \"role\": \"MEMBERSHIP_ROLE_PLAYER\",\n  \"start_date\": {{$timestamp}},\n  \"expiry_date\": {{$timestamp}}000\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/api/users/memberships",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "users",
+                                "memberships"
+                            ]
+                        },
+                        "description": "Create a new user membership to a facility"
+                    }
+                }
+            ],
+            "description": "User membership management"
+        },
+        {
+            "name": "Search and Filtering",
+            "item": [
+                {
+                    "name": "Search Users by Name",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test(\"Status code is 200\", function () {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});",
+                                    "",
+                                    "pm.test(\"Response has filtered users\", function () {",
+                                    "    var jsonData = pm.response.json();",
+                                    "    pm.expect(jsonData).to.have.property('users');",
+                                    "    pm.expect(jsonData.users).to.be.an('array');",
+                                    "});"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{session_token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/users?search=Test&page=1&page_size=10",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "users"
+                            ],
+                            "query": [
+                                {
+                                    "key": "search",
+                                    "value": "Test"
+                                },
+                                {
+                                    "key": "page",
+                                    "value": "1"
+                                },
+                                {
+                                    "key": "page_size",
+                                    "value": "10"
+                                }
+                            ]
+                        },
+                        "description": "Search users by name or phone number"
+                    }
+                },
+                {
+                    "name": "Filter Users by Facility",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test(\"Status code is 200\", function () {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});",
+                                    "",
+                                    "pm.test(\"Response has filtered users\", function () {",
+                                    "    var jsonData = pm.response.json();",
+                                    "    pm.expect(jsonData).to.have.property('users');",
+                                    "    pm.expect(jsonData.users).to.be.an('array');",
+                                    "});"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{session_token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/users?facility_id=1&role=MEMBERSHIP_ROLE_PLAYER",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "users"
+                            ],
+                            "query": [
+                                {
+                                    "key": "facility_id",
+                                    "value": "1"
+                                },
+                                {
+                                    "key": "role",
+                                    "value": "MEMBERSHIP_ROLE_PLAYER"
+                                }
+                            ]
+                        },
+                        "description": "Filter users by facility and role"
+                    }
+                }
+            ],
+            "description": "Search and filtering operations"
+        },
+        {
+            "name": "Error Cases",
+            "item": [
+                {
+                    "name": "Create User - Missing Phone",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test(\"Status code is 400\", function () {",
+                                    "    pm.response.to.have.status(400);",
+                                    "});",
+                                    "",
+                                    "pm.test(\"Response has error information\", function () {",
+                                    "    var jsonData = pm.response.json();",
+                                    "    pm.expect(jsonData).to.have.property('error');",
+                                    "});"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{session_token}}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"name\": \"Test User Without Phone\",\n  \"email\": \"nophone@example.com\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/api/users",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "users"
+                            ]
+                        },
+                        "description": "Test error handling with missing required phone number"
+                    }
+                },
+                {
+                    "name": "Get User - Not Found",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test(\"Status code is 404\", function () {",
+                                    "    pm.response.to.have.status(404);",
+                                    "});",
+                                    "",
+                                    "pm.test(\"Response has error information\", function () {",
+                                    "    var jsonData = pm.response.json();",
+                                    "    pm.expect(jsonData).to.have.property('error');",
+                                    "});"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{session_token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/users/99999",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "users",
+                                "99999"
+                            ]
+                        },
+                        "description": "Test error handling with non-existent user ID"
+                    }
+                },
+                {
+                    "name": "Unauthorized Access",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test(\"Status code is 401\", function () {",
+                                    "    pm.response.to.have.status(401);",
+                                    "});",
+                                    "",
+                                    "pm.test(\"Response has error information\", function () {",
+                                    "    var jsonData = pm.response.json();",
+                                    "    pm.expect(jsonData).to.have.property('error');",
+                                    "});"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{base_url}}/api/users",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "users"
+                            ]
+                        },
+                        "description": "Test unauthorized access without token"
+                    }
+                }
+            ],
+            "description": "Error handling test cases"
+        }
+    ],
+    "event": [
+        {
+            "listen": "prerequest",
+            "script": {
+                "type": "text/javascript",
+                "exec": [
+                    "// Pre-request script for common setup",
+                    "console.log('Testing RallyMate Users API endpoint: ' + pm.request.url);"
+                ]
+            }
+        },
+        {
+            "listen": "test",
+            "script": {
+                "type": "text/javascript",
+                "exec": [
+                    "// Global test script",
+                    "pm.test(\"Response time is less than 5000ms\", function () {",
+                    "    pm.expect(pm.response.responseTime).to.be.below(5000);",
+                    "});",
+                    "",
+                    "pm.test(\"Response has Content-Type header\", function () {",
+                    "    pm.expect(pm.response.headers.get('Content-Type')).to.include('application/json');",
+                    "});"
+                ]
+            }
+        }
+    ],
+    "variable": [
+        {
+            "key": "collection_version",
+            "value": "1.0.0",
+            "type": "string"
+        }
+    ]
+}

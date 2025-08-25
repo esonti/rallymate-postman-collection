@@ -1,0 +1,886 @@
+{
+    "info": {
+        "_postman_id": "cameras-rest-collection-001",
+        "name": "RallyMate Cameras REST API",
+        "description": "Camera management endpoints for RallyMate API - Control and monitoring of facility cameras",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+        "_exporter_id": "rallymate-cameras"
+    },
+    "item": [
+        {
+            "name": "Camera Management",
+            "item": [
+                {
+                    "name": "Get Cameras",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test(\"Status code is 200\", function () {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});",
+                                    "",
+                                    "pm.test(\"Response has cameras array\", function () {",
+                                    "    var jsonData = pm.response.json();",
+                                    "    pm.expect(jsonData).to.have.property('cameras');",
+                                    "    pm.expect(jsonData.cameras).to.be.an('array');",
+                                    "});",
+                                    "",
+                                    "pm.test(\"Response has pagination info\", function () {",
+                                    "    var jsonData = pm.response.json();",
+                                    "    pm.expect(jsonData).to.have.property('page');",
+                                    "    pm.expect(jsonData).to.have.property('page_size');",
+                                    "    pm.expect(jsonData).to.have.property('total');",
+                                    "});"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{session_token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/cameras?page=1&page_size=10",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "cameras"
+                            ],
+                            "query": [
+                                {
+                                    "key": "page",
+                                    "value": "1"
+                                },
+                                {
+                                    "key": "page_size",
+                                    "value": "10"
+                                }
+                            ]
+                        },
+                        "description": "Get list of cameras with pagination"
+                    }
+                },
+                {
+                    "name": "Create Camera",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test(\"Status code is 201\", function () {",
+                                    "    pm.response.to.have.status(201);",
+                                    "});",
+                                    "",
+                                    "pm.test(\"Response has camera data\", function () {",
+                                    "    var jsonData = pm.response.json();",
+                                    "    pm.expect(jsonData).to.have.property('camera');",
+                                    "    pm.expect(jsonData.camera).to.have.property('id');",
+                                    "    pm.expect(jsonData.camera).to.have.property('name');",
+                                    "    pm.expect(jsonData.camera).to.have.property('facility_id');",
+                                    "    pm.expect(jsonData.camera).to.have.property('status');",
+                                    "    ",
+                                    "    // Store camera ID for subsequent requests",
+                                    "    pm.environment.set(\"created_camera_id\", jsonData.camera.id);",
+                                    "});"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{session_token}}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"name\": \"Main Gate Camera\",\n  \"facility_id\": {{facility_id}},\n  \"location\": \"Main entrance gate\",\n  \"device_id\": \"CAM-001-MGT\",\n  \"camera_type\": \"security\",\n  \"resolution\": \"1920x1080\",\n  \"stream_url\": \"rtsp://camera.example.com:554/stream1\",\n  \"status\": \"online\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/api/cameras",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "cameras"
+                            ]
+                        },
+                        "description": "Create a new camera"
+                    }
+                },
+                {
+                    "name": "Get Camera by ID",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test(\"Status code is 200\", function () {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});",
+                                    "",
+                                    "pm.test(\"Response has camera data\", function () {",
+                                    "    var jsonData = pm.response.json();",
+                                    "    pm.expect(jsonData).to.have.property('camera');",
+                                    "    pm.expect(jsonData.camera).to.have.property('id');",
+                                    "    pm.expect(jsonData.camera.id).to.equal(parseInt(pm.environment.get('created_camera_id')));",
+                                    "    pm.expect(jsonData.camera).to.have.property('name');",
+                                    "    pm.expect(jsonData.camera).to.have.property('status');",
+                                    "    pm.expect(jsonData.camera).to.have.property('device_id');",
+                                    "});"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{session_token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/cameras/{{created_camera_id}}",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "cameras",
+                                "{{created_camera_id}}"
+                            ]
+                        },
+                        "description": "Get camera details by ID"
+                    }
+                },
+                {
+                    "name": "Update Camera",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test(\"Status code is 200\", function () {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});",
+                                    "",
+                                    "pm.test(\"Response has updated camera data\", function () {",
+                                    "    var jsonData = pm.response.json();",
+                                    "    pm.expect(jsonData).to.have.property('camera');",
+                                    "    pm.expect(jsonData.camera).to.have.property('name');",
+                                    "    pm.expect(jsonData.camera.name).to.include('Updated');",
+                                    "});"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{session_token}}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"name\": \"Updated Main Gate Camera\",\n  \"location\": \"Main entrance gate - repositioned\",\n  \"device_id\": \"CAM-001-MGT-V2\",\n  \"camera_type\": \"security\",\n  \"resolution\": \"3840x2160\",\n  \"stream_url\": \"rtsp://camera-updated.example.com:554/stream1\",\n  \"status\": \"online\",\n  \"is_active\": true\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/api/cameras/{{created_camera_id}}",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "cameras",
+                                "{{created_camera_id}}"
+                            ]
+                        },
+                        "description": "Update camera information"
+                    }
+                },
+                {
+                    "name": "Delete Camera",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test(\"Status code is 200 or 204\", function () {",
+                                    "    pm.expect(pm.response.code).to.be.oneOf([200, 204]);",
+                                    "});",
+                                    "",
+                                    "if (pm.response.code === 200) {",
+                                    "    pm.test(\"Response indicates success\", function () {",
+                                    "        var jsonData = pm.response.json();",
+                                    "        pm.expect(jsonData).to.have.property('success');",
+                                    "        pm.expect(jsonData.success).to.be.true;",
+                                    "    });",
+                                    "}"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "DELETE",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{session_token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/cameras/{{created_camera_id}}",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "cameras",
+                                "{{created_camera_id}}"
+                            ]
+                        },
+                        "description": "Delete camera"
+                    }
+                }
+            ],
+            "description": "Basic camera CRUD operations"
+        },
+        {
+            "name": "Camera Control",
+            "item": [
+                {
+                    "name": "Start Camera Stream",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test(\"Status code is 200\", function () {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});",
+                                    "",
+                                    "pm.test(\"Camera streaming started\", function () {",
+                                    "    var jsonData = pm.response.json();",
+                                    "    pm.expect(jsonData).to.have.property('stream_status');",
+                                    "    pm.expect(jsonData.stream_status).to.equal('streaming');",
+                                    "});",
+                                    "",
+                                    "pm.test(\"Response has stream URL\", function () {",
+                                    "    var jsonData = pm.response.json();",
+                                    "    pm.expect(jsonData).to.have.property('stream_url');",
+                                    "    pm.expect(jsonData.stream_url).to.be.a('string');",
+                                    "});"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{session_token}}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"user_id\": {{user_id}},\n  \"quality\": \"high\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/api/cameras/{{created_camera_id}}/start-stream",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "cameras",
+                                "{{created_camera_id}}",
+                                "start-stream"
+                            ]
+                        },
+                        "description": "Start camera streaming"
+                    }
+                },
+                {
+                    "name": "Stop Camera Stream",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test(\"Status code is 200\", function () {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});",
+                                    "",
+                                    "pm.test(\"Camera streaming stopped\", function () {",
+                                    "    var jsonData = pm.response.json();",
+                                    "    pm.expect(jsonData).to.have.property('stream_status');",
+                                    "    pm.expect(jsonData.stream_status).to.equal('stopped');",
+                                    "});"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{session_token}}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"user_id\": {{user_id}}\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/api/cameras/{{created_camera_id}}/stop-stream",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "cameras",
+                                "{{created_camera_id}}",
+                                "stop-stream"
+                            ]
+                        },
+                        "description": "Stop camera streaming"
+                    }
+                },
+                {
+                    "name": "Capture Snapshot",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test(\"Status code is 200\", function () {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});",
+                                    "",
+                                    "pm.test(\"Response has snapshot information\", function () {",
+                                    "    var jsonData = pm.response.json();",
+                                    "    pm.expect(jsonData).to.have.property('snapshot_url');",
+                                    "    pm.expect(jsonData).to.have.property('timestamp');",
+                                    "    pm.expect(jsonData).to.have.property('file_size');",
+                                    "});"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{session_token}}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"user_id\": {{user_id}},\n  \"quality\": \"high\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/api/cameras/{{created_camera_id}}/snapshot",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "cameras",
+                                "{{created_camera_id}}",
+                                "snapshot"
+                            ]
+                        },
+                        "description": "Capture a snapshot from the camera"
+                    }
+                },
+                {
+                    "name": "Get Camera Status",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test(\"Status code is 200\", function () {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});",
+                                    "",
+                                    "pm.test(\"Response has current status\", function () {",
+                                    "    var jsonData = pm.response.json();",
+                                    "    pm.expect(jsonData).to.have.property('status');",
+                                    "    pm.expect(jsonData).to.have.property('last_update');",
+                                    "    pm.expect(jsonData).to.have.property('stream_status');",
+                                    "});",
+                                    "",
+                                    "pm.test(\"Status is valid\", function () {",
+                                    "    var jsonData = pm.response.json();",
+                                    "    pm.expect(jsonData.status).to.be.oneOf(['online', 'offline', 'error', 'maintenance']);",
+                                    "});"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{session_token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/cameras/{{created_camera_id}}/status",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "cameras",
+                                "{{created_camera_id}}",
+                                "status"
+                            ]
+                        },
+                        "description": "Get current camera status and health information"
+                    }
+                }
+            ],
+            "description": "Camera control and streaming operations"
+        },
+        {
+            "name": "Camera Settings",
+            "item": [
+                {
+                    "name": "Get Camera Settings",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test(\"Status code is 200\", function () {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});",
+                                    "",
+                                    "pm.test(\"Response has camera settings\", function () {",
+                                    "    var jsonData = pm.response.json();",
+                                    "    pm.expect(jsonData).to.have.property('settings');",
+                                    "    pm.expect(jsonData.settings).to.be.an('object');",
+                                    "});"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{session_token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/cameras/{{created_camera_id}}/settings",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "cameras",
+                                "{{created_camera_id}}",
+                                "settings"
+                            ]
+                        },
+                        "description": "Get camera configuration settings"
+                    }
+                },
+                {
+                    "name": "Update Camera Settings",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test(\"Status code is 200\", function () {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});",
+                                    "",
+                                    "pm.test(\"Response has updated settings\", function () {",
+                                    "    var jsonData = pm.response.json();",
+                                    "    pm.expect(jsonData).to.have.property('settings');",
+                                    "    pm.expect(jsonData.settings).to.be.an('object');",
+                                    "});"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{session_token}}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"brightness\": 75,\n  \"contrast\": 80,\n  \"saturation\": 65,\n  \"night_vision\": true,\n  \"motion_detection\": true,\n  \"recording_enabled\": true,\n  \"recording_quality\": \"high\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/api/cameras/{{created_camera_id}}/settings",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "cameras",
+                                "{{created_camera_id}}",
+                                "settings"
+                            ]
+                        },
+                        "description": "Update camera configuration settings"
+                    }
+                }
+            ],
+            "description": "Camera configuration and settings"
+        },
+        {
+            "name": "Facility Cameras",
+            "item": [
+                {
+                    "name": "Get Cameras by Facility",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test(\"Status code is 200\", function () {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});",
+                                    "",
+                                    "pm.test(\"Response has cameras for facility\", function () {",
+                                    "    var jsonData = pm.response.json();",
+                                    "    pm.expect(jsonData).to.have.property('cameras');",
+                                    "    pm.expect(jsonData.cameras).to.be.an('array');",
+                                    "});",
+                                    "",
+                                    "pm.test(\"All cameras belong to specified facility\", function () {",
+                                    "    var jsonData = pm.response.json();",
+                                    "    var facilityId = parseInt(pm.environment.get('facility_id'));",
+                                    "    ",
+                                    "    jsonData.cameras.forEach(function(camera) {",
+                                    "        pm.expect(camera.facility_id).to.equal(facilityId);",
+                                    "    });",
+                                    "});"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{session_token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/facilities/{{facility_id}}/cameras",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "facilities",
+                                "{{facility_id}}",
+                                "cameras"
+                            ]
+                        },
+                        "description": "Get all cameras for a specific facility"
+                    }
+                },
+                {
+                    "name": "Get Online Cameras Only",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test(\"Status code is 200\", function () {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});",
+                                    "",
+                                    "pm.test(\"Response has online cameras only\", function () {",
+                                    "    var jsonData = pm.response.json();",
+                                    "    pm.expect(jsonData).to.have.property('cameras');",
+                                    "    pm.expect(jsonData.cameras).to.be.an('array');",
+                                    "    ",
+                                    "    // Check that all returned cameras are online",
+                                    "    jsonData.cameras.forEach(function(camera) {",
+                                    "        pm.expect(camera.status).to.equal('online');",
+                                    "    });",
+                                    "});"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{session_token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/cameras?status=online",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "cameras"
+                            ],
+                            "query": [
+                                {
+                                    "key": "status",
+                                    "value": "online"
+                                }
+                            ]
+                        },
+                        "description": "Get only online cameras"
+                    }
+                }
+            ],
+            "description": "Facility-level camera operations"
+        },
+        {
+            "name": "Error Cases",
+            "item": [
+                {
+                    "name": "Create Camera - Missing Required Fields",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test(\"Status code is 400\", function () {",
+                                    "    pm.response.to.have.status(400);",
+                                    "});",
+                                    "",
+                                    "pm.test(\"Response has error information\", function () {",
+                                    "    var jsonData = pm.response.json();",
+                                    "    pm.expect(jsonData).to.have.property('error');",
+                                    "});"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{session_token}}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"location\": \"Missing name and facility_id\",\n  \"device_id\": \"INCOMPLETE-CAM\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/api/cameras",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "cameras"
+                            ]
+                        },
+                        "description": "Test error handling with missing required fields"
+                    }
+                },
+                {
+                    "name": "Start Stream - Camera Offline",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test(\"Status code is 409 or 503\", function () {",
+                                    "    pm.expect(pm.response.code).to.be.oneOf([409, 503]);",
+                                    "});",
+                                    "",
+                                    "pm.test(\"Response has error information\", function () {",
+                                    "    var jsonData = pm.response.json();",
+                                    "    pm.expect(jsonData).to.have.property('error');",
+                                    "});"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{session_token}}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"user_id\": {{user_id}},\n  \"quality\": \"high\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/api/cameras/99999/start-stream",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "cameras",
+                                "99999",
+                                "start-stream"
+                            ]
+                        },
+                        "description": "Test error handling with non-existent camera"
+                    }
+                },
+                {
+                    "name": "Unauthorized Camera Access",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test(\"Status code is 401\", function () {",
+                                    "    pm.response.to.have.status(401);",
+                                    "});",
+                                    "",
+                                    "pm.test(\"Response has error information\", function () {",
+                                    "    var jsonData = pm.response.json();",
+                                    "    pm.expect(jsonData).to.have.property('error');",
+                                    "});"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{base_url}}/api/cameras",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "cameras"
+                            ]
+                        },
+                        "description": "Test unauthorized access without token"
+                    }
+                }
+            ],
+            "description": "Error handling test cases"
+        }
+    ],
+    "event": [
+        {
+            "listen": "prerequest",
+            "script": {
+                "type": "text/javascript",
+                "exec": [
+                    "// Pre-request script for common setup",
+                    "console.log('Testing RallyMate Cameras API endpoint: ' + pm.request.url);"
+                ]
+            }
+        },
+        {
+            "listen": "test",
+            "script": {
+                "type": "text/javascript",
+                "exec": [
+                    "// Global test script",
+                    "pm.test(\"Response time is less than 5000ms\", function () {",
+                    "    pm.expect(pm.response.responseTime).to.be.below(5000);",
+                    "});",
+                    "",
+                    "pm.test(\"Response has Content-Type header\", function () {",
+                    "    pm.expect(pm.response.headers.get('Content-Type')).to.include('application/json');",
+                    "});"
+                ]
+            }
+        }
+    ],
+    "variable": [
+        {
+            "key": "collection_version",
+            "value": "1.0.0",
+            "type": "string"
+        }
+    ]
+}

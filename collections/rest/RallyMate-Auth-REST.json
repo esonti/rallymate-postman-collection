@@ -1,0 +1,557 @@
+{
+    "info": {
+        "_postman_id": "auth-rest-collection-001",
+        "name": "RallyMate Auth REST API",
+        "description": "Authentication endpoints for RallyMate API - OTP-based authentication with session management",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+        "_exporter_id": "rallymate-auth"
+    },
+    "item": [
+        {
+            "name": "Authentication Flow",
+            "item": [
+                {
+                    "name": "Send OTP",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test(\"Status code is 200\", function () {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});",
+                                    "",
+                                    "pm.test(\"Response has success field\", function () {",
+                                    "    var jsonData = pm.response.json();",
+                                    "    pm.expect(jsonData).to.have.property('success');",
+                                    "});",
+                                    "",
+                                    "pm.test(\"Response has expires_at timestamp\", function () {",
+                                    "    var jsonData = pm.response.json();",
+                                    "    pm.expect(jsonData).to.have.property('expires_at');",
+                                    "    pm.expect(jsonData.expires_at).to.be.a('number');",
+                                    "});",
+                                    "",
+                                    "// Store phone number for subsequent requests",
+                                    "if (pm.response.code === 200) {",
+                                    "    var requestBody = JSON.parse(pm.request.body.raw);",
+                                    "    pm.environment.set(\"test_phone_number\", requestBody.phone_number);",
+                                    "}"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"phone_number\": \"+1234567890\",\n  \"device_info\": \"Postman Test Client\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/api/auth/send-otp",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "auth",
+                                "send-otp"
+                            ]
+                        },
+                        "description": "Send OTP to phone number for authentication"
+                    }
+                },
+                {
+                    "name": "Verify OTP",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test(\"Status code is 200\", function () {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});",
+                                    "",
+                                    "pm.test(\"Response has success field\", function () {",
+                                    "    var jsonData = pm.response.json();",
+                                    "    pm.expect(jsonData).to.have.property('success');",
+                                    "});",
+                                    "",
+                                    "pm.test(\"Response has session data when successful\", function () {",
+                                    "    var jsonData = pm.response.json();",
+                                    "    if (jsonData.success) {",
+                                    "        pm.expect(jsonData).to.have.property('session');",
+                                    "        pm.expect(jsonData.session).to.have.property('session_token');",
+                                    "        pm.expect(jsonData.session).to.have.property('refresh_token');",
+                                    "        ",
+                                    "        // Store tokens for authenticated requests",
+                                    "        pm.environment.set(\"session_token\", jsonData.session.session_token);",
+                                    "        pm.environment.set(\"refresh_token\", jsonData.session.refresh_token);",
+                                    "        pm.environment.set(\"user_id\", jsonData.session.user_id);",
+                                    "    }",
+                                    "});"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"phone_number\": \"{{test_phone_number}}\",\n  \"otp_code\": \"123456\",\n  \"device_info\": \"Postman Test Client\",\n  \"ip_address\": \"127.0.0.1\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/api/auth/verify-otp",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "auth",
+                                "verify-otp"
+                            ]
+                        },
+                        "description": "Verify OTP code and get session tokens"
+                    }
+                }
+            ],
+            "description": "Complete OTP authentication flow"
+        },
+        {
+            "name": "Session Management",
+            "item": [
+                {
+                    "name": "Validate Session",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test(\"Status code is 200\", function () {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});",
+                                    "",
+                                    "pm.test(\"Response has valid field\", function () {",
+                                    "    var jsonData = pm.response.json();",
+                                    "    pm.expect(jsonData).to.have.property('valid');",
+                                    "    pm.expect(jsonData.valid).to.be.a('boolean');",
+                                    "});",
+                                    "",
+                                    "pm.test(\"Response has user_id when valid\", function () {",
+                                    "    var jsonData = pm.response.json();",
+                                    "    if (jsonData.valid) {",
+                                    "        pm.expect(jsonData).to.have.property('user_id');",
+                                    "        pm.expect(jsonData).to.have.property('expires_at');",
+                                    "    }",
+                                    "});"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{session_token}}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"session_token\": \"{{session_token}}\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/api/auth/validate-session",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "auth",
+                                "validate-session"
+                            ]
+                        },
+                        "description": "Validate current session token"
+                    }
+                },
+                {
+                    "name": "Refresh Session",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test(\"Status code is 200\", function () {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});",
+                                    "",
+                                    "pm.test(\"Response has success field\", function () {",
+                                    "    var jsonData = pm.response.json();",
+                                    "    pm.expect(jsonData).to.have.property('success');",
+                                    "});",
+                                    "",
+                                    "pm.test(\"Response has new session when successful\", function () {",
+                                    "    var jsonData = pm.response.json();",
+                                    "    if (jsonData.success) {",
+                                    "        pm.expect(jsonData).to.have.property('session');",
+                                    "        pm.expect(jsonData.session).to.have.property('session_token');",
+                                    "        pm.expect(jsonData.session).to.have.property('refresh_token');",
+                                    "        ",
+                                    "        // Update stored tokens",
+                                    "        pm.environment.set(\"session_token\", jsonData.session.session_token);",
+                                    "        pm.environment.set(\"refresh_token\", jsonData.session.refresh_token);",
+                                    "    }",
+                                    "});"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{session_token}}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"refresh_token\": \"{{refresh_token}}\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/api/auth/refresh-session",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "auth",
+                                "refresh-session"
+                            ]
+                        },
+                        "description": "Refresh session using refresh token"
+                    }
+                },
+                {
+                    "name": "Get User Sessions",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test(\"Status code is 200\", function () {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});",
+                                    "",
+                                    "pm.test(\"Response has sessions array\", function () {",
+                                    "    var jsonData = pm.response.json();",
+                                    "    pm.expect(jsonData).to.have.property('sessions');",
+                                    "    pm.expect(jsonData.sessions).to.be.an('array');",
+                                    "});",
+                                    "",
+                                    "pm.test(\"Sessions have required fields\", function () {",
+                                    "    var jsonData = pm.response.json();",
+                                    "    if (jsonData.sessions.length > 0) {",
+                                    "        var session = jsonData.sessions[0];",
+                                    "        pm.expect(session).to.have.property('id');",
+                                    "        pm.expect(session).to.have.property('user_id');",
+                                    "        pm.expect(session).to.have.property('status');",
+                                    "        pm.expect(session).to.have.property('created_at');",
+                                    "    }",
+                                    "});"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{session_token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/auth/sessions?user_id={{user_id}}",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "auth",
+                                "sessions"
+                            ],
+                            "query": [
+                                {
+                                    "key": "user_id",
+                                    "value": "{{user_id}}"
+                                }
+                            ]
+                        },
+                        "description": "Get all sessions for current user"
+                    }
+                },
+                {
+                    "name": "Revoke Session",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test(\"Status code is 200\", function () {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});",
+                                    "",
+                                    "pm.test(\"Response has success field\", function () {",
+                                    "    var jsonData = pm.response.json();",
+                                    "    pm.expect(jsonData).to.have.property('success');",
+                                    "});",
+                                    "",
+                                    "pm.test(\"Response has message\", function () {",
+                                    "    var jsonData = pm.response.json();",
+                                    "    pm.expect(jsonData).to.have.property('message');",
+                                    "});"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{session_token}}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"session_token\": \"{{session_token}}\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/api/auth/revoke-session",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "auth",
+                                "revoke-session"
+                            ]
+                        },
+                        "description": "Revoke current session"
+                    }
+                }
+            ],
+            "description": "Session management operations"
+        },
+        {
+            "name": "Error Cases",
+            "item": [
+                {
+                    "name": "Send OTP - Invalid Phone",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test(\"Status code is 400\", function () {",
+                                    "    pm.response.to.have.status(400);",
+                                    "});",
+                                    "",
+                                    "pm.test(\"Response has error information\", function () {",
+                                    "    var jsonData = pm.response.json();",
+                                    "    pm.expect(jsonData).to.have.property('error');",
+                                    "});"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"phone_number\": \"invalid-phone\",\n  \"device_info\": \"Postman Test Client\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/api/auth/send-otp",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "auth",
+                                "send-otp"
+                            ]
+                        },
+                        "description": "Test error handling with invalid phone number"
+                    }
+                },
+                {
+                    "name": "Verify OTP - Wrong Code",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test(\"Status code is 400 or 401\", function () {",
+                                    "    pm.expect(pm.response.code).to.be.oneOf([400, 401]);",
+                                    "});",
+                                    "",
+                                    "pm.test(\"Response indicates failure\", function () {",
+                                    "    var jsonData = pm.response.json();",
+                                    "    pm.expect(jsonData.success).to.be.false;",
+                                    "});"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"phone_number\": \"+1234567890\",\n  \"otp_code\": \"000000\",\n  \"device_info\": \"Postman Test Client\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/api/auth/verify-otp",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "auth",
+                                "verify-otp"
+                            ]
+                        },
+                        "description": "Test error handling with wrong OTP code"
+                    }
+                },
+                {
+                    "name": "Validate Session - No Token",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test(\"Status code is 401\", function () {",
+                                    "    pm.response.to.have.status(401);",
+                                    "});",
+                                    "",
+                                    "pm.test(\"Response has error information\", function () {",
+                                    "    var jsonData = pm.response.json();",
+                                    "    pm.expect(jsonData).to.have.property('error');",
+                                    "});"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"session_token\": \"\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/api/auth/validate-session",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "auth",
+                                "validate-session"
+                            ]
+                        },
+                        "description": "Test error handling with missing authorization"
+                    }
+                }
+            ],
+            "description": "Error handling test cases"
+        }
+    ],
+    "event": [
+        {
+            "listen": "prerequest",
+            "script": {
+                "type": "text/javascript",
+                "exec": [
+                    "// Pre-request script for common setup",
+                    "console.log('Testing RallyMate Auth API endpoint: ' + pm.request.url);"
+                ]
+            }
+        },
+        {
+            "listen": "test",
+            "script": {
+                "type": "text/javascript",
+                "exec": [
+                    "// Global test script",
+                    "pm.test(\"Response time is less than 5000ms\", function () {",
+                    "    pm.expect(pm.response.responseTime).to.be.below(5000);",
+                    "});",
+                    "",
+                    "pm.test(\"Response has Content-Type header\", function () {",
+                    "    pm.expect(pm.response.headers.get('Content-Type')).to.include('application/json');",
+                    "});"
+                ]
+            }
+        }
+    ],
+    "variable": [
+        {
+            "key": "collection_version",
+            "value": "1.0.0",
+            "type": "string"
+        }
+    ]
+}

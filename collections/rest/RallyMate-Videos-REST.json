@@ -1,0 +1,982 @@
+{
+    "info": {
+        "_postman_id": "videos-rest-collection-001",
+        "name": "RallyMate Videos REST API",
+        "description": "Video management endpoints for RallyMate API - Video storage, streaming, and management",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+        "_exporter_id": "rallymate-videos"
+    },
+    "item": [
+        {
+            "name": "Video Management",
+            "item": [
+                {
+                    "name": "Get Videos",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test(\"Status code is 200\", function () {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});",
+                                    "",
+                                    "pm.test(\"Response has videos array\", function () {",
+                                    "    var jsonData = pm.response.json();",
+                                    "    pm.expect(jsonData).to.have.property('videos');",
+                                    "    pm.expect(jsonData.videos).to.be.an('array');",
+                                    "});",
+                                    "",
+                                    "pm.test(\"Response has pagination info\", function () {",
+                                    "    var jsonData = pm.response.json();",
+                                    "    pm.expect(jsonData).to.have.property('page');",
+                                    "    pm.expect(jsonData).to.have.property('page_size');",
+                                    "    pm.expect(jsonData).to.have.property('total');",
+                                    "});"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{session_token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/videos?page=1&page_size=10",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "videos"
+                            ],
+                            "query": [
+                                {
+                                    "key": "page",
+                                    "value": "1"
+                                },
+                                {
+                                    "key": "page_size",
+                                    "value": "10"
+                                }
+                            ]
+                        },
+                        "description": "Get list of videos with pagination"
+                    }
+                },
+                {
+                    "name": "Upload Video",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test(\"Status code is 201\", function () {",
+                                    "    pm.response.to.have.status(201);",
+                                    "});",
+                                    "",
+                                    "pm.test(\"Response has video data\", function () {",
+                                    "    var jsonData = pm.response.json();",
+                                    "    pm.expect(jsonData).to.have.property('video');",
+                                    "    pm.expect(jsonData.video).to.have.property('id');",
+                                    "    pm.expect(jsonData.video).to.have.property('filename');",
+                                    "    pm.expect(jsonData.video).to.have.property('camera_id');",
+                                    "    pm.expect(jsonData.video).to.have.property('file_url');",
+                                    "    ",
+                                    "    // Store video ID for subsequent requests",
+                                    "    pm.environment.set(\"created_video_id\", jsonData.video.id);",
+                                    "});"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{session_token}}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "formdata",
+                            "formdata": [
+                                {
+                                    "key": "video_file",
+                                    "type": "file",
+                                    "src": [],
+                                    "description": "Video file to upload"
+                                },
+                                {
+                                    "key": "camera_id",
+                                    "value": "{{created_camera_id}}",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "recorded_at",
+                                    "value": "2024-01-15T10:30:00Z",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "duration",
+                                    "value": "120",
+                                    "type": "text",
+                                    "description": "Duration in seconds"
+                                },
+                                {
+                                    "key": "description",
+                                    "value": "Test video upload from main gate camera",
+                                    "type": "text"
+                                }
+                            ]
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/api/videos/upload",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "videos",
+                                "upload"
+                            ]
+                        },
+                        "description": "Upload a new video file"
+                    }
+                },
+                {
+                    "name": "Get Video by ID",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test(\"Status code is 200\", function () {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});",
+                                    "",
+                                    "pm.test(\"Response has video data\", function () {",
+                                    "    var jsonData = pm.response.json();",
+                                    "    pm.expect(jsonData).to.have.property('video');",
+                                    "    pm.expect(jsonData.video).to.have.property('id');",
+                                    "    pm.expect(jsonData.video.id).to.equal(parseInt(pm.environment.get('created_video_id')));",
+                                    "    pm.expect(jsonData.video).to.have.property('filename');",
+                                    "    pm.expect(jsonData.video).to.have.property('file_url');",
+                                    "    pm.expect(jsonData.video).to.have.property('camera_id');",
+                                    "});"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{session_token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/videos/{{created_video_id}}",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "videos",
+                                "{{created_video_id}}"
+                            ]
+                        },
+                        "description": "Get video details by ID"
+                    }
+                },
+                {
+                    "name": "Update Video Metadata",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test(\"Status code is 200\", function () {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});",
+                                    "",
+                                    "pm.test(\"Response has updated video data\", function () {",
+                                    "    var jsonData = pm.response.json();",
+                                    "    pm.expect(jsonData).to.have.property('video');",
+                                    "    pm.expect(jsonData.video).to.have.property('description');",
+                                    "    pm.expect(jsonData.video.description).to.include('Updated');",
+                                    "});"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{session_token}}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"description\": \"Updated test video from main gate camera\",\n  \"tags\": [\"security\", \"main-gate\", \"test\"],\n  \"is_public\": false,\n  \"retention_days\": 30\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/api/videos/{{created_video_id}}",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "videos",
+                                "{{created_video_id}}"
+                            ]
+                        },
+                        "description": "Update video metadata"
+                    }
+                },
+                {
+                    "name": "Delete Video",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test(\"Status code is 200 or 204\", function () {",
+                                    "    pm.expect(pm.response.code).to.be.oneOf([200, 204]);",
+                                    "});",
+                                    "",
+                                    "if (pm.response.code === 200) {",
+                                    "    pm.test(\"Response indicates success\", function () {",
+                                    "        var jsonData = pm.response.json();",
+                                    "        pm.expect(jsonData).to.have.property('success');",
+                                    "        pm.expect(jsonData.success).to.be.true;",
+                                    "    });",
+                                    "}"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "DELETE",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{session_token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/videos/{{created_video_id}}",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "videos",
+                                "{{created_video_id}}"
+                            ]
+                        },
+                        "description": "Delete video and associated file"
+                    }
+                }
+            ],
+            "description": "Basic video CRUD operations"
+        },
+        {
+            "name": "Video Streaming",
+            "item": [
+                {
+                    "name": "Stream Video",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test(\"Status code is 200\", function () {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});",
+                                    "",
+                                    "pm.test(\"Response has stream URL\", function () {",
+                                    "    var jsonData = pm.response.json();",
+                                    "    pm.expect(jsonData).to.have.property('stream_url');",
+                                    "    pm.expect(jsonData.stream_url).to.be.a('string');",
+                                    "});",
+                                    "",
+                                    "pm.test(\"Response has video metadata\", function () {",
+                                    "    var jsonData = pm.response.json();",
+                                    "    pm.expect(jsonData).to.have.property('duration');",
+                                    "    pm.expect(jsonData).to.have.property('format');",
+                                    "    pm.expect(jsonData).to.have.property('resolution');",
+                                    "});"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{session_token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/videos/{{created_video_id}}/stream",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "videos",
+                                "{{created_video_id}}",
+                                "stream"
+                            ]
+                        },
+                        "description": "Get video streaming URL and metadata"
+                    }
+                },
+                {
+                    "name": "Download Video",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test(\"Status code is 200\", function () {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});",
+                                    "",
+                                    "pm.test(\"Response has appropriate content type\", function () {",
+                                    "    var contentType = pm.response.headers.get('Content-Type');",
+                                    "    pm.expect(contentType).to.include('video/');",
+                                    "});",
+                                    "",
+                                    "pm.test(\"Response has content length\", function () {",
+                                    "    var contentLength = pm.response.headers.get('Content-Length');",
+                                    "    pm.expect(contentLength).to.exist;",
+                                    "});"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{session_token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/videos/{{created_video_id}}/download",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "videos",
+                                "{{created_video_id}}",
+                                "download"
+                            ]
+                        },
+                        "description": "Download video file"
+                    }
+                },
+                {
+                    "name": "Generate Video Thumbnail",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test(\"Status code is 200\", function () {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});",
+                                    "",
+                                    "pm.test(\"Response has thumbnail URL\", function () {",
+                                    "    var jsonData = pm.response.json();",
+                                    "    pm.expect(jsonData).to.have.property('thumbnail_url');",
+                                    "    pm.expect(jsonData.thumbnail_url).to.be.a('string');",
+                                    "});",
+                                    "",
+                                    "pm.test(\"Response has generation info\", function () {",
+                                    "    var jsonData = pm.response.json();",
+                                    "    pm.expect(jsonData).to.have.property('timestamp');",
+                                    "    pm.expect(jsonData).to.have.property('file_size');",
+                                    "});"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{session_token}}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"timestamp\": 30,\n  \"width\": 320,\n  \"height\": 240\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/api/videos/{{created_video_id}}/thumbnail",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "videos",
+                                "{{created_video_id}}",
+                                "thumbnail"
+                            ]
+                        },
+                        "description": "Generate video thumbnail at specific timestamp"
+                    }
+                }
+            ],
+            "description": "Video streaming and download operations"
+        },
+        {
+            "name": "Video Search and Filtering",
+            "item": [
+                {
+                    "name": "Search Videos by Camera",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test(\"Status code is 200\", function () {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});",
+                                    "",
+                                    "pm.test(\"Response has filtered videos\", function () {",
+                                    "    var jsonData = pm.response.json();",
+                                    "    pm.expect(jsonData).to.have.property('videos');",
+                                    "    pm.expect(jsonData.videos).to.be.an('array');",
+                                    "});",
+                                    "",
+                                    "pm.test(\"All videos from specified camera\", function () {",
+                                    "    var jsonData = pm.response.json();",
+                                    "    var cameraId = parseInt(pm.environment.get('created_camera_id'));",
+                                    "    ",
+                                    "    jsonData.videos.forEach(function(video) {",
+                                    "        pm.expect(video.camera_id).to.equal(cameraId);",
+                                    "    });",
+                                    "});"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{session_token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/videos?camera_id={{created_camera_id}}&page=1&page_size=10",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "videos"
+                            ],
+                            "query": [
+                                {
+                                    "key": "camera_id",
+                                    "value": "{{created_camera_id}}"
+                                },
+                                {
+                                    "key": "page",
+                                    "value": "1"
+                                },
+                                {
+                                    "key": "page_size",
+                                    "value": "10"
+                                }
+                            ]
+                        },
+                        "description": "Search videos by camera ID"
+                    }
+                },
+                {
+                    "name": "Search Videos by Date Range",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test(\"Status code is 200\", function () {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});",
+                                    "",
+                                    "pm.test(\"Response has filtered videos\", function () {",
+                                    "    var jsonData = pm.response.json();",
+                                    "    pm.expect(jsonData).to.have.property('videos');",
+                                    "    pm.expect(jsonData.videos).to.be.an('array');",
+                                    "});"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{session_token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/videos?start_date=2024-01-01&end_date=2024-01-31",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "videos"
+                            ],
+                            "query": [
+                                {
+                                    "key": "start_date",
+                                    "value": "2024-01-01"
+                                },
+                                {
+                                    "key": "end_date",
+                                    "value": "2024-01-31"
+                                }
+                            ]
+                        },
+                        "description": "Search videos by date range"
+                    }
+                },
+                {
+                    "name": "Search Videos by Tags",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test(\"Status code is 200\", function () {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});",
+                                    "",
+                                    "pm.test(\"Response has tagged videos\", function () {",
+                                    "    var jsonData = pm.response.json();",
+                                    "    pm.expect(jsonData).to.have.property('videos');",
+                                    "    pm.expect(jsonData.videos).to.be.an('array');",
+                                    "});"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{session_token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/videos?tags=security,main-gate",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "videos"
+                            ],
+                            "query": [
+                                {
+                                    "key": "tags",
+                                    "value": "security,main-gate"
+                                }
+                            ]
+                        },
+                        "description": "Search videos by tags"
+                    }
+                }
+            ],
+            "description": "Video search and filtering operations"
+        },
+        {
+            "name": "Camera Videos",
+            "item": [
+                {
+                    "name": "Get Videos by Camera",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test(\"Status code is 200\", function () {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});",
+                                    "",
+                                    "pm.test(\"Response has videos for camera\", function () {",
+                                    "    var jsonData = pm.response.json();",
+                                    "    pm.expect(jsonData).to.have.property('videos');",
+                                    "    pm.expect(jsonData.videos).to.be.an('array');",
+                                    "});",
+                                    "",
+                                    "pm.test(\"All videos belong to specified camera\", function () {",
+                                    "    var jsonData = pm.response.json();",
+                                    "    var cameraId = parseInt(pm.environment.get('created_camera_id'));",
+                                    "    ",
+                                    "    jsonData.videos.forEach(function(video) {",
+                                    "        pm.expect(video.camera_id).to.equal(cameraId);",
+                                    "    });",
+                                    "});"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{session_token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/cameras/{{created_camera_id}}/videos",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "cameras",
+                                "{{created_camera_id}}",
+                                "videos"
+                            ]
+                        },
+                        "description": "Get all videos for a specific camera"
+                    }
+                },
+                {
+                    "name": "Start Video Recording",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test(\"Status code is 200\", function () {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});",
+                                    "",
+                                    "pm.test(\"Recording started successfully\", function () {",
+                                    "    var jsonData = pm.response.json();",
+                                    "    pm.expect(jsonData).to.have.property('recording_id');",
+                                    "    pm.expect(jsonData).to.have.property('status');",
+                                    "    pm.expect(jsonData.status).to.equal('recording');",
+                                    "    ",
+                                    "    // Store recording ID for stopping",
+                                    "    pm.environment.set(\"recording_id\", jsonData.recording_id);",
+                                    "});"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{session_token}}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"user_id\": {{user_id}},\n  \"duration\": 300,\n  \"quality\": \"high\",\n  \"description\": \"Manual recording session\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/api/cameras/{{created_camera_id}}/start-recording",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "cameras",
+                                "{{created_camera_id}}",
+                                "start-recording"
+                            ]
+                        },
+                        "description": "Start video recording on camera"
+                    }
+                },
+                {
+                    "name": "Stop Video Recording",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test(\"Status code is 200\", function () {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});",
+                                    "",
+                                    "pm.test(\"Recording stopped successfully\", function () {",
+                                    "    var jsonData = pm.response.json();",
+                                    "    pm.expect(jsonData).to.have.property('video_id');",
+                                    "    pm.expect(jsonData).to.have.property('status');",
+                                    "    pm.expect(jsonData.status).to.equal('completed');",
+                                    "    pm.expect(jsonData).to.have.property('file_url');",
+                                    "});"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{session_token}}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"user_id\": {{user_id}}\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/api/cameras/{{created_camera_id}}/stop-recording",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "cameras",
+                                "{{created_camera_id}}",
+                                "stop-recording"
+                            ]
+                        },
+                        "description": "Stop video recording on camera"
+                    }
+                }
+            ],
+            "description": "Camera-specific video operations"
+        },
+        {
+            "name": "Error Cases",
+            "item": [
+                {
+                    "name": "Upload Video - Missing File",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test(\"Status code is 400\", function () {",
+                                    "    pm.response.to.have.status(400);",
+                                    "});",
+                                    "",
+                                    "pm.test(\"Response has error information\", function () {",
+                                    "    var jsonData = pm.response.json();",
+                                    "    pm.expect(jsonData).to.have.property('error');",
+                                    "});"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{session_token}}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "formdata",
+                            "formdata": [
+                                {
+                                    "key": "camera_id",
+                                    "value": "{{created_camera_id}}",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "description",
+                                    "value": "Missing video file",
+                                    "type": "text"
+                                }
+                            ]
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/api/videos/upload",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "videos",
+                                "upload"
+                            ]
+                        },
+                        "description": "Test error handling with missing video file"
+                    }
+                },
+                {
+                    "name": "Stream Video - Not Found",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test(\"Status code is 404\", function () {",
+                                    "    pm.response.to.have.status(404);",
+                                    "});",
+                                    "",
+                                    "pm.test(\"Response has error information\", function () {",
+                                    "    var jsonData = pm.response.json();",
+                                    "    pm.expect(jsonData).to.have.property('error');",
+                                    "});"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{session_token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/videos/99999/stream",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "videos",
+                                "99999",
+                                "stream"
+                            ]
+                        },
+                        "description": "Test error handling with non-existent video"
+                    }
+                },
+                {
+                    "name": "Unauthorized Video Access",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test(\"Status code is 401\", function () {",
+                                    "    pm.response.to.have.status(401);",
+                                    "});",
+                                    "",
+                                    "pm.test(\"Response has error information\", function () {",
+                                    "    var jsonData = pm.response.json();",
+                                    "    pm.expect(jsonData).to.have.property('error');",
+                                    "});"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{base_url}}/api/videos",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "videos"
+                            ]
+                        },
+                        "description": "Test unauthorized access without token"
+                    }
+                }
+            ],
+            "description": "Error handling test cases"
+        }
+    ],
+    "event": [
+        {
+            "listen": "prerequest",
+            "script": {
+                "type": "text/javascript",
+                "exec": [
+                    "// Pre-request script for common setup",
+                    "console.log('Testing RallyMate Videos API endpoint: ' + pm.request.url);"
+                ]
+            }
+        },
+        {
+            "listen": "test",
+            "script": {
+                "type": "text/javascript",
+                "exec": [
+                    "// Global test script",
+                    "pm.test(\"Response time is less than 10000ms\", function () {",
+                    "    pm.expect(pm.response.responseTime).to.be.below(10000);",
+                    "});",
+                    "",
+                    "pm.test(\"Response has Content-Type header\", function () {",
+                    "    var contentType = pm.response.headers.get('Content-Type');",
+                    "    pm.expect(contentType).to.exist;",
+                    "});"
+                ]
+            }
+        }
+    ],
+    "variable": [
+        {
+            "key": "collection_version",
+            "value": "1.0.0",
+            "type": "string"
+        }
+    ]
+}
