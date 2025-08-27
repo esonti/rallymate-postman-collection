@@ -55,14 +55,14 @@
                             "raw": "{\n  \"phone_number\": \"+1234567890\",\n  \"device_info\": \"Postman Test Client\"\n}"
                         },
                         "url": {
-                            "raw": "{{base_url}}/api/auth/send-otp",
+                            "raw": "{{base_url}}/api/auth/otp/send",
                             "host": [
                                 "{{base_url}}"
                             ],
                             "path": [
                                 "api",
                                 "auth",
-                                "send-otp"
+                                "otp", "send"
                             ]
                         },
                         "description": "Send OTP to phone number for authentication"
@@ -115,14 +115,14 @@
                             "raw": "{\n  \"phone_number\": \"{{test_phone_number}}\",\n  \"otp_code\": \"123456\",\n  \"device_info\": \"Postman Test Client\",\n  \"ip_address\": \"127.0.0.1\"\n}"
                         },
                         "url": {
-                            "raw": "{{base_url}}/api/auth/verify-otp",
+                            "raw": "{{base_url}}/api/auth/otp/verify",
                             "host": [
                                 "{{base_url}}"
                             ],
                             "path": [
                                 "api",
                                 "auth",
-                                "verify-otp"
+                                "otp", "verify"
                             ]
                         },
                         "description": "Verify OTP code and get session tokens"
@@ -180,14 +180,14 @@
                             "raw": "{\n  \"session_token\": \"{{session_token}}\"\n}"
                         },
                         "url": {
-                            "raw": "{{base_url}}/api/auth/validate-session",
+                            "raw": "{{base_url}}/api/auth/session/validate",
                             "host": [
                                 "{{base_url}}"
                             ],
                             "path": [
                                 "api",
                                 "auth",
-                                "validate-session"
+                                "session", "validate"
                             ]
                         },
                         "description": "Validate current session token"
@@ -243,14 +243,14 @@
                             "raw": "{\n  \"refresh_token\": \"{{refresh_token}}\"\n}"
                         },
                         "url": {
-                            "raw": "{{base_url}}/api/auth/refresh-session",
+                            "raw": "{{base_url}}/api/auth/session/refresh",
                             "host": [
                                 "{{base_url}}"
                             ],
                             "path": [
                                 "api",
                                 "auth",
-                                "refresh-session"
+                                "session", "refresh"
                             ]
                         },
                         "description": "Refresh session using refresh token"
@@ -358,14 +358,14 @@
                             "raw": "{\n  \"session_token\": \"{{session_token}}\"\n}"
                         },
                         "url": {
-                            "raw": "{{base_url}}/api/auth/revoke-session",
+                            "raw": "{{base_url}}/api/auth/session/revoke",
                             "host": [
                                 "{{base_url}}"
                             ],
                             "path": [
                                 "api",
                                 "auth",
-                                "revoke-session"
+                                "session", "revoke"
                             ]
                         },
                         "description": "Revoke current session"
@@ -410,14 +410,14 @@
                             "raw": "{\n  \"phone_number\": \"invalid-phone\",\n  \"device_info\": \"Postman Test Client\"\n}"
                         },
                         "url": {
-                            "raw": "{{base_url}}/api/auth/send-otp",
+                            "raw": "{{base_url}}/api/auth/otp/send",
                             "host": [
                                 "{{base_url}}"
                             ],
                             "path": [
                                 "api",
                                 "auth",
-                                "send-otp"
+                                "otp", "send"
                             ]
                         },
                         "description": "Test error handling with invalid phone number"
@@ -456,14 +456,14 @@
                             "raw": "{\n  \"phone_number\": \"+1234567890\",\n  \"otp_code\": \"000000\",\n  \"device_info\": \"Postman Test Client\"\n}"
                         },
                         "url": {
-                            "raw": "{{base_url}}/api/auth/verify-otp",
+                            "raw": "{{base_url}}/api/auth/otp/verify",
                             "host": [
                                 "{{base_url}}"
                             ],
                             "path": [
                                 "api",
                                 "auth",
-                                "verify-otp"
+                                "otp", "verify"
                             ]
                         },
                         "description": "Test error handling with wrong OTP code"
@@ -502,14 +502,14 @@
                             "raw": "{\n  \"session_token\": \"\"\n}"
                         },
                         "url": {
-                            "raw": "{{base_url}}/api/auth/validate-session",
+                            "raw": "{{base_url}}/api/auth/session/validate",
                             "host": [
                                 "{{base_url}}"
                             ],
                             "path": [
                                 "api",
                                 "auth",
-                                "validate-session"
+                                "session", "validate"
                             ]
                         },
                         "description": "Test error handling with missing authorization"

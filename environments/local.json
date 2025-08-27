@@ -1,0 +1,43 @@
+{
+    "id": "local-environment-001",
+    "name": "Local Development",
+    "values": [
+        {
+            "key": "base_url",
+            "value": "http://localhost:8080",
+            "description": "Base URL for HTTP REST API",
+            "enabled": true
+        },
+        {
+            "key": "grpc_url",
+            "value": "localhost:50051",
+            "description": "gRPC server URL",
+            "enabled": true
+        },
+        {
+            "key": "test_phone_number",
+            "value": "+1234567890",
+            "description": "Test phone number for authentication",
+            "enabled": true
+        },
+        {
+            "key": "session_token",
+            "value": "",
+            "description": "Current session token (auto-populated)",
+            "enabled": true
+        },
+        {
+            "key": "refresh_token",
+            "value": "",
+            "description": "Current refresh token (auto-populated)",
+            "enabled": true
+        },
+        {
+            "key": "user_id",
+            "value": "",
+            "description": "Current user ID (auto-populated)",
+            "enabled": true
+        }
+    ],
+    "_postman_variable_scope": "environment"
+}
