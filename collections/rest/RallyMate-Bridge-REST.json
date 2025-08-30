@@ -31,7 +31,7 @@
                                     "    var jsonData = pm.response.json();",
                                     "    pm.expect(jsonData).to.have.property('page');",
                                     "    pm.expect(jsonData).to.have.property('page_size');",
-                                    "    pm.expect(jsonData).to.have.property('total');",
+                                    "    pm.expect(jsonData).to.have.property('total_count');",
                                     "});"
                                 ],
                                 "type": "text/javascript"
@@ -86,7 +86,7 @@
                                     "    pm.expect(jsonData.bridge).to.have.property('id');",
                                     "    pm.expect(jsonData.bridge).to.have.property('name');",
                                     "    pm.expect(jsonData.bridge).to.have.property('facility_id');",
-                                    "    pm.expect(jsonData.bridge).to.have.property('status');",
+                                    "    pm.expect(jsonData.bridge).to.have.property('connectivity');",
                                     "    ",
                                     "    // Store bridge ID for subsequent requests",
                                     "    pm.environment.set(\"created_bridge_id\", jsonData.bridge.id);",

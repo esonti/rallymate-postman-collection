@@ -37,6 +37,42 @@
             "value": "",
             "description": "Current user ID (auto-populated)",
             "enabled": true
+        },
+        {
+            "key": "created_facility_id",
+            "value": "",
+            "description": "ID of created facility (auto-populated)",
+            "enabled": true
+        },
+        {
+            "key": "created_user_id",
+            "value": "",
+            "description": "ID of created user (auto-populated)",
+            "enabled": true
+        },
+        {
+            "key": "created_camera_id",
+            "value": "",
+            "description": "ID of created camera (auto-populated)",
+            "enabled": true
+        },
+        {
+            "key": "created_lock_id",
+            "value": "",
+            "description": "ID of created lock (auto-populated)",
+            "enabled": true
+        },
+        {
+            "key": "created_video_id",
+            "value": "",
+            "description": "ID of created video (auto-populated)",
+            "enabled": true
+        },
+        {
+            "key": "created_bridge_id",
+            "value": "",
+            "description": "ID of created bridge (auto-populated)",
+            "enabled": true
         }
     ],
     "_postman_variable_scope": "environment"

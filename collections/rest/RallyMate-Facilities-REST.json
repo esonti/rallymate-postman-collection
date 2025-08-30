@@ -31,7 +31,7 @@
                                     "    var jsonData = pm.response.json();",
                                     "    pm.expect(jsonData).to.have.property('page');",
                                     "    pm.expect(jsonData).to.have.property('page_size');",
-                                    "    pm.expect(jsonData).to.have.property('total');",
+                                    "    pm.expect(jsonData).to.have.property('total_count');",
                                     "});"
                                 ],
                                 "type": "text/javascript"

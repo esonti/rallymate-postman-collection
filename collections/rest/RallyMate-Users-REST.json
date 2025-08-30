@@ -1,10 +1,15 @@
 {
     "info": {
-        "_postman_id": "users-rest-collection-001",
+        "_postman_id": "users-rest-collection-v2",
         "name": "RallyMate Users REST API",
-        "description": "User management endpoints for RallyMate API - CRUD operations for users and memberships",
+        "description": "Comprehensive user management endpoints for RallyMate API - CRUD operations, profile management, and membership operations",
         "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-        "_exporter_id": "rallymate-users"
+        "_exporter_id": "rallymate-users",
+        "version": {
+            "major": 2,
+            "minor": 0,
+            "patch": 0
+        }
     },
     "item": [
         {
@@ -27,9 +32,20 @@
                                     "    pm.expect(jsonData.user).to.have.property('id');",
                                     "    pm.expect(jsonData.user).to.have.property('phone_number');",
                                     "    pm.expect(jsonData.user).to.have.property('name');",
+                                    "    pm.expect(jsonData.user).to.have.property('email');",
+                                    "    pm.expect(jsonData.user).to.have.property('is_active');",
                                     "    ",
-                                    "    // Store user ID for subsequent requests",
+                                    "    // Store user data for subsequent requests",
                                     "    pm.environment.set(\"created_user_id\", jsonData.user.id);",
+                                    "    pm.environment.set(\"created_user_phone\", jsonData.user.phone_number);",
+                                    "    pm.environment.set(\"created_user_name\", jsonData.user.name);",
+                                    "});",
+                                    "",
+                                    "pm.test(\"User has required fields\", function () {",
+                                    "    var jsonData = pm.response.json();",
+                                    "    pm.expect(jsonData.user.phone_number).to.not.be.empty;",
+                                    "    pm.expect(jsonData.user.name).to.not.be.empty;",
+                                    "    pm.expect(jsonData.user.is_active).to.be.a('boolean');",
                                     "});"
                                 ],
                                 "type": "text/javascript"
@@ -62,11 +78,11 @@
                                 "users"
                             ]
                         },
-                        "description": "Create a new user"
+                        "description": "Create a new user with phone number, name, and optional email"
                     }
                 },
                 {
-                    "name": "Get Users",
+                    "name": "Get All Users",
                     "event": [
                         {
                             "listen": "test",
@@ -76,17 +92,42 @@
                                     "    pm.response.to.have.status(200);",
                                     "});",
                                     "",
-                                    "pm.test(\"Response has users array\", function () {",
+                                    "pm.test(\"Response has users array and pagination\", function () {",
                                     "    var jsonData = pm.response.json();",
                                     "    pm.expect(jsonData).to.have.property('users');",
+                                    "    pm.expect(jsonData).to.have.property('total_count');",
                                     "    pm.expect(jsonData.users).to.be.an('array');",
+                                    "    pm.expect(jsonData.total_count).to.be.a('number');",
                                     "});",
                                     "",
-                                    "pm.test(\"Response has pagination info\", function () {",
+                                    "pm.test(\"Each user includes memberships\", function () {",
                                     "    var jsonData = pm.response.json();",
-                                    "    pm.expect(jsonData).to.have.property('page');",
-                                    "    pm.expect(jsonData).to.have.property('page_size');",
-                                    "    pm.expect(jsonData).to.have.property('total');",
+                                    "    if (jsonData.users && jsonData.users.length > 0) {",
+                                    "        jsonData.users.forEach(function(user) {",
+                                    "            pm.expect(user).to.have.property('id');",
+                                    "            pm.expect(user).to.have.property('phone_number');",
+                                    "            pm.expect(user).to.have.property('name');",
+                                    "            pm.expect(user).to.have.property('memberships');",
+                                    "            pm.expect(user.memberships).to.be.an('array');",
+                                    "        });",
+                                    "    }",
+                                    "});",
+                                    "",
+                                    "pm.test(\"Membership structure is correct\", function () {",
+                                    "    var jsonData = pm.response.json();",
+                                    "    if (jsonData.users && jsonData.users.length > 0) {",
+                                    "        jsonData.users.forEach(function(user) {",
+                                    "            if (user.memberships && user.memberships.length > 0) {",
+                                    "                user.memberships.forEach(function(membership) {",
+                                    "                    pm.expect(membership).to.have.property('id');",
+                                    "                    pm.expect(membership).to.have.property('facility_id');",
+                                    "                    pm.expect(membership).to.have.property('role');",
+                                    "                    pm.expect(membership).to.have.property('is_active');",
+                                    "                    pm.expect(membership).to.have.property('start_date');",
+                                    "                });",
+                                    "            }",
+                                    "        });",
+                                    "    }",
                                     "});"
                                 ],
                                 "type": "text/javascript"
@@ -113,19 +154,39 @@
                             "query": [
                                 {
                                     "key": "page",
-                                    "value": "1"
+                                    "value": "1",
+                                    "description": "Page number (starting from 1)"
                                 },
                                 {
                                     "key": "page_size",
-                                    "value": "10"
+                                    "value": "10",
+                                    "description": "Number of users per page"
+                                },
+                                {
+                                    "key": "search",
+                                    "value": "",
+                                    "description": "Search by name or phone number",
+                                    "disabled": true
+                                },
+                                {
+                                    "key": "facility_id",
+                                    "value": "",
+                                    "description": "Filter by facility ID",
+                                    "disabled": true
+                                },
+                                {
+                                    "key": "role",
+                                    "value": "",
+                                    "description": "Filter by membership role (PLAYER/MANAGER)",
+                                    "disabled": true
                                 }
                             ]
                         },
-                        "description": "Get list of users with pagination"
+                        "description": "Get paginated list of users with their memberships. Results are filtered by user authorization."
                     }
                 },
                 {
-                    "name": "Get User Profile",
+                    "name": "Search Users",
                     "event": [
                         {
                             "listen": "test",
@@ -135,17 +196,32 @@
                                     "    pm.response.to.have.status(200);",
                                     "});",
                                     "",
-                                    "pm.test(\"Response has user data\", function () {",
+                                    "pm.test(\"Search returns filtered results\", function () {",
                                     "    var jsonData = pm.response.json();",
-                                    "    pm.expect(jsonData).to.have.property('user');",
-                                    "    pm.expect(jsonData.user).to.have.property('id');",
-                                    "    pm.expect(jsonData.user).to.have.property('phone_number');",
+                                    "    pm.expect(jsonData).to.have.property('users');",
+                                    "    pm.expect(jsonData.users).to.be.an('array');",
                                     "});",
                                     "",
-                                    "pm.test(\"Response has memberships\", function () {",
+                                    "pm.test(\"Search results include memberships\", function () {",
                                     "    var jsonData = pm.response.json();",
-                                    "    pm.expect(jsonData).to.have.property('memberships');",
-                                    "    pm.expect(jsonData.memberships).to.be.an('array');",
+                                    "    if (jsonData.users && jsonData.users.length > 0) {",
+                                    "        jsonData.users.forEach(function(user) {",
+                                    "            pm.expect(user).to.have.property('memberships');",
+                                    "            pm.expect(user.memberships).to.be.an('array');",
+                                    "        });",
+                                    "    }",
+                                    "});",
+                                    "",
+                                    "pm.test(\"Search matches name or phone\", function () {",
+                                    "    var jsonData = pm.response.json();",
+                                    "    var searchTerm = pm.request.url.query.get('search');",
+                                    "    if (searchTerm && jsonData.users && jsonData.users.length > 0) {",
+                                    "        var hasMatch = jsonData.users.some(function(user) {",
+                                    "            return user.name.toLowerCase().includes(searchTerm.toLowerCase()) || ",
+                                    "                   user.phone_number.includes(searchTerm);",
+                                    "        });",
+                                    "        pm.expect(hasMatch).to.be.true;",
+                                    "    }",
                                     "});"
                                 ],
                                 "type": "text/javascript"
@@ -161,21 +237,47 @@
                             }
                         ],
                         "url": {
-                            "raw": "{{base_url}}/api/users/profile",
+                            "raw": "{{base_url}}/api/users?search=John&page=1&page_size=10",
                             "host": [
                                 "{{base_url}}"
                             ],
                             "path": [
                                 "api",
-                                "users",
-                                "profile"
+                                "users"
+                            ],
+                            "query": [
+                                {
+                                    "key": "search",
+                                    "value": "John",
+                                    "description": "Search by name or phone number"
+                                },
+                                {
+                                    "key": "page",
+                                    "value": "1"
+                                },
+                                {
+                                    "key": "page_size",
+                                    "value": "10"
+                                },
+                                {
+                                    "key": "facility_id",
+                                    "value": "",
+                                    "description": "Optional: Filter by facility ID",
+                                    "disabled": true
+                                },
+                                {
+                                    "key": "role",
+                                    "value": "",
+                                    "description": "Optional: Filter by role (PLAYER/MANAGER)",
+                                    "disabled": true
+                                }
                             ]
                         },
-                        "description": "Get current user's profile and memberships"
+                        "description": "Search users by name or phone number. Search is case-insensitive and matches partial strings."
                     }
                 },
                 {
-                    "name": "Update User Profile",
+                    "name": "Update User (Admin)",
                     "event": [
                         {
                             "listen": "test",
@@ -188,7 +290,16 @@
                                     "pm.test(\"Response has updated user data\", function () {",
                                     "    var jsonData = pm.response.json();",
                                     "    pm.expect(jsonData).to.have.property('user');",
+                                    "    pm.expect(jsonData.user).to.have.property('id');",
                                     "    pm.expect(jsonData.user).to.have.property('name');",
+                                    "    pm.expect(jsonData.user).to.have.property('email');",
+                                    "});",
+                                    "",
+                                    "pm.test(\"User data was updated\", function () {",
+                                    "    var jsonData = pm.response.json();",
+                                    "    var requestBody = JSON.parse(pm.request.body.raw);",
+                                    "    pm.expect(jsonData.user.name).to.equal(requestBody.name);",
+                                    "    pm.expect(jsonData.user.email).to.equal(requestBody.email);",
                                     "});"
                                 ],
                                 "type": "text/javascript"
@@ -209,24 +320,24 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\n  \"name\": \"Updated Test User\",\n  \"email\": \"updated.testuser@example.com\"\n}"
+                            "raw": "{\n  \"name\": \"Updated User Name\",\n  \"email\": \"updated@example.com\",\n  \"is_active\": true\n}"
                         },
                         "url": {
-                            "raw": "{{base_url}}/api/users/profile",
+                            "raw": "{{base_url}}/api/users/{{created_user_id}}",
                             "host": [
                                 "{{base_url}}"
                             ],
                             "path": [
                                 "api",
                                 "users",
-                                "profile"
+                                "{{created_user_id}}"
                             ]
                         },
-                        "description": "Update current user's profile"
+                        "description": "Update user information. Requires admin privileges."
                     }
                 },
                 {
-                    "name": "Get User by ID",
+                    "name": "Delete User (Admin)",
                     "event": [
                         {
                             "listen": "test",
@@ -236,11 +347,10 @@
                                     "    pm.response.to.have.status(200);",
                                     "});",
                                     "",
-                                    "pm.test(\"Response has user data\", function () {",
+                                    "pm.test(\"Response confirms deletion\", function () {",
                                     "    var jsonData = pm.response.json();",
-                                    "    pm.expect(jsonData).to.have.property('user');",
-                                    "    pm.expect(jsonData.user).to.have.property('id');",
-                                    "    pm.expect(jsonData.user.id).to.equal(parseInt(pm.environment.get('created_user_id')));",
+                                    "    pm.expect(jsonData).to.have.property('success');",
+                                    "    pm.expect(jsonData.success).to.be.true;",
                                     "});"
                                 ],
                                 "type": "text/javascript"
@@ -248,7 +358,7 @@
                         }
                     ],
                     "request": {
-                        "method": "GET",
+                        "method": "DELETE",
                         "header": [
                             {
                                 "key": "Authorization",
@@ -266,11 +376,17 @@
                                 "{{created_user_id}}"
                             ]
                         },
-                        "description": "Get user by ID"
+                        "description": "Delete a user. Requires admin privileges. This will also remove all associated memberships."
                     }
-                },
+                }
+            ],
+            "description": "Basic user CRUD operations - create, read, update, delete users"
+        },
+        {
+            "name": "User Profile",
+            "item": [
                 {
-                    "name": "Get User by Phone",
+                    "name": "Get User Profile",
                     "event": [
                         {
                             "listen": "test",
@@ -280,10 +396,33 @@
                                     "    pm.response.to.have.status(200);",
                                     "});",
                                     "",
-                                    "pm.test(\"Response has user data\", function () {",
+                                    "pm.test(\"Response has user profile data\", function () {",
                                     "    var jsonData = pm.response.json();",
-                                    "    pm.expect(jsonData).to.have.property('user');",
-                                    "    pm.expect(jsonData.user).to.have.property('phone_number');",
+                                    "    pm.expect(jsonData).to.have.property('id');",
+                                    "    pm.expect(jsonData).to.have.property('phone_number');",
+                                    "    pm.expect(jsonData).to.have.property('name');",
+                                    "    pm.expect(jsonData).to.have.property('email');",
+                                    "    pm.expect(jsonData).to.have.property('is_active');",
+                                    "    pm.expect(jsonData).to.have.property('memberships');",
+                                    "});",
+                                    "",
+                                    "pm.test(\"Profile includes memberships array\", function () {",
+                                    "    var jsonData = pm.response.json();",
+                                    "    pm.expect(jsonData.memberships).to.be.an('array');",
+                                    "});",
+                                    "",
+                                    "pm.test(\"Membership details are complete\", function () {",
+                                    "    var jsonData = pm.response.json();",
+                                    "    if (jsonData.memberships && jsonData.memberships.length > 0) {",
+                                    "        jsonData.memberships.forEach(function(membership) {",
+                                    "            pm.expect(membership).to.have.property('id');",
+                                    "            pm.expect(membership).to.have.property('facility_id');",
+                                    "            pm.expect(membership).to.have.property('role');",
+                                    "            pm.expect(membership).to.have.property('is_active');",
+                                    "            pm.expect(membership).to.have.property('start_date');",
+                                    "            pm.expect(membership.role).to.be.oneOf(['PLAYER', 'MANAGER']);",
+                                    "        });",
+                                    "    }",
                                     "});"
                                 ],
                                 "type": "text/javascript"
@@ -299,22 +438,85 @@
                             }
                         ],
                         "url": {
-                            "raw": "{{base_url}}/api/users/phone/+1987654321",
+                            "raw": "{{base_url}}/api/users/profile",
                             "host": [
                                 "{{base_url}}"
                             ],
                             "path": [
                                 "api",
                                 "users",
-                                "phone",
-                                "+1987654321"
+                                "profile"
                             ]
                         },
-                        "description": "Get user by phone number"
+                        "description": "Get the current authenticated user's profile information including all memberships"
+                    }
+                },
+                {
+                    "name": "Update User Profile",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test(\"Status code is 200\", function () {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});",
+                                    "",
+                                    "pm.test(\"Response has updated user data\", function () {",
+                                    "    var jsonData = pm.response.json();",
+                                    "    pm.expect(jsonData).to.have.property('user');",
+                                    "    pm.expect(jsonData.user).to.have.property('id');",
+                                    "    pm.expect(jsonData.user).to.have.property('name');",
+                                    "    pm.expect(jsonData.user).to.have.property('email');",
+                                    "});",
+                                    "",
+                                    "pm.test(\"Profile was updated correctly\", function () {",
+                                    "    var jsonData = pm.response.json();",
+                                    "    var requestBody = JSON.parse(pm.request.body.raw);",
+                                    "    if (requestBody.name) {",
+                                    "        pm.expect(jsonData.user.name).to.equal(requestBody.name);",
+                                    "    }",
+                                    "    if (requestBody.email) {",
+                                    "        pm.expect(jsonData.user.email).to.equal(requestBody.email);",
+                                    "    }",
+                                    "});"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{session_token}}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"name\": \"Updated Profile Name\",\n  \"email\": \"updated.profile@example.com\",\n  \"is_active\": true\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/api/users/profile",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "users",
+                                "profile"
+                            ]
+                        },
+                        "description": "Update the current authenticated user's profile information. Users can only update their own profile."
                     }
                 }
             ],
-            "description": "Basic user CRUD operations"
+            "description": "User profile management - get and update current user's profile"
         },
         {
             "name": "User Memberships",
@@ -330,16 +532,35 @@
                                     "    pm.response.to.have.status(201);",
                                     "});",
                                     "",
-                                    "pm.test(\"Response has membership data\", function () {",
+                                    "pm.test(\"Response has user and membership data\", function () {",
                                     "    var jsonData = pm.response.json();",
+                                    "    pm.expect(jsonData).to.have.property('user');",
                                     "    pm.expect(jsonData).to.have.property('membership');",
+                                    "});",
+                                    "",
+                                    "pm.test(\"Membership data is complete\", function () {",
+                                    "    var jsonData = pm.response.json();",
                                     "    pm.expect(jsonData.membership).to.have.property('id');",
                                     "    pm.expect(jsonData.membership).to.have.property('user_id');",
                                     "    pm.expect(jsonData.membership).to.have.property('facility_id');",
                                     "    pm.expect(jsonData.membership).to.have.property('role');",
+                                    "    pm.expect(jsonData.membership).to.have.property('start_date');",
+                                    "    pm.expect(jsonData.membership).to.have.property('is_active');",
                                     "    ",
                                     "    // Store membership ID for subsequent requests",
                                     "    pm.environment.set(\"created_membership_id\", jsonData.membership.id);",
+                                    "});",
+                                    "",
+                                    "pm.test(\"User was created or found\", function () {",
+                                    "    var jsonData = pm.response.json();",
+                                    "    pm.expect(jsonData.user).to.have.property('id');",
+                                    "    pm.expect(jsonData.user).to.have.property('phone_number');",
+                                    "    pm.expect(jsonData.user).to.have.property('name');",
+                                    "});",
+                                    "",
+                                    "pm.test(\"Role is valid\", function () {",
+                                    "    var jsonData = pm.response.json();",
+                                    "    pm.expect(jsonData.membership.role).to.be.oneOf(['PLAYER', 'MANAGER']);",
                                     "});"
                                 ],
                                 "type": "text/javascript"
@@ -360,7 +581,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\n  \"user_id\": {{created_user_id}},\n  \"facility_id\": 1,\n  \"role\": \"MEMBERSHIP_ROLE_PLAYER\",\n  \"start_date\": {{$timestamp}},\n  \"expiry_date\": {{$timestamp}}000\n}"
+                            "raw": "{\n  \"phone_number\": \"+1555123456\",\n  \"user_name\": \"Membership Test User\",\n  \"user_email\": \"membership@example.com\",\n  \"facility_id\": 1,\n  \"role\": \"PLAYER\",\n  \"start_date\": 1672531200,\n  \"expiry_date\": 1704067200\n}"
                         },
                         "url": {
                             "raw": "{{base_url}}/api/users/memberships",
@@ -373,73 +594,11 @@
                                 "memberships"
                             ]
                         },
-                        "description": "Create a new user membership to a facility"
-                    }
-                }
-            ],
-            "description": "User membership management"
-        },
-        {
-            "name": "Search and Filtering",
-            "item": [
-                {
-                    "name": "Search Users by Name",
-                    "event": [
-                        {
-                            "listen": "test",
-                            "script": {
-                                "exec": [
-                                    "pm.test(\"Status code is 200\", function () {",
-                                    "    pm.response.to.have.status(200);",
-                                    "});",
-                                    "",
-                                    "pm.test(\"Response has filtered users\", function () {",
-                                    "    var jsonData = pm.response.json();",
-                                    "    pm.expect(jsonData).to.have.property('users');",
-                                    "    pm.expect(jsonData.users).to.be.an('array');",
-                                    "});"
-                                ],
-                                "type": "text/javascript"
-                            }
-                        }
-                    ],
-                    "request": {
-                        "method": "GET",
-                        "header": [
-                            {
-                                "key": "Authorization",
-                                "value": "Bearer {{session_token}}"
-                            }
-                        ],
-                        "url": {
-                            "raw": "{{base_url}}/api/users?search=Test&page=1&page_size=10",
-                            "host": [
-                                "{{base_url}}"
-                            ],
-                            "path": [
-                                "api",
-                                "users"
-                            ],
-                            "query": [
-                                {
-                                    "key": "search",
-                                    "value": "Test"
-                                },
-                                {
-                                    "key": "page",
-                                    "value": "1"
-                                },
-                                {
-                                    "key": "page_size",
-                                    "value": "10"
-                                }
-                            ]
-                        },
-                        "description": "Search users by name or phone number"
+                        "description": "Create a new user membership. If the user doesn't exist, they will be created with the provided information."
                     }
                 },
                 {
-                    "name": "Filter Users by Facility",
+                    "name": "Delete User Membership",
                     "event": [
                         {
                             "listen": "test",
@@ -449,10 +608,10 @@
                                     "    pm.response.to.have.status(200);",
                                     "});",
                                     "",
-                                    "pm.test(\"Response has filtered users\", function () {",
+                                    "pm.test(\"Response confirms deletion\", function () {",
                                     "    var jsonData = pm.response.json();",
-                                    "    pm.expect(jsonData).to.have.property('users');",
-                                    "    pm.expect(jsonData.users).to.be.an('array');",
+                                    "    pm.expect(jsonData).to.have.property('message');",
+                                    "    pm.expect(jsonData.message).to.include('deleted successfully');",
                                     "});"
                                 ],
                                 "type": "text/javascript"
@@ -460,7 +619,7 @@
                         }
                     ],
                     "request": {
-                        "method": "GET",
+                        "method": "DELETE",
                         "header": [
                             {
                                 "key": "Authorization",
@@ -468,36 +627,28 @@
                             }
                         ],
                         "url": {
-                            "raw": "{{base_url}}/api/users?facility_id=1&role=MEMBERSHIP_ROLE_PLAYER",
+                            "raw": "{{base_url}}/api/users/memberships/{{created_membership_id}}",
                             "host": [
                                 "{{base_url}}"
                             ],
                             "path": [
                                 "api",
-                                "users"
-                            ],
-                            "query": [
-                                {
-                                    "key": "facility_id",
-                                    "value": "1"
-                                },
-                                {
-                                    "key": "role",
-                                    "value": "MEMBERSHIP_ROLE_PLAYER"
-                                }
+                                "users",
+                                "memberships",
+                                "{{created_membership_id}}"
                             ]
                         },
-                        "description": "Filter users by facility and role"
+                        "description": "Delete a user membership. Users can delete their own memberships, admins can delete any membership."
                     }
                 }
             ],
-            "description": "Search and filtering operations"
+            "description": "User membership management - create and delete facility memberships"
         },
         {
-            "name": "Error Cases",
+            "name": "Error Scenarios",
             "item": [
                 {
-                    "name": "Create User - Missing Phone",
+                    "name": "Create User - Invalid Phone",
                     "event": [
                         {
                             "listen": "test",
@@ -530,7 +681,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\n  \"name\": \"Test User Without Phone\",\n  \"email\": \"nophone@example.com\"\n}"
+                            "raw": "{\n  \"phone_number\": \"invalid-phone\",\n  \"name\": \"Test User\"\n}"
                         },
                         "url": {
                             "raw": "{{base_url}}/api/users",
@@ -542,11 +693,60 @@
                                 "users"
                             ]
                         },
-                        "description": "Test error handling with missing required phone number"
+                        "description": "Test error handling with invalid phone number format"
                     }
                 },
                 {
-                    "name": "Get User - Not Found",
+                    "name": "Create User - Missing Required Fields",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test(\"Status code is 400\", function () {",
+                                    "    pm.response.to.have.status(400);",
+                                    "});",
+                                    "",
+                                    "pm.test(\"Response has error information\", function () {",
+                                    "    var jsonData = pm.response.json();",
+                                    "    pm.expect(jsonData).to.have.property('error');",
+                                    "});"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{session_token}}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"email\": \"test@example.com\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/api/users",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "users"
+                            ]
+                        },
+                        "description": "Test error handling with missing required fields (phone_number and name)"
+                    }
+                },
+                {
+                    "name": "Update User - Not Found",
                     "event": [
                         {
                             "listen": "test",
@@ -566,13 +766,21 @@
                         }
                     ],
                     "request": {
-                        "method": "GET",
+                        "method": "PUT",
                         "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            },
                             {
                                 "key": "Authorization",
                                 "value": "Bearer {{session_token}}"
                             }
                         ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"name\": \"Updated Name\"\n}"
+                        },
                         "url": {
                             "raw": "{{base_url}}/api/users/99999",
                             "host": [
@@ -620,11 +828,11 @@
                                 "users"
                             ]
                         },
-                        "description": "Test unauthorized access without token"
+                        "description": "Test error handling with missing authentication token"
                     }
                 }
             ],
-            "description": "Error handling test cases"
+            "description": "Error scenarios and edge cases for testing API robustness"
         }
     ],
     "event": [
@@ -633,8 +841,17 @@
             "script": {
                 "type": "text/javascript",
                 "exec": [
-                    "// Pre-request script for common setup",
-                    "console.log('Testing RallyMate Users API endpoint: ' + pm.request.url);"
+                    "// Pre-request script - runs before each request",
+                    "",
+                    "// Ensure required environment variables are set",
+                    "if (!pm.environment.get('base_url')) {",
+                    "    console.log('Warning: base_url environment variable not set');",
+                    "}",
+                    "",
+                    "if (!pm.environment.get('session_token')) {",
+                    "    console.log('Warning: session_token environment variable not set');",
+                    "    console.log('Please authenticate first using the Auth collection');",
+                    "}"
                 ]
             }
         },
@@ -643,14 +860,23 @@
             "script": {
                 "type": "text/javascript",
                 "exec": [
-                    "// Global test script",
-                    "pm.test(\"Response time is less than 5000ms\", function () {",
+                    "// Global test script - runs after each request",
+                    "",
+                    "pm.test(\"Response time is reasonable\", function () {",
                     "    pm.expect(pm.response.responseTime).to.be.below(5000);",
                     "});",
                     "",
-                    "pm.test(\"Response has Content-Type header\", function () {",
-                    "    pm.expect(pm.response.headers.get('Content-Type')).to.include('application/json');",
-                    "});"
+                    "pm.test(\"Response has proper content type\", function () {",
+                    "    if (pm.response.code !== 204) { // Skip for No Content responses",
+                    "        pm.expect(pm.response.headers.get('Content-Type')).to.include('application/json');",
+                    "    }",
+                    "});",
+                    "",
+                    "// Log response for debugging (only on failures)",
+                    "if (pm.response.code >= 400) {",
+                    "    console.log('Response Status:', pm.response.status);",
+                    "    console.log('Response Body:', pm.response.text());",
+                    "}"
                 ]
             }
         }
@@ -658,8 +884,15 @@
     "variable": [
         {
             "key": "collection_version",
-            "value": "1.0.0",
-            "type": "string"
+            "value": "2.0.0",
+            "type": "string",
+            "description": "Collection version number"
+        },
+        {
+            "key": "api_version",
+            "value": "v1",
+            "type": "string",
+            "description": "API version"
         }
     ]
 }

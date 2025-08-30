@@ -31,7 +31,7 @@
                                     "    var jsonData = pm.response.json();",
                                     "    pm.expect(jsonData).to.have.property('page');",
                                     "    pm.expect(jsonData).to.have.property('page_size');",
-                                    "    pm.expect(jsonData).to.have.property('total');",
+                                    "    pm.expect(jsonData).to.have.property('total_count');",
                                     "});"
                                 ],
                                 "type": "text/javascript"
@@ -86,7 +86,8 @@
                                     "    pm.expect(jsonData.camera).to.have.property('id');",
                                     "    pm.expect(jsonData.camera).to.have.property('name');",
                                     "    pm.expect(jsonData.camera).to.have.property('facility_id');",
-                                    "    pm.expect(jsonData.camera).to.have.property('status');",
+                                    "    pm.expect(jsonData.camera).to.have.property('connectivity');",
+                                    "    pm.expect(jsonData.camera).to.have.property('operation_state');",
                                     "    ",
                                     "    // Store camera ID for subsequent requests",
                                     "    pm.environment.set(\"created_camera_id\", jsonData.camera.id);",
