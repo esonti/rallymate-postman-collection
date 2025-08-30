@@ -1,0 +1,696 @@
+{
+    "info": {
+        "_postman_id": "users-grpc-collection-v1",
+        "name": "RallyMate Users gRPC API",
+        "description": "Comprehensive user management gRPC endpoints for RallyMate API - CRUD operations, profile management, and membership operations",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+        "_exporter_id": "rallymate-users-grpc",
+        "version": {
+            "major": 1,
+            "minor": 0,
+            "patch": 0
+        }
+    },
+    "item": [
+        {
+            "name": "User Management",
+            "item": [
+                {
+                    "name": "CreateUser",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test(\"Status code is OK\", function () {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});",
+                                    "",
+                                    "pm.test(\"Response has user data\", function () {",
+                                    "    var jsonData = pm.response.json();",
+                                    "    pm.expect(jsonData).to.have.property('user');",
+                                    "    pm.expect(jsonData.user).to.have.property('id');",
+                                    "    pm.expect(jsonData.user).to.have.property('phoneNumber');",
+                                    "    pm.expect(jsonData.user).to.have.property('name');",
+                                    "    pm.expect(jsonData.user).to.have.property('isActive');",
+                                    "    ",
+                                    "    // Store user data for subsequent requests",
+                                    "    pm.environment.set(\"created_user_id\", jsonData.user.id);",
+                                    "    pm.environment.set(\"created_user_phone\", jsonData.user.phoneNumber);",
+                                    "});"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/grpc"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{session_token}}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "grpc",
+                            "grpc": {
+                                "service": "users.UsersService",
+                                "method": "CreateUser",
+                                "message": {
+                                    "phone_number": "+1987654321",
+                                    "name": "Test User",
+                                    "email": "testuser@example.com"
+                                }
+                            }
+                        },
+                        "url": {
+                            "raw": "{{grpc_base_url}}",
+                            "host": [
+                                "{{grpc_base_url}}"
+                            ]
+                        },
+                        "description": "Create a new user with phone number, name, and optional email"
+                    }
+                },
+                {
+                    "name": "GetUsers",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test(\"Status code is OK\", function () {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});",
+                                    "",
+                                    "pm.test(\"Response has users array\", function () {",
+                                    "    var jsonData = pm.response.json();",
+                                    "    pm.expect(jsonData).to.have.property('users');",
+                                    "    pm.expect(jsonData).to.have.property('totalCount');",
+                                    "    pm.expect(jsonData.users).to.be.an('array');",
+                                    "});"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/grpc"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{session_token}}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "grpc",
+                            "grpc": {
+                                "service": "users.UsersService",
+                                "method": "GetUsers",
+                                "message": {
+                                    "facility_id": 1,
+                                    "page": 1,
+                                    "page_size": 10
+                                }
+                            }
+                        },
+                        "url": {
+                            "raw": "{{grpc_base_url}}",
+                            "host": [
+                                "{{grpc_base_url}}"
+                            ]
+                        },
+                        "description": "Get paginated list of users with their memberships"
+                    }
+                },
+                {
+                    "name": "UpdateUser",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test(\"Status code is OK\", function () {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});",
+                                    "",
+                                    "pm.test(\"Response has updated user data\", function () {",
+                                    "    var jsonData = pm.response.json();",
+                                    "    pm.expect(jsonData).to.have.property('user');",
+                                    "    pm.expect(jsonData.user).to.have.property('id');",
+                                    "});"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/grpc"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{session_token}}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "grpc",
+                            "grpc": {
+                                "service": "users.UsersService",
+                                "method": "UpdateUser",
+                                "message": {
+                                    "id": "{{created_user_id}}",
+                                    "name": "Updated Test User",
+                                    "email": "updated@example.com",
+                                    "is_active": true
+                                }
+                            }
+                        },
+                        "url": {
+                            "raw": "{{grpc_base_url}}",
+                            "host": [
+                                "{{grpc_base_url}}"
+                            ]
+                        },
+                        "description": "Update an existing user's information"
+                    }
+                },
+                {
+                    "name": "DeleteUser",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test(\"Status code is OK\", function () {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});",
+                                    "",
+                                    "pm.test(\"Response confirms deletion\", function () {",
+                                    "    var jsonData = pm.response.json();",
+                                    "    pm.expect(jsonData).to.have.property('success');",
+                                    "    pm.expect(jsonData.success).to.be.true;",
+                                    "});"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/grpc"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{session_token}}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "grpc",
+                            "grpc": {
+                                "service": "users.UsersService",
+                                "method": "DeleteUser",
+                                "message": {
+                                    "id": "{{created_user_id}}"
+                                }
+                            }
+                        },
+                        "url": {
+                            "raw": "{{grpc_base_url}}",
+                            "host": [
+                                "{{grpc_base_url}}"
+                            ]
+                        },
+                        "description": "Delete a user. Requires admin privileges."
+                    }
+                }
+            ],
+            "description": "User CRUD operations via gRPC"
+        },
+        {
+            "name": "User Memberships",
+            "item": [
+                {
+                    "name": "CreateMembership",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test(\"Status code is OK\", function () {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});",
+                                    "",
+                                    "pm.test(\"Response has user and membership data\", function () {",
+                                    "    var jsonData = pm.response.json();",
+                                    "    pm.expect(jsonData).to.have.property('user');",
+                                    "    pm.expect(jsonData).to.have.property('membership');",
+                                    "});",
+                                    "",
+                                    "pm.test(\"Membership data is complete\", function () {",
+                                    "    var jsonData = pm.response.json();",
+                                    "    pm.expect(jsonData.membership).to.have.property('id');",
+                                    "    pm.expect(jsonData.membership).to.have.property('userId');",
+                                    "    pm.expect(jsonData.membership).to.have.property('facilityId');",
+                                    "    pm.expect(jsonData.membership).to.have.property('role');",
+                                    "    pm.expect(jsonData.membership).to.have.property('isActive');",
+                                    "    ",
+                                    "    // Store membership ID for subsequent requests",
+                                    "    pm.environment.set(\"created_membership_id\", jsonData.membership.id);",
+                                    "});"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/grpc"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{session_token}}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "grpc",
+                            "grpc": {
+                                "service": "users.UsersService",
+                                "method": "CreateMembership",
+                                "message": {
+                                    "phone_number": "+1555123456",
+                                    "user_name": "Membership Test User",
+                                    "user_email": "membership@example.com",
+                                    "facility_id": 1,
+                                    "role": "MEMBERSHIP_ROLE_PLAYER",
+                                    "start_date": 1672531200,
+                                    "expiry_date": 1704067200
+                                }
+                            }
+                        },
+                        "url": {
+                            "raw": "{{grpc_base_url}}",
+                            "host": [
+                                "{{grpc_base_url}}"
+                            ]
+                        },
+                        "description": "Create a new user membership. If the user doesn't exist, they will be created with the provided information."
+                    }
+                },
+                {
+                    "name": "CreateMembershipByPhone",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test(\"Status code is OK\", function () {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});",
+                                    "",
+                                    "pm.test(\"Response has user and membership data\", function () {",
+                                    "    var jsonData = pm.response.json();",
+                                    "    pm.expect(jsonData).to.have.property('user');",
+                                    "    pm.expect(jsonData).to.have.property('membership');",
+                                    "});",
+                                    "",
+                                    "pm.test(\"Membership data is complete\", function () {",
+                                    "    var jsonData = pm.response.json();",
+                                    "    pm.expect(jsonData.membership).to.have.property('id');",
+                                    "    pm.expect(jsonData.membership).to.have.property('userId');",
+                                    "    pm.expect(jsonData.membership).to.have.property('facilityId');",
+                                    "    pm.expect(jsonData.membership).to.have.property('role');",
+                                    "    pm.expect(jsonData.membership).to.have.property('isActive');",
+                                    "    ",
+                                    "    // Store membership ID for subsequent requests",
+                                    "    pm.environment.set(\"created_membership_phone_id\", jsonData.membership.id);",
+                                    "});",
+                                    "",
+                                    "pm.test(\"User was created with phone only\", function () {",
+                                    "    var jsonData = pm.response.json();",
+                                    "    pm.expect(jsonData.user).to.have.property('phoneNumber');",
+                                    "    pm.expect(jsonData.user.phoneNumber).to.not.be.empty;",
+                                    "    // Name and email can be empty for phone-only creation",
+                                    "});"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/grpc"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{session_token}}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "grpc",
+                            "grpc": {
+                                "service": "users.UsersService",
+                                "method": "CreateMembershipByPhone",
+                                "message": {
+                                    "phone_number": "+1555987654",
+                                    "facility_id": 1,
+                                    "role": "MEMBERSHIP_ROLE_PLAYER",
+                                    "start_date": 1672531200,
+                                    "expiry_date": 1704067200
+                                }
+                            }
+                        },
+                        "url": {
+                            "raw": "{{grpc_base_url}}",
+                            "host": [
+                                "{{grpc_base_url}}"
+                            ]
+                        },
+                        "description": "Create a new user membership using only phone number. User will be created automatically if they don't exist, with empty name and email fields."
+                    }
+                },
+                {
+                    "name": "CreateMembershipByUserId",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test(\"Status code is OK\", function () {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});",
+                                    "",
+                                    "pm.test(\"Response has user and membership data\", function () {",
+                                    "    var jsonData = pm.response.json();",
+                                    "    pm.expect(jsonData).to.have.property('user');",
+                                    "    pm.expect(jsonData).to.have.property('membership');",
+                                    "});",
+                                    "",
+                                    "pm.test(\"Membership data is complete\", function () {",
+                                    "    var jsonData = pm.response.json();",
+                                    "    pm.expect(jsonData.membership).to.have.property('id');",
+                                    "    pm.expect(jsonData.membership).to.have.property('userId');",
+                                    "    pm.expect(jsonData.membership).to.have.property('facilityId');",
+                                    "    pm.expect(jsonData.membership).to.have.property('role');",
+                                    "    pm.expect(jsonData.membership).to.have.property('isActive');",
+                                    "    ",
+                                    "    // Store membership ID for subsequent requests",
+                                    "    pm.environment.set(\"created_membership_userid_id\", jsonData.membership.id);",
+                                    "});",
+                                    "",
+                                    "pm.test(\"User ID matches request\", function () {",
+                                    "    var jsonData = pm.response.json();",
+                                    "    pm.expect(jsonData.membership.userId).to.equal(parseInt(pm.environment.get('created_user_id')));",
+                                    "});"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/grpc"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{session_token}}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "grpc",
+                            "grpc": {
+                                "service": "users.UsersService",
+                                "method": "CreateMembershipByUserId",
+                                "message": {
+                                    "user_id": "{{created_user_id}}",
+                                    "facility_id": 1,
+                                    "role": "MEMBERSHIP_ROLE_PLAYER",
+                                    "start_date": 1672531200,
+                                    "expiry_date": 1704067200
+                                }
+                            }
+                        },
+                        "url": {
+                            "raw": "{{grpc_base_url}}",
+                            "host": [
+                                "{{grpc_base_url}}"
+                            ]
+                        },
+                        "description": "Create a new user membership using an existing user ID. The user must already exist in the system."
+                    }
+                },
+                {
+                    "name": "UpdateMembership",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test(\"Status code is OK\", function () {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});",
+                                    "",
+                                    "pm.test(\"Response has updated membership data\", function () {",
+                                    "    var jsonData = pm.response.json();",
+                                    "    pm.expect(jsonData).to.have.property('membership');",
+                                    "    pm.expect(jsonData.membership).to.have.property('id');",
+                                    "});"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/grpc"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{session_token}}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "grpc",
+                            "grpc": {
+                                "service": "users.UsersService",
+                                "method": "UpdateMembership",
+                                "message": {
+                                    "membership_id": "{{created_membership_id}}",
+                                    "role": "MEMBERSHIP_ROLE_MANAGER",
+                                    "is_active": true
+                                }
+                            }
+                        },
+                        "url": {
+                            "raw": "{{grpc_base_url}}",
+                            "host": [
+                                "{{grpc_base_url}}"
+                            ]
+                        },
+                        "description": "Update an existing user membership"
+                    }
+                },
+                {
+                    "name": "DeleteMembership",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test(\"Status code is OK\", function () {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});",
+                                    "",
+                                    "pm.test(\"Response confirms deletion\", function () {",
+                                    "    var jsonData = pm.response.json();",
+                                    "    pm.expect(jsonData).to.have.property('success');",
+                                    "    pm.expect(jsonData.success).to.be.true;",
+                                    "});"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/grpc"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{session_token}}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "grpc",
+                            "grpc": {
+                                "service": "users.UsersService",
+                                "method": "DeleteMembership",
+                                "message": {
+                                    "membership_id": "{{created_membership_id}}"
+                                }
+                            }
+                        },
+                        "url": {
+                            "raw": "{{grpc_base_url}}",
+                            "host": [
+                                "{{grpc_base_url}}"
+                            ]
+                        },
+                        "description": "Delete a user membership"
+                    }
+                },
+                {
+                    "name": "GetUserMemberships",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test(\"Status code is OK\", function () {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});",
+                                    "",
+                                    "pm.test(\"Response has memberships array\", function () {",
+                                    "    var jsonData = pm.response.json();",
+                                    "    pm.expect(jsonData).to.have.property('memberships');",
+                                    "    pm.expect(jsonData.memberships).to.be.an('array');",
+                                    "});"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/grpc"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{session_token}}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "grpc",
+                            "grpc": {
+                                "service": "users.UsersService",
+                                "method": "GetUserMemberships",
+                                "message": {
+                                    "user_id": "{{created_user_id}}",
+                                    "active_only": true
+                                }
+                            }
+                        },
+                        "url": {
+                            "raw": "{{grpc_base_url}}",
+                            "host": [
+                                "{{grpc_base_url}}"
+                            ]
+                        },
+                        "description": "Get all memberships for a specific user"
+                    }
+                },
+                {
+                    "name": "GetFacilityMemberships",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test(\"Status code is OK\", function () {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});",
+                                    "",
+                                    "pm.test(\"Response has users array\", function () {",
+                                    "    var jsonData = pm.response.json();",
+                                    "    pm.expect(jsonData).to.have.property('users');",
+                                    "    pm.expect(jsonData).to.have.property('totalCount');",
+                                    "    pm.expect(jsonData.users).to.be.an('array');",
+                                    "});"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/grpc"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{session_token}}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "grpc",
+                            "grpc": {
+                                "service": "users.UsersService",
+                                "method": "GetFacilityMemberships",
+                                "message": {
+                                    "facility_id": 1,
+                                    "active_only": true,
+                                    "page": 1,
+                                    "page_size": 10
+                                }
+                            }
+                        },
+                        "url": {
+                            "raw": "{{grpc_base_url}}",
+                            "host": [
+                                "{{grpc_base_url}}"
+                            ]
+                        },
+                        "description": "Get all users with memberships for a specific facility"
+                    }
+                }
+            ],
+            "description": "User membership management via gRPC - create, update, delete, and retrieve facility memberships"
+        }
+    ],
+    "variable": [
+        {
+            "key": "grpc_base_url",
+            "value": "localhost:8080",
+            "description": "Base URL for gRPC endpoints"
+        },
+        {
+            "key": "session_token",
+            "value": "",
+            "description": "JWT session token for authentication"
+        }
+    ]
+}

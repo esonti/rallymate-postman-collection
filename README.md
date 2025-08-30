@@ -97,7 +97,13 @@ Each collection includes comprehensive test scenarios:
 - Get User Profile
 - Update User Profile
 - Get User by Phone
-- Create User Membership
+- Create User Membership (with name/email)
+- Create User Membership by Phone Only
+- Create User Membership by User ID
+- Update User Membership
+- Delete User Membership
+- Get User Memberships
+- Get Facility Memberships
 
 ### Facility Management
 - Get Facilities
@@ -148,6 +154,37 @@ Each collection includes comprehensive test scenarios:
 3. **Check Response Status:** Verify HTTP status codes and response structure
 4. **Test Error Cases:** Ensure proper error handling
 5. **Validate Data:** Check that returned data matches expected schema
+
+## ✨ New Features
+
+### Enhanced Membership Creation
+The Users collection now includes three different ways to create user memberships:
+
+1. **Standard Membership Creation** (`POST /api/v1/users/memberships`)
+   - Requires phone number, name, and optionally email
+   - Creates user if they don't exist with provided details
+
+2. **Phone-Only Membership Creation** (`POST /api/v1/users/memberships/phone`)
+   - Requires only phone number and membership details
+   - Creates user automatically with empty name/email if needed
+   - Ideal for quick registrations without personal details
+
+3. **User ID Membership Creation** (gRPC `CreateMembershipByUserId`)
+   - For existing users only
+   - Proto-compliant method using user ID
+   - Fails if user doesn't exist
+
+#### Example Usage:
+```json
+// Phone-only membership creation
+{
+  "phone_number": "+1555987654",
+  "facility_id": 1,
+  "role": "player",
+  "start_date": 1672531200,
+  "expiry_date": 1704067200
+}
+```
 
 ## 📝 Contributing
 

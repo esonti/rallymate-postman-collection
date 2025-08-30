@@ -73,6 +73,24 @@
             "value": "",
             "description": "ID of created bridge (auto-populated)",
             "enabled": true
+        },
+        {
+            "key": "created_membership_phone_id",
+            "value": "",
+            "description": "ID of membership created by phone (auto-populated)",
+            "enabled": true
+        },
+        {
+            "key": "created_membership_userid_id",
+            "value": "",
+            "description": "ID of membership created by user ID (auto-populated)",
+            "enabled": true
+        },
+        {
+            "key": "test_phone_number_membership",
+            "value": "+1555987654",
+            "description": "Test phone number for membership creation",
+            "enabled": true
         }
     ],
     "_postman_variable_scope": "environment"
