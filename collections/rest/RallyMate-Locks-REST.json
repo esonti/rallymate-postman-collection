@@ -1,76 +1,17 @@
 {
     "info": {
-        "_postman_id": "locks-rest-collection-001",
-        "name": "RallyMate Locks REST API",
-        "description": "Lock management endpoints for RallyMate API - Control and monitoring of facility locks",
+        "_postman_id": "locks-rest-collection-corrected",
+        "name": "RallyMate Locks REST API (Corrected)",
+        "description": "Smart Lock Management API - Correct URLs and request bodies matching actual HTTP handlers",
         "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-        "_exporter_id": "rallymate-locks"
+        "_exporter_id": "rallymate-locks-corrected"
     },
     "item": [
         {
             "name": "Lock Management",
             "item": [
                 {
-                    "name": "Get Locks",
-                    "event": [
-                        {
-                            "listen": "test",
-                            "script": {
-                                "exec": [
-                                    "pm.test(\"Status code is 200\", function () {",
-                                    "    pm.response.to.have.status(200);",
-                                    "});",
-                                    "",
-                                    "pm.test(\"Response has locks array\", function () {",
-                                    "    var jsonData = pm.response.json();",
-                                    "    pm.expect(jsonData).to.have.property('locks');",
-                                    "    pm.expect(jsonData.locks).to.be.an('array');",
-                                    "});",
-                                    "",
-                                    "pm.test(\"Response has pagination info\", function () {",
-                                    "    var jsonData = pm.response.json();",
-                                    "    pm.expect(jsonData).to.have.property('page');",
-                                    "    pm.expect(jsonData).to.have.property('page_size');",
-                                    "    pm.expect(jsonData).to.have.property('total_count');",
-                                    "});"
-                                ],
-                                "type": "text/javascript"
-                            }
-                        }
-                    ],
-                    "request": {
-                        "method": "GET",
-                        "header": [
-                            {
-                                "key": "Authorization",
-                                "value": "Bearer {{session_token}}"
-                            }
-                        ],
-                        "url": {
-                            "raw": "{{base_url}}/api/locks?page=1&page_size=10",
-                            "host": [
-                                "{{base_url}}"
-                            ],
-                            "path": [
-                                "api",
-                                "locks"
-                            ],
-                            "query": [
-                                {
-                                    "key": "page",
-                                    "value": "1"
-                                },
-                                {
-                                    "key": "page_size",
-                                    "value": "10"
-                                }
-                            ]
-                        },
-                        "description": "Get list of locks with pagination"
-                    }
-                },
-                {
-                    "name": "Create Lock",
+                    "name": "Register Lock",
                     "event": [
                         {
                             "listen": "test",
@@ -80,20 +21,19 @@
                                     "    pm.response.to.have.status(201);",
                                     "});",
                                     "",
-                                    "pm.test(\"Response has lock data\", function () {",
+                                    "pm.test(\"Response has lock object\", function () {",
                                     "    var jsonData = pm.response.json();",
                                     "    pm.expect(jsonData).to.have.property('lock');",
-                                    "    pm.expect(jsonData.lock).to.have.property('id');",
-                                    "    pm.expect(jsonData.lock).to.have.property('name');",
+                                    "    pm.expect(jsonData.lock).to.have.property('device_id');",
                                     "    pm.expect(jsonData.lock).to.have.property('facility_id');",
-                                    "    pm.expect(jsonData.lock).to.have.property('state');",
-                                    "    pm.expect(jsonData.lock).to.have.property('connectivity');",
-                                    "    ",
-                                    "    // Store lock ID for subsequent requests",
-                                    "    pm.environment.set(\"created_lock_id\", jsonData.lock.id);",
-                                    "});"
-                                ],
-                                "type": "text/javascript"
+                                    "});",
+                                    "",
+                                    "// Store lock device_id for subsequent requests",
+                                    "if (pm.response.code === 201) {",
+                                    "    var response = pm.response.json();",
+                                    "    pm.environment.set('lock_device_id', response.lock.device_id);",
+                                    "}"
+                                ]
                             }
                         }
                     ],
@@ -111,66 +51,19 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\n  \"name\": \"Main Gate Lock\",\n  \"facility_id\": {{facility_id}},\n  \"location\": \"Main entrance gate\",\n  \"device_id\": \"LOCK-001-MGT\",\n  \"lock_type\": \"electronic\",\n  \"status\": \"locked\"\n}"
+                            "raw": "{\n    \"facility_id\": {{test_facility_id}},\n    \"device_id\": \"lock-{{$randomAlphaNumeric}}\",\n    \"name\": \"Main Entrance Lock\"\n}"
                         },
                         "url": {
-                            "raw": "{{base_url}}/api/locks",
-                            "host": [
-                                "{{base_url}}"
-                            ],
-                            "path": [
-                                "api",
-                                "locks"
-                            ]
-                        },
-                        "description": "Create a new lock"
-                    }
-                },
-                {
-                    "name": "Get Lock by ID",
-                    "event": [
-                        {
-                            "listen": "test",
-                            "script": {
-                                "exec": [
-                                    "pm.test(\"Status code is 200\", function () {",
-                                    "    pm.response.to.have.status(200);",
-                                    "});",
-                                    "",
-                                    "pm.test(\"Response has lock data\", function () {",
-                                    "    var jsonData = pm.response.json();",
-                                    "    pm.expect(jsonData).to.have.property('lock');",
-                                    "    pm.expect(jsonData.lock).to.have.property('id');",
-                                    "    pm.expect(jsonData.lock.id).to.equal(parseInt(pm.environment.get('created_lock_id')));",
-                                    "    pm.expect(jsonData.lock).to.have.property('name');",
-                                    "    pm.expect(jsonData.lock).to.have.property('status');",
-                                    "    pm.expect(jsonData.lock).to.have.property('device_id');",
-                                    "});"
-                                ],
-                                "type": "text/javascript"
-                            }
-                        }
-                    ],
-                    "request": {
-                        "method": "GET",
-                        "header": [
-                            {
-                                "key": "Authorization",
-                                "value": "Bearer {{session_token}}"
-                            }
-                        ],
-                        "url": {
-                            "raw": "{{base_url}}/api/locks/{{created_lock_id}}",
+                            "raw": "{{base_url}}/api/locks/register",
                             "host": [
                                 "{{base_url}}"
                             ],
                             "path": [
                                 "api",
                                 "locks",
-                                "{{created_lock_id}}"
+                                "register"
                             ]
-                        },
-                        "description": "Get lock details by ID"
+                        }
                     }
                 },
                 {
@@ -184,14 +77,11 @@
                                     "    pm.response.to.have.status(200);",
                                     "});",
                                     "",
-                                    "pm.test(\"Response has updated lock data\", function () {",
+                                    "pm.test(\"Response has updated lock\", function () {",
                                     "    var jsonData = pm.response.json();",
                                     "    pm.expect(jsonData).to.have.property('lock');",
-                                    "    pm.expect(jsonData.lock).to.have.property('name');",
-                                    "    pm.expect(jsonData.lock.name).to.include('Updated');",
                                     "});"
-                                ],
-                                "type": "text/javascript"
+                                ]
                             }
                         }
                     ],
@@ -209,47 +99,92 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\n  \"name\": \"Updated Main Gate Lock\",\n  \"location\": \"Main entrance gate - updated position\",\n  \"device_id\": \"LOCK-001-MGT-V2\",\n  \"lock_type\": \"electronic\",\n  \"status\": \"locked\",\n  \"is_active\": true\n}"
+                            "raw": "{\n    \"facility_id\": {{test_facility_id}},\n    \"device_id\": \"{{lock_device_id}}\",\n    \"name\": \"Updated Main Entrance Lock\",\n    \"firmware_version\": \"3.2.2\",\n    \"edge_connectivity\": 1,\n    \"state\": 1\n}"
                         },
                         "url": {
-                            "raw": "{{base_url}}/api/locks/{{created_lock_id}}",
+                            "raw": "{{base_url}}/api/locks/{{lock_device_id}}",
                             "host": [
                                 "{{base_url}}"
                             ],
                             "path": [
                                 "api",
                                 "locks",
-                                "{{created_lock_id}}"
+                                "{{lock_device_id}}"
                             ]
-                        },
-                        "description": "Update lock information"
+                        }
                     }
                 },
                 {
-                    "name": "Delete Lock",
+                    "name": "Unregister Lock",
                     "event": [
                         {
                             "listen": "test",
                             "script": {
                                 "exec": [
-                                    "pm.test(\"Status code is 200 or 204\", function () {",
-                                    "    pm.expect(pm.response.code).to.be.oneOf([200, 204]);",
+                                    "pm.test(\"Status code is 200\", function () {",
+                                    "    pm.response.to.have.status(200);",
                                     "});",
                                     "",
-                                    "if (pm.response.code === 200) {",
-                                    "    pm.test(\"Response indicates success\", function () {",
-                                    "        var jsonData = pm.response.json();",
-                                    "        pm.expect(jsonData).to.have.property('success');",
-                                    "        pm.expect(jsonData.success).to.be.true;",
-                                    "    });",
-                                    "}"
-                                ],
-                                "type": "text/javascript"
+                                    "pm.test(\"Response indicates success\", function () {",
+                                    "    var jsonData = pm.response.json();",
+                                    "    pm.expect(jsonData).to.have.property('success', true);",
+                                    "});"
+                                ]
                             }
                         }
                     ],
                     "request": {
-                        "method": "DELETE",
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{session_token}}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"facility_id\": {{test_facility_id}},\n    \"device_id\": \"{{lock_device_id}}\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/api/locks/{{lock_device_id}}/unregister",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "locks",
+                                "{{lock_device_id}}",
+                                "unregister"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Get Locks",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test(\"Status code is 200\", function () {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});",
+                                    "",
+                                    "pm.test(\"Response has locks array\", function () {",
+                                    "    var jsonData = pm.response.json();",
+                                    "    pm.expect(jsonData).to.have.property('locks');",
+                                    "    pm.expect(jsonData.locks).to.be.an('array');",
+                                    "});"
+                                ]
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "GET",
                         "header": [
                             {
                                 "key": "Authorization",
@@ -257,27 +192,30 @@
                             }
                         ],
                         "url": {
-                            "raw": "{{base_url}}/api/locks/{{created_lock_id}}",
+                            "raw": "{{base_url}}/api/locks?facility_id={{test_facility_id}}",
                             "host": [
                                 "{{base_url}}"
                             ],
                             "path": [
                                 "api",
-                                "locks",
-                                "{{created_lock_id}}"
+                                "locks"
+                            ],
+                            "query": [
+                                {
+                                    "key": "facility_id",
+                                    "value": "{{test_facility_id}}"
+                                }
                             ]
-                        },
-                        "description": "Delete lock"
+                        }
                     }
                 }
-            ],
-            "description": "Basic lock CRUD operations"
+            ]
         },
         {
             "name": "Lock Control",
             "item": [
                 {
-                    "name": "Unlock Lock",
+                    "name": "Lock Control",
                     "event": [
                         {
                             "listen": "test",
@@ -287,19 +225,11 @@
                                     "    pm.response.to.have.status(200);",
                                     "});",
                                     "",
-                                    "pm.test(\"Lock status updated to unlocked\", function () {",
+                                    "pm.test(\"Response indicates success\", function () {",
                                     "    var jsonData = pm.response.json();",
-                                    "    pm.expect(jsonData).to.have.property('lock');",
-                                    "    pm.expect(jsonData.lock).to.have.property('status');",
-                                    "    pm.expect(jsonData.lock.status).to.equal('unlocked');",
-                                    "});",
-                                    "",
-                                    "pm.test(\"Response has operation timestamp\", function () {",
-                                    "    var jsonData = pm.response.json();",
-                                    "    pm.expect(jsonData).to.have.property('operation_time');",
+                                    "    pm.expect(jsonData).to.have.property('success', true);",
                                     "});"
-                                ],
-                                "type": "text/javascript"
+                                ]
                             }
                         }
                     ],
@@ -317,139 +247,29 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\n  \"user_id\": {{user_id}},\n  \"reason\": \"Manual unlock for testing\"\n}"
+                            "raw": "{\n    \"facility_id\": {{test_facility_id}},\n    \"device_id\": \"{{lock_device_id}}\",\n    \"action\": 2\n}"
                         },
                         "url": {
-                            "raw": "{{base_url}}/api/locks/{{created_lock_id}}/unlock",
+                            "raw": "{{base_url}}/api/locks/{{lock_device_id}}/control",
                             "host": [
                                 "{{base_url}}"
                             ],
                             "path": [
                                 "api",
                                 "locks",
-                                "{{created_lock_id}}",
-                                "unlock"
+                                "{{lock_device_id}}",
+                                "control"
                             ]
-                        },
-                        "description": "Unlock a specific lock"
-                    }
-                },
-                {
-                    "name": "Lock Lock",
-                    "event": [
-                        {
-                            "listen": "test",
-                            "script": {
-                                "exec": [
-                                    "pm.test(\"Status code is 200\", function () {",
-                                    "    pm.response.to.have.status(200);",
-                                    "});",
-                                    "",
-                                    "pm.test(\"Lock status updated to locked\", function () {",
-                                    "    var jsonData = pm.response.json();",
-                                    "    pm.expect(jsonData).to.have.property('lock');",
-                                    "    pm.expect(jsonData.lock).to.have.property('status');",
-                                    "    pm.expect(jsonData.lock.status).to.equal('locked');",
-                                    "});",
-                                    "",
-                                    "pm.test(\"Response has operation timestamp\", function () {",
-                                    "    var jsonData = pm.response.json();",
-                                    "    pm.expect(jsonData).to.have.property('operation_time');",
-                                    "});"
-                                ],
-                                "type": "text/javascript"
-                            }
                         }
-                    ],
-                    "request": {
-                        "method": "POST",
-                        "header": [
-                            {
-                                "key": "Content-Type",
-                                "value": "application/json"
-                            },
-                            {
-                                "key": "Authorization",
-                                "value": "Bearer {{session_token}}"
-                            }
-                        ],
-                        "body": {
-                            "mode": "raw",
-                            "raw": "{\n  \"user_id\": {{user_id}},\n  \"reason\": \"Manual lock for testing\"\n}"
-                        },
-                        "url": {
-                            "raw": "{{base_url}}/api/locks/{{created_lock_id}}/lock",
-                            "host": [
-                                "{{base_url}}"
-                            ],
-                            "path": [
-                                "api",
-                                "locks",
-                                "{{created_lock_id}}",
-                                "lock"
-                            ]
-                        },
-                        "description": "Lock a specific lock"
-                    }
-                },
-                {
-                    "name": "Get Lock Status",
-                    "event": [
-                        {
-                            "listen": "test",
-                            "script": {
-                                "exec": [
-                                    "pm.test(\"Status code is 200\", function () {",
-                                    "    pm.response.to.have.status(200);",
-                                    "});",
-                                    "",
-                                    "pm.test(\"Response has current status\", function () {",
-                                    "    var jsonData = pm.response.json();",
-                                    "    pm.expect(jsonData).to.have.property('status');",
-                                    "    pm.expect(jsonData).to.have.property('last_update');",
-                                    "    pm.expect(jsonData).to.have.property('battery_level');",
-                                    "});",
-                                    "",
-                                    "pm.test(\"Status is valid\", function () {",
-                                    "    var jsonData = pm.response.json();",
-                                    "    pm.expect(jsonData.status).to.be.oneOf(['locked', 'unlocked', 'error', 'offline']);",
-                                    "});"
-                                ],
-                                "type": "text/javascript"
-                            }
-                        }
-                    ],
-                    "request": {
-                        "method": "GET",
-                        "header": [
-                            {
-                                "key": "Authorization",
-                                "value": "Bearer {{session_token}}"
-                            }
-                        ],
-                        "url": {
-                            "raw": "{{base_url}}/api/locks/{{created_lock_id}}/status",
-                            "host": [
-                                "{{base_url}}"
-                            ],
-                            "path": [
-                                "api",
-                                "locks",
-                                "{{created_lock_id}}",
-                                "status"
-                            ]
-                        },
-                        "description": "Get current lock status and health information"
                     }
                 }
-            ],
-            "description": "Lock control and status operations"
+            ]
         },
         {
-            "name": "Lock History",
+            "name": "Lock Activities",
             "item": [
                 {
-                    "name": "Get Lock History",
+                    "name": "Get Lock Activities",
                     "event": [
                         {
                             "listen": "test",
@@ -459,23 +279,12 @@
                                     "    pm.response.to.have.status(200);",
                                     "});",
                                     "",
-                                    "pm.test(\"Response has history array\", function () {",
+                                    "pm.test(\"Response has activities array\", function () {",
                                     "    var jsonData = pm.response.json();",
-                                    "    pm.expect(jsonData).to.have.property('history');",
-                                    "    pm.expect(jsonData.history).to.be.an('array');",
-                                    "});",
-                                    "",
-                                    "pm.test(\"History entries have required fields\", function () {",
-                                    "    var jsonData = pm.response.json();",
-                                    "    if (jsonData.history.length > 0) {",
-                                    "        var entry = jsonData.history[0];",
-                                    "        pm.expect(entry).to.have.property('timestamp');",
-                                    "        pm.expect(entry).to.have.property('action');",
-                                    "        pm.expect(entry).to.have.property('user_id');",
-                                    "    }",
+                                    "    pm.expect(jsonData).to.have.property('activities');",
+                                    "    pm.expect(jsonData.activities).to.be.an('array');",
                                     "});"
-                                ],
-                                "type": "text/javascript"
+                                ]
                             }
                         }
                     ],
@@ -488,388 +297,56 @@
                             }
                         ],
                         "url": {
-                            "raw": "{{base_url}}/api/locks/{{created_lock_id}}/history?page=1&page_size=10",
+                            "raw": "{{base_url}}/api/locks/activities?facility_id={{test_facility_id}}&device_id={{lock_device_id}}",
                             "host": [
                                 "{{base_url}}"
                             ],
                             "path": [
                                 "api",
                                 "locks",
-                                "{{created_lock_id}}",
-                                "history"
+                                "activities"
                             ],
                             "query": [
                                 {
-                                    "key": "page",
-                                    "value": "1"
+                                    "key": "facility_id",
+                                    "value": "{{test_facility_id}}"
                                 },
                                 {
-                                    "key": "page_size",
-                                    "value": "10"
+                                    "key": "device_id",
+                                    "value": "{{lock_device_id}}"
                                 }
                             ]
-                        },
-                        "description": "Get lock operation history"
-                    }
-                },
-                {
-                    "name": "Get Lock History - Date Range",
-                    "event": [
-                        {
-                            "listen": "test",
-                            "script": {
-                                "exec": [
-                                    "pm.test(\"Status code is 200\", function () {",
-                                    "    pm.response.to.have.status(200);",
-                                    "});",
-                                    "",
-                                    "pm.test(\"Response has filtered history\", function () {",
-                                    "    var jsonData = pm.response.json();",
-                                    "    pm.expect(jsonData).to.have.property('history');",
-                                    "    pm.expect(jsonData.history).to.be.an('array');",
-                                    "});"
-                                ],
-                                "type": "text/javascript"
-                            }
                         }
-                    ],
-                    "request": {
-                        "method": "GET",
-                        "header": [
-                            {
-                                "key": "Authorization",
-                                "value": "Bearer {{session_token}}"
-                            }
-                        ],
-                        "url": {
-                            "raw": "{{base_url}}/api/locks/{{created_lock_id}}/history?start_date=2024-01-01&end_date=2024-12-31",
-                            "host": [
-                                "{{base_url}}"
-                            ],
-                            "path": [
-                                "api",
-                                "locks",
-                                "{{created_lock_id}}",
-                                "history"
-                            ],
-                            "query": [
-                                {
-                                    "key": "start_date",
-                                    "value": "2024-01-01"
-                                },
-                                {
-                                    "key": "end_date",
-                                    "value": "2024-12-31"
-                                }
-                            ]
-                        },
-                        "description": "Get lock history for specific date range"
                     }
                 }
-            ],
-            "description": "Lock history and audit trail"
-        },
-        {
-            "name": "Facility Locks",
-            "item": [
-                {
-                    "name": "Get Locks by Facility",
-                    "event": [
-                        {
-                            "listen": "test",
-                            "script": {
-                                "exec": [
-                                    "pm.test(\"Status code is 200\", function () {",
-                                    "    pm.response.to.have.status(200);",
-                                    "});",
-                                    "",
-                                    "pm.test(\"Response has locks for facility\", function () {",
-                                    "    var jsonData = pm.response.json();",
-                                    "    pm.expect(jsonData).to.have.property('locks');",
-                                    "    pm.expect(jsonData.locks).to.be.an('array');",
-                                    "});",
-                                    "",
-                                    "pm.test(\"All locks belong to specified facility\", function () {",
-                                    "    var jsonData = pm.response.json();",
-                                    "    var facilityId = parseInt(pm.environment.get('facility_id'));",
-                                    "    ",
-                                    "    jsonData.locks.forEach(function(lock) {",
-                                    "        pm.expect(lock.facility_id).to.equal(facilityId);",
-                                    "    });",
-                                    "});"
-                                ],
-                                "type": "text/javascript"
-                            }
-                        }
-                    ],
-                    "request": {
-                        "method": "GET",
-                        "header": [
-                            {
-                                "key": "Authorization",
-                                "value": "Bearer {{session_token}}"
-                            }
-                        ],
-                        "url": {
-                            "raw": "{{base_url}}/api/facilities/{{facility_id}}/locks",
-                            "host": [
-                                "{{base_url}}"
-                            ],
-                            "path": [
-                                "api",
-                                "facilities",
-                                "{{facility_id}}",
-                                "locks"
-                            ]
-                        },
-                        "description": "Get all locks for a specific facility"
-                    }
-                },
-                {
-                    "name": "Unlock All Facility Locks",
-                    "event": [
-                        {
-                            "listen": "test",
-                            "script": {
-                                "exec": [
-                                    "pm.test(\"Status code is 200\", function () {",
-                                    "    pm.response.to.have.status(200);",
-                                    "});",
-                                    "",
-                                    "pm.test(\"Response has operation results\", function () {",
-                                    "    var jsonData = pm.response.json();",
-                                    "    pm.expect(jsonData).to.have.property('results');",
-                                    "    pm.expect(jsonData.results).to.be.an('array');",
-                                    "    pm.expect(jsonData).to.have.property('total_locks');",
-                                    "    pm.expect(jsonData).to.have.property('successful_operations');",
-                                    "});"
-                                ],
-                                "type": "text/javascript"
-                            }
-                        }
-                    ],
-                    "request": {
-                        "method": "POST",
-                        "header": [
-                            {
-                                "key": "Content-Type",
-                                "value": "application/json"
-                            },
-                            {
-                                "key": "Authorization",
-                                "value": "Bearer {{session_token}}"
-                            }
-                        ],
-                        "body": {
-                            "mode": "raw",
-                            "raw": "{\n  \"user_id\": {{user_id}},\n  \"reason\": \"Emergency unlock all locks\"\n}"
-                        },
-                        "url": {
-                            "raw": "{{base_url}}/api/facilities/{{facility_id}}/locks/unlock-all",
-                            "host": [
-                                "{{base_url}}"
-                            ],
-                            "path": [
-                                "api",
-                                "facilities",
-                                "{{facility_id}}",
-                                "locks",
-                                "unlock-all"
-                            ]
-                        },
-                        "description": "Unlock all locks in a facility (emergency operation)"
-                    }
-                }
-            ],
-            "description": "Facility-level lock operations"
-        },
-        {
-            "name": "Error Cases",
-            "item": [
-                {
-                    "name": "Create Lock - Missing Required Fields",
-                    "event": [
-                        {
-                            "listen": "test",
-                            "script": {
-                                "exec": [
-                                    "pm.test(\"Status code is 400\", function () {",
-                                    "    pm.response.to.have.status(400);",
-                                    "});",
-                                    "",
-                                    "pm.test(\"Response has error information\", function () {",
-                                    "    var jsonData = pm.response.json();",
-                                    "    pm.expect(jsonData).to.have.property('error');",
-                                    "});"
-                                ],
-                                "type": "text/javascript"
-                            }
-                        }
-                    ],
-                    "request": {
-                        "method": "POST",
-                        "header": [
-                            {
-                                "key": "Content-Type",
-                                "value": "application/json"
-                            },
-                            {
-                                "key": "Authorization",
-                                "value": "Bearer {{session_token}}"
-                            }
-                        ],
-                        "body": {
-                            "mode": "raw",
-                            "raw": "{\n  \"location\": \"Missing name and facility_id\",\n  \"device_id\": \"INCOMPLETE-LOCK\"\n}"
-                        },
-                        "url": {
-                            "raw": "{{base_url}}/api/locks",
-                            "host": [
-                                "{{base_url}}"
-                            ],
-                            "path": [
-                                "api",
-                                "locks"
-                            ]
-                        },
-                        "description": "Test error handling with missing required fields"
-                    }
-                },
-                {
-                    "name": "Control Lock - Invalid Operation",
-                    "event": [
-                        {
-                            "listen": "test",
-                            "script": {
-                                "exec": [
-                                    "pm.test(\"Status code is 400 or 409\", function () {",
-                                    "    pm.expect(pm.response.code).to.be.oneOf([400, 409]);",
-                                    "});",
-                                    "",
-                                    "pm.test(\"Response has error information\", function () {",
-                                    "    var jsonData = pm.response.json();",
-                                    "    pm.expect(jsonData).to.have.property('error');",
-                                    "});"
-                                ],
-                                "type": "text/javascript"
-                            }
-                        }
-                    ],
-                    "request": {
-                        "method": "POST",
-                        "header": [
-                            {
-                                "key": "Content-Type",
-                                "value": "application/json"
-                            },
-                            {
-                                "key": "Authorization",
-                                "value": "Bearer {{session_token}}"
-                            }
-                        ],
-                        "body": {
-                            "mode": "raw",
-                            "raw": "{\n  \"user_id\": \"invalid_user\",\n  \"reason\": \"Testing invalid operation\"\n}"
-                        },
-                        "url": {
-                            "raw": "{{base_url}}/api/locks/99999/unlock",
-                            "host": [
-                                "{{base_url}}"
-                            ],
-                            "path": [
-                                "api",
-                                "locks",
-                                "99999",
-                                "unlock"
-                            ]
-                        },
-                        "description": "Test error handling with non-existent lock"
-                    }
-                },
-                {
-                    "name": "Unauthorized Lock Control",
-                    "event": [
-                        {
-                            "listen": "test",
-                            "script": {
-                                "exec": [
-                                    "pm.test(\"Status code is 401\", function () {",
-                                    "    pm.response.to.have.status(401);",
-                                    "});",
-                                    "",
-                                    "pm.test(\"Response has error information\", function () {",
-                                    "    var jsonData = pm.response.json();",
-                                    "    pm.expect(jsonData).to.have.property('error');",
-                                    "});"
-                                ],
-                                "type": "text/javascript"
-                            }
-                        }
-                    ],
-                    "request": {
-                        "method": "POST",
-                        "header": [
-                            {
-                                "key": "Content-Type",
-                                "value": "application/json"
-                            }
-                        ],
-                        "body": {
-                            "mode": "raw",
-                            "raw": "{\n  \"user_id\": {{user_id}},\n  \"reason\": \"Unauthorized unlock attempt\"\n}"
-                        },
-                        "url": {
-                            "raw": "{{base_url}}/api/locks/{{created_lock_id}}/unlock",
-                            "host": [
-                                "{{base_url}}"
-                            ],
-                            "path": [
-                                "api",
-                                "locks",
-                                "{{created_lock_id}}",
-                                "unlock"
-                            ]
-                        },
-                        "description": "Test unauthorized lock control without token"
-                    }
-                }
-            ],
-            "description": "Error handling test cases"
+            ]
         }
     ],
+    "auth": {
+        "type": "bearer",
+        "bearer": [
+            {
+                "key": "token",
+                "value": "{{session_token}}",
+                "type": "string"
+            }
+        ]
+    },
     "event": [
         {
             "listen": "prerequest",
             "script": {
                 "type": "text/javascript",
                 "exec": [
-                    "// Pre-request script for common setup",
-                    "console.log('Testing RallyMate Locks API endpoint: ' + pm.request.url);"
-                ]
-            }
-        },
-        {
-            "listen": "test",
-            "script": {
-                "type": "text/javascript",
-                "exec": [
-                    "// Global test script",
-                    "pm.test(\"Response time is less than 5000ms\", function () {",
-                    "    pm.expect(pm.response.responseTime).to.be.below(5000);",
-                    "});",
+                    "if (!pm.environment.get('test_facility_id')) {",
+                    "    pm.environment.set('test_facility_id', '1');",
+                    "}",
                     "",
-                    "pm.test(\"Response has Content-Type header\", function () {",
-                    "    pm.expect(pm.response.headers.get('Content-Type')).to.include('application/json');",
-                    "});"
+                    "if (!pm.environment.get('lock_device_id')) {",
+                    "    pm.environment.set('lock_device_id', 'lock-test-001');",
+                    "}"
                 ]
             }
-        }
-    ],
-    "variable": [
-        {
-            "key": "collection_version",
-            "value": "1.0.0",
-            "type": "string"
         }
     ]
 }

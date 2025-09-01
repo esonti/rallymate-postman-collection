@@ -160,11 +160,11 @@ Each collection includes comprehensive test scenarios:
 ### Enhanced Membership Creation
 The Users collection now includes three different ways to create user memberships:
 
-1. **Standard Membership Creation** (`POST /api/v1/users/memberships`)
+1. **Standard Membership Creation** (`POST /api/users/memberships`)
    - Requires phone number, name, and optionally email
    - Creates user if they don't exist with provided details
 
-2. **Phone-Only Membership Creation** (`POST /api/v1/users/memberships/phone`)
+2. **Phone-Only Membership Creation** (`POST /api/users/memberships/phone`)
    - Requires only phone number and membership details
    - Creates user automatically with empty name/email if needed
    - Ideal for quick registrations without personal details

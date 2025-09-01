@@ -522,82 +522,6 @@
             "name": "User Memberships",
             "item": [
                 {
-                    "name": "Create User Membership",
-                    "event": [
-                        {
-                            "listen": "test",
-                            "script": {
-                                "exec": [
-                                    "pm.test(\"Status code is 201\", function () {",
-                                    "    pm.response.to.have.status(201);",
-                                    "});",
-                                    "",
-                                    "pm.test(\"Response has user and membership data\", function () {",
-                                    "    var jsonData = pm.response.json();",
-                                    "    pm.expect(jsonData).to.have.property('user');",
-                                    "    pm.expect(jsonData).to.have.property('membership');",
-                                    "});",
-                                    "",
-                                    "pm.test(\"Membership data is complete\", function () {",
-                                    "    var jsonData = pm.response.json();",
-                                    "    pm.expect(jsonData.membership).to.have.property('id');",
-                                    "    pm.expect(jsonData.membership).to.have.property('user_id');",
-                                    "    pm.expect(jsonData.membership).to.have.property('facility_id');",
-                                    "    pm.expect(jsonData.membership).to.have.property('role');",
-                                    "    pm.expect(jsonData.membership).to.have.property('start_date');",
-                                    "    pm.expect(jsonData.membership).to.have.property('is_active');",
-                                    "    ",
-                                    "    // Store membership ID for subsequent requests",
-                                    "    pm.environment.set(\"created_membership_id\", jsonData.membership.id);",
-                                    "});",
-                                    "",
-                                    "pm.test(\"User was created or found\", function () {",
-                                    "    var jsonData = pm.response.json();",
-                                    "    pm.expect(jsonData.user).to.have.property('id');",
-                                    "    pm.expect(jsonData.user).to.have.property('phone_number');",
-                                    "    pm.expect(jsonData.user).to.have.property('name');",
-                                    "});",
-                                    "",
-                                    "pm.test(\"Role is valid\", function () {",
-                                    "    var jsonData = pm.response.json();",
-                                    "    pm.expect(jsonData.membership.role).to.be.oneOf(['PLAYER', 'MANAGER']);",
-                                    "});"
-                                ],
-                                "type": "text/javascript"
-                            }
-                        }
-                    ],
-                    "request": {
-                        "method": "POST",
-                        "header": [
-                            {
-                                "key": "Content-Type",
-                                "value": "application/json"
-                            },
-                            {
-                                "key": "Authorization",
-                                "value": "Bearer {{session_token}}"
-                            }
-                        ],
-                        "body": {
-                            "mode": "raw",
-                            "raw": "{\n  \"phone_number\": \"+1555123456\",\n  \"user_name\": \"Membership Test User\",\n  \"user_email\": \"membership@example.com\",\n  \"facility_id\": 1,\n  \"role\": \"PLAYER\",\n  \"start_date\": 1672531200,\n  \"expiry_date\": 1704067200\n}"
-                        },
-                        "url": {
-                            "raw": "{{base_url}}/api/users/memberships",
-                            "host": [
-                                "{{base_url}}"
-                            ],
-                            "path": [
-                                "api",
-                                "users",
-                                "memberships"
-                            ]
-                        },
-                        "description": "Create a new user membership. If the user doesn't exist, they will be created with the provided information."
-                    }
-                },
-                {
                     "name": "Create User Membership By Phone Only",
                     "event": [
                         {
@@ -664,7 +588,7 @@
                             "raw": "{\n  \"phone_number\": \"+1555987654\",\n  \"facility_id\": 1,\n  \"role\": \"player\",\n  \"start_date\": 1672531200,\n  \"expiry_date\": 1704067200\n}"
                         },
                         "url": {
-                            "raw": "{{base_url}}/api/v1/users/memberships/phone",
+                            "raw": "{{base_url}}/api/users/memberships/phone",
                             "host": [
                                 "{{base_url}}"
                             ],
@@ -677,6 +601,81 @@
                             ]
                         },
                         "description": "Create a new user membership using only phone number. User will be created automatically if they don't exist, with empty name and email fields."
+                    }
+                },
+                {
+                    "name": "Create User Membership By User ID",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test(\"Status code is 201\", function () {",
+                                    "    pm.response.to.have.status(201);",
+                                    "});",
+                                    "",
+                                    "pm.test(\"Response has membership data\", function () {",
+                                    "    var jsonData = pm.response.json();",
+                                    "    pm.expect(jsonData).to.have.property('membership');",
+                                    "});",
+                                    "",
+                                    "pm.test(\"Membership data is complete\", function () {",
+                                    "    var jsonData = pm.response.json();",
+                                    "    pm.expect(jsonData.membership).to.have.property('id');",
+                                    "    pm.expect(jsonData.membership).to.have.property('user_id');",
+                                    "    pm.expect(jsonData.membership).to.have.property('facility_id');",
+                                    "    pm.expect(jsonData.membership).to.have.property('role');",
+                                    "    pm.expect(jsonData.membership).to.have.property('is_active');",
+                                    "    ",
+                                    "    // Store membership ID for subsequent requests",
+                                    "    pm.environment.set(\"created_membership_id_by_userid\", jsonData.membership.id);",
+                                    "});",
+                                    "",
+                                    "pm.test(\"Role is valid\", function () {",
+                                    "    var jsonData = pm.response.json();",
+                                    "    pm.expect(jsonData.membership.role).to.be.oneOf(['PLAYER', 'MANAGER']);",
+                                    "});",
+                                    "",
+                                    "pm.test(\"User ID matches request\", function () {",
+                                    "    var jsonData = pm.response.json();",
+                                    "    var requestBody = JSON.parse(pm.request.body.raw);",
+                                    "    pm.expect(jsonData.membership.user_id).to.equal(requestBody.user_id);",
+                                    "});"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{session_token}}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"user_id\": {{created_user_id}},\n  \"facility_id\": 1,\n  \"role\": \"PLAYER\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/api/users/memberships/userid",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "v1",
+                                "users",
+                                "memberships",
+                                "userid"
+                            ]
+                        },
+                        "description": "Create a new user membership using an existing user ID. The user must already exist in the system."
                     }
                 },
                 {
@@ -715,6 +714,7 @@
                             ],
                             "path": [
                                 "api",
+                                "v1",
                                 "users",
                                 "memberships",
                                 "{{created_membership_id}}"
