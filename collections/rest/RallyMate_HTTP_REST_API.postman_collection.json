@@ -1,7 +1,7 @@
 {
     "info": {
-        "name": "RallyMate HTTP REST API v2",
-        "description": "Complete HTTP REST API collection for RallyMate services with cookie-based authentication support",
+        "name": "RallyMate HTTP REST API v2 - Complete",
+        "description": "Complete HTTP REST API collection for RallyMate services with all endpoints from the latest service implementation",
         "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
     },
     "auth": {
@@ -14,13 +14,33 @@
             }
         ]
     },
-    "variable": [
-        {
-            "key": "baseUrl",
-            "value": "{{api_base_url}}"
-        }
-    ],
     "item": [
+        {
+            "name": "00 - Health Check",
+            "item": [
+                {
+                    "name": "Health Check",
+                    "request": {
+                        "auth": {
+                            "type": "noauth"
+                        },
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{base_url}}/health",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "health"
+                            ]
+                        },
+                        "description": "Check if the service is healthy"
+                    }
+                }
+            ],
+            "description": "Health check endpoints"
+        },
         {
             "name": "01 - Authentication",
             "item": [
@@ -59,9 +79,9 @@
                             "raw": "{\n    \"phone_number\": \"{{test_phone_number}}\",\n    \"device_info\": \"Postman Test Client\"\n}"
                         },
                         "url": {
-                            "raw": "{{baseUrl}}/auth/otp/send",
+                            "raw": "{{api_base_url}}/auth/otp/send",
                             "host": [
-                                "{{baseUrl}}"
+                                "{{api_base_url}}"
                             ],
                             "path": [
                                 "auth",
@@ -121,9 +141,9 @@
                             "raw": "{\n    \"phone_number\": \"{{test_phone_number}}\",\n    \"otp_code\": \"{{test_otp_code}}\",\n    \"device_info\": \"Postman Test Client\",\n    \"ip_address\": \"127.0.0.1\"\n}"
                         },
                         "url": {
-                            "raw": "{{baseUrl}}/auth/otp/verify",
+                            "raw": "{{api_base_url}}/auth/otp/verify",
                             "host": [
-                                "{{baseUrl}}"
+                                "{{api_base_url}}"
                             ],
                             "path": [
                                 "auth",
@@ -131,7 +151,7 @@
                                 "verify"
                             ]
                         },
-                        "description": "Verify OTP and get session tokens + cookies"
+                        "description": "Verify OTP and get session token"
                     }
                 },
                 {
@@ -143,11 +163,6 @@
                                 "exec": [
                                     "pm.test(\"Status code is 200\", function () {",
                                     "    pm.response.to.have.status(200);",
-                                    "});",
-                                    "",
-                                    "pm.test(\"Response has success true\", function () {",
-                                    "    var jsonData = pm.response.json();",
-                                    "    pm.expect(jsonData.success).to.be.true;",
                                     "});"
                                 ]
                             }
@@ -157,9 +172,9 @@
                         "method": "GET",
                         "header": [],
                         "url": {
-                            "raw": "{{baseUrl}}/auth/session/current",
+                            "raw": "{{api_base_url}}/auth/session/current",
                             "host": [
-                                "{{baseUrl}}"
+                                "{{api_base_url}}"
                             ],
                             "path": [
                                 "auth",
@@ -167,38 +182,12 @@
                                 "current"
                             ]
                         },
-                        "description": "Get current session information (works with cookies or Authorization header)"
+                        "description": "Get current session information"
                     }
                 },
                 {
                     "name": "Refresh Session",
-                    "event": [
-                        {
-                            "listen": "test",
-                            "script": {
-                                "exec": [
-                                    "pm.test(\"Status code is 200\", function () {",
-                                    "    pm.response.to.have.status(200);",
-                                    "});",
-                                    "",
-                                    "// Update session token if new one is returned",
-                                    "if (pm.response.code === 200) {",
-                                    "    var jsonData = pm.response.json();",
-                                    "    if (jsonData.session && jsonData.session.session_token) {",
-                                    "        pm.environment.set(\"session_token\", jsonData.session.session_token);",
-                                    "    }",
-                                    "    if (jsonData.session && jsonData.session.refresh_token) {",
-                                    "        pm.environment.set(\"refresh_token\", jsonData.session.refresh_token);",
-                                    "    }",
-                                    "}"
-                                ]
-                            }
-                        }
-                    ],
                     "request": {
-                        "auth": {
-                            "type": "noauth"
-                        },
                         "method": "POST",
                         "header": [
                             {
@@ -211,9 +200,9 @@
                             "raw": "{\n    \"refresh_token\": \"{{refresh_token}}\",\n    \"device_info\": \"Postman Test Client\",\n    \"ip_address\": \"127.0.0.1\"\n}"
                         },
                         "url": {
-                            "raw": "{{baseUrl}}/auth/session/refresh",
+                            "raw": "{{api_base_url}}/auth/session/refresh",
                             "host": [
-                                "{{baseUrl}}"
+                                "{{api_base_url}}"
                             ],
                             "path": [
                                 "auth",
@@ -221,27 +210,12 @@
                                 "refresh"
                             ]
                         },
-                        "description": "Refresh session using refresh token (or cookies)"
+                        "description": "Refresh session using refresh token"
                     }
                 },
                 {
                     "name": "Validate Session",
-                    "event": [
-                        {
-                            "listen": "test",
-                            "script": {
-                                "exec": [
-                                    "pm.test(\"Status code is 200\", function () {",
-                                    "    pm.response.to.have.status(200);",
-                                    "});"
-                                ]
-                            }
-                        }
-                    ],
                     "request": {
-                        "auth": {
-                            "type": "noauth"
-                        },
                         "method": "POST",
                         "header": [
                             {
@@ -254,9 +228,9 @@
                             "raw": "{\n    \"session_token\": \"{{session_token}}\"\n}"
                         },
                         "url": {
-                            "raw": "{{baseUrl}}/auth/session/validate",
+                            "raw": "{{api_base_url}}/auth/session/validate",
                             "host": [
-                                "{{baseUrl}}"
+                                "{{api_base_url}}"
                             ],
                             "path": [
                                 "auth",
@@ -264,43 +238,86 @@
                                 "validate"
                             ]
                         },
-                        "description": "Validate a session token"
+                        "description": "Validate if session token is still valid"
+                    }
+                },
+                {
+                    "name": "Revoke Session",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"session_token\": \"{{session_token}}\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{api_base_url}}/auth/session/revoke",
+                            "host": [
+                                "{{api_base_url}}"
+                            ],
+                            "path": [
+                                "auth",
+                                "session",
+                                "revoke"
+                            ]
+                        },
+                        "description": "Revoke a specific session"
+                    }
+                },
+                {
+                    "name": "Get User Sessions",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{api_base_url}}/auth/sessions/{{user_id}}?page=1&page_size=10",
+                            "host": [
+                                "{{api_base_url}}"
+                            ],
+                            "path": [
+                                "auth",
+                                "sessions",
+                                "{{user_id}}"
+                            ],
+                            "query": [
+                                {
+                                    "key": "page",
+                                    "value": "1"
+                                },
+                                {
+                                    "key": "page_size",
+                                    "value": "10"
+                                }
+                            ]
+                        },
+                        "description": "Get all sessions for a user"
                     }
                 },
                 {
                     "name": "Logout",
-                    "event": [
-                        {
-                            "listen": "test",
-                            "script": {
-                                "exec": [
-                                    "pm.test(\"Status code is 200\", function () {",
-                                    "    pm.response.to.have.status(200);",
-                                    "});",
-                                    "",
-                                    "// Clear session variables on successful logout",
-                                    "if (pm.response.code === 200) {",
-                                    "    pm.environment.set(\"session_token\", \"\");",
-                                    "    pm.environment.set(\"refresh_token\", \"\");",
-                                    "}"
-                                ]
-                            }
-                        }
-                    ],
                     "request": {
                         "method": "POST",
                         "header": [],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{}"
+                        },
                         "url": {
-                            "raw": "{{baseUrl}}/auth/logout",
+                            "raw": "{{api_base_url}}/auth/logout",
                             "host": [
-                                "{{baseUrl}}"
+                                "{{api_base_url}}"
                             ],
                             "path": [
                                 "auth",
                                 "logout"
                             ]
                         },
-                        "description": "Logout current session (clears cookies)"
+                        "description": "Logout from current session"
                     }
                 },
                 {
@@ -308,17 +325,48 @@
                     "request": {
                         "method": "POST",
                         "header": [],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{}"
+                        },
                         "url": {
-                            "raw": "{{baseUrl}}/auth/logout-all",
+                            "raw": "{{api_base_url}}/auth/logout-all",
                             "host": [
-                                "{{baseUrl}}"
+                                "{{api_base_url}}"
                             ],
                             "path": [
                                 "auth",
                                 "logout-all"
                             ]
                         },
-                        "description": "Logout from all devices"
+                        "description": "Logout from all devices/sessions"
+                    }
+                },
+                {
+                    "name": "Admin Logout User",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"phone_number\": \"{{test_phone_number}}\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{api_base_url}}/auth/logout-user",
+                            "host": [
+                                "{{api_base_url}}"
+                            ],
+                            "path": [
+                                "auth",
+                                "logout-user"
+                            ]
+                        },
+                        "description": "Admin endpoint to logout a user from all devices"
                     }
                 }
             ],
@@ -329,48 +377,24 @@
             "item": [
                 {
                     "name": "Get User Profile",
-                    "event": [
-                        {
-                            "listen": "test",
-                            "script": {
-                                "exec": [
-                                    "pm.test(\"Status code is 200\", function () {",
-                                    "    pm.response.to.have.status(200);",
-                                    "});"
-                                ]
-                            }
-                        }
-                    ],
                     "request": {
                         "method": "GET",
                         "header": [],
                         "url": {
-                            "raw": "{{baseUrl}}/users/profile",
+                            "raw": "{{api_base_url}}/users/profile",
                             "host": [
-                                "{{baseUrl}}"
+                                "{{api_base_url}}"
                             ],
                             "path": [
                                 "users",
                                 "profile"
                             ]
                         },
-                        "description": "Get current user's profile (shows all memberships including expired)"
+                        "description": "Get current user's profile"
                     }
                 },
                 {
                     "name": "Update User Profile",
-                    "event": [
-                        {
-                            "listen": "test",
-                            "script": {
-                                "exec": [
-                                    "pm.test(\"Status code is 200\", function () {",
-                                    "    pm.response.to.have.status(200);",
-                                    "});"
-                                ]
-                            }
-                        }
-                    ],
                     "request": {
                         "method": "PUT",
                         "header": [
@@ -381,12 +405,12 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\n    \"name\": \"Updated Name\",\n    \"email\": \"updated@example.com\"\n}"
+                            "raw": "{\n    \"name\": \"Updated User Name\",\n    \"email\": \"updated.email@example.com\"\n}"
                         },
                         "url": {
-                            "raw": "{{baseUrl}}/users/profile",
+                            "raw": "{{api_base_url}}/users/profile",
                             "host": [
-                                "{{baseUrl}}"
+                                "{{api_base_url}}"
                             ],
                             "path": [
                                 "users",
@@ -398,25 +422,13 @@
                 },
                 {
                     "name": "Get All Users (Admin/Manager)",
-                    "event": [
-                        {
-                            "listen": "test",
-                            "script": {
-                                "exec": [
-                                    "pm.test(\"Status code is 200\", function () {",
-                                    "    pm.response.to.have.status(200);",
-                                    "});"
-                                ]
-                            }
-                        }
-                    ],
                     "request": {
                         "method": "GET",
                         "header": [],
                         "url": {
-                            "raw": "{{baseUrl}}/users?page=1&limit=10",
+                            "raw": "{{api_base_url}}/users?page=1&page_size=10",
                             "host": [
-                                "{{baseUrl}}"
+                                "{{api_base_url}}"
                             ],
                             "path": [
                                 "users"
@@ -427,7 +439,7 @@
                                     "value": "1"
                                 },
                                 {
-                                    "key": "limit",
+                                    "key": "page_size",
                                     "value": "10"
                                 },
                                 {
@@ -439,10 +451,15 @@
                                     "key": "role",
                                     "value": "player",
                                     "disabled": true
+                                },
+                                {
+                                    "key": "search",
+                                    "value": "test",
+                                    "disabled": true
                                 }
                             ]
                         },
-                        "description": "Get all users (excludes users with only expired memberships and system admins)"
+                        "description": "Get all users with optional filtering"
                     }
                 },
                 {
@@ -452,10 +469,6 @@
                             "listen": "test",
                             "script": {
                                 "exec": [
-                                    "pm.test(\"Status code is 200\", function () {",
-                                    "    pm.response.to.have.status(200);",
-                                    "});",
-                                    "",
                                     "// Store created user ID",
                                     "if (pm.response.code === 200) {",
                                     "    var jsonData = pm.response.json();",
@@ -477,12 +490,12 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\n    \"name\": \"Test User\",\n    \"phone_number\": \"+1987654321\",\n    \"email\": \"testuser@example.com\"\n}"
+                            "raw": "{\n    \"phone_number\": \"+1555123456\",\n    \"name\": \"Test User\",\n    \"email\": \"testuser@example.com\"\n}"
                         },
                         "url": {
-                            "raw": "{{baseUrl}}/users",
+                            "raw": "{{api_base_url}}/users",
                             "host": [
-                                "{{baseUrl}}"
+                                "{{api_base_url}}"
                             ],
                             "path": [
                                 "users"
@@ -506,9 +519,9 @@
                             "raw": "{\n    \"name\": \"Updated Test User\",\n    \"email\": \"updated.testuser@example.com\"\n}"
                         },
                         "url": {
-                            "raw": "{{baseUrl}}/users/{{created_user_id}}",
+                            "raw": "{{api_base_url}}/users/{{created_user_id}}",
                             "host": [
-                                "{{baseUrl}}"
+                                "{{api_base_url}}"
                             ],
                             "path": [
                                 "users",
@@ -524,9 +537,9 @@
                         "method": "DELETE",
                         "header": [],
                         "url": {
-                            "raw": "{{baseUrl}}/users/{{created_user_id}}",
+                            "raw": "{{api_base_url}}/users/{{created_user_id}}",
                             "host": [
-                                "{{baseUrl}}"
+                                "{{api_base_url}}"
                             ],
                             "path": [
                                 "users",
@@ -564,12 +577,12 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\n    \"phone_number\": \"+1987654321\",\n    \"facility_id\": {{created_facility_id}},\n    \"role\": \"player\",\n    \"expiry_date\": \"2025-12-31T23:59:59Z\"\n}"
+                            "raw": "{\n    \"phone_number\": \"+1555987654\",\n    \"facility_id\": {{created_facility_id}},\n    \"role\": \"player\",\n    \"expiry_date\": \"2025-12-31T23:59:59Z\"\n}"
                         },
                         "url": {
-                            "raw": "{{baseUrl}}/users/memberships/phone",
+                            "raw": "{{api_base_url}}/users/memberships/phone",
                             "host": [
-                                "{{baseUrl}}"
+                                "{{api_base_url}}"
                             ],
                             "path": [
                                 "users",
@@ -595,9 +608,9 @@
                             "raw": "{\n    \"user_id\": {{created_user_id}},\n    \"facility_id\": {{created_facility_id}},\n    \"role\": \"player\",\n    \"expiry_date\": \"2025-12-31T23:59:59Z\"\n}"
                         },
                         "url": {
-                            "raw": "{{baseUrl}}/users/memberships/userid",
+                            "raw": "{{api_base_url}}/users/memberships/userid",
                             "host": [
-                                "{{baseUrl}}"
+                                "{{api_base_url}}"
                             ],
                             "path": [
                                 "users",
@@ -614,9 +627,9 @@
                         "method": "DELETE",
                         "header": [],
                         "url": {
-                            "raw": "{{baseUrl}}/users/memberships/{{created_membership_id}}",
+                            "raw": "{{api_base_url}}/users/memberships/{{created_membership_id}}",
                             "host": [
-                                "{{baseUrl}}"
+                                "{{api_base_url}}"
                             ],
                             "path": [
                                 "users",
@@ -628,32 +641,20 @@
                     }
                 }
             ],
-            "description": "User management endpoints with strict authorization"
+            "description": "User management endpoints"
         },
         {
             "name": "03 - Facilities",
             "item": [
                 {
                     "name": "Get All Facilities",
-                    "event": [
-                        {
-                            "listen": "test",
-                            "script": {
-                                "exec": [
-                                    "pm.test(\"Status code is 200\", function () {",
-                                    "    pm.response.to.have.status(200);",
-                                    "});"
-                                ]
-                            }
-                        }
-                    ],
                     "request": {
                         "method": "GET",
                         "header": [],
                         "url": {
-                            "raw": "{{baseUrl}}/facilities?page=1&limit=10",
+                            "raw": "{{api_base_url}}/facilities?page=1&page_size=10",
                             "host": [
-                                "{{baseUrl}}"
+                                "{{api_base_url}}"
                             ],
                             "path": [
                                 "facilities"
@@ -664,12 +665,22 @@
                                     "value": "1"
                                 },
                                 {
-                                    "key": "limit",
+                                    "key": "page_size",
                                     "value": "10"
+                                },
+                                {
+                                    "key": "search",
+                                    "value": "test",
+                                    "disabled": true
+                                },
+                                {
+                                    "key": "active_only",
+                                    "value": "true",
+                                    "disabled": true
                                 }
                             ]
                         },
-                        "description": "Get all facilities (requires valid membership)"
+                        "description": "Get all facilities"
                     }
                 },
                 {
@@ -679,10 +690,6 @@
                             "listen": "test",
                             "script": {
                                 "exec": [
-                                    "pm.test(\"Status code is 200\", function () {",
-                                    "    pm.response.to.have.status(200);",
-                                    "});",
-                                    "",
                                     "// Store created facility ID",
                                     "if (pm.response.code === 200) {",
                                     "    var jsonData = pm.response.json();",
@@ -704,12 +711,12 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\n    \"name\": \"{{default_facility_name}}\",\n    \"address\": \"{{default_facility_address}}\",\n    \"description\": \"Test facility created via Postman\",\n    \"timezone\": \"{{default_timezone}}\"\n}"
+                            "raw": "{\n    \"name\": \"Test Facility\",\n    \"address\": \"123 Test Street, Test City, TC 12345\",\n    \"description\": \"Test facility created via Postman\",\n    \"timezone\": \"America/New_York\"\n}"
                         },
                         "url": {
-                            "raw": "{{baseUrl}}/facilities",
+                            "raw": "{{api_base_url}}/facilities",
                             "host": [
-                                "{{baseUrl}}"
+                                "{{api_base_url}}"
                             ],
                             "path": [
                                 "facilities"
@@ -724,9 +731,9 @@
                         "method": "GET",
                         "header": [],
                         "url": {
-                            "raw": "{{baseUrl}}/facilities/{{created_facility_id}}",
+                            "raw": "{{api_base_url}}/facilities/{{created_facility_id}}",
                             "host": [
-                                "{{baseUrl}}"
+                                "{{api_base_url}}"
                             ],
                             "path": [
                                 "facilities",
@@ -748,19 +755,19 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\n    \"name\": \"Updated {{default_facility_name}}\",\n    \"description\": \"Updated facility description\",\n    \"timezone\": \"{{default_timezone}}\"\n}"
+                            "raw": "{\n    \"name\": \"Updated Test Facility\",\n    \"description\": \"Updated facility description\",\n    \"timezone\": \"America/New_York\"\n}"
                         },
                         "url": {
-                            "raw": "{{baseUrl}}/facilities/{{created_facility_id}}",
+                            "raw": "{{api_base_url}}/facilities/{{created_facility_id}}",
                             "host": [
-                                "{{baseUrl}}"
+                                "{{api_base_url}}"
                             ],
                             "path": [
                                 "facilities",
                                 "{{created_facility_id}}"
                             ]
                         },
-                        "description": "Update facility (admin or manager only)"
+                        "description": "Update facility"
                     }
                 },
                 {
@@ -769,9 +776,9 @@
                         "method": "DELETE",
                         "header": [],
                         "url": {
-                            "raw": "{{baseUrl}}/facilities/{{created_facility_id}}",
+                            "raw": "{{api_base_url}}/facilities/{{created_facility_id}}",
                             "host": [
-                                "{{baseUrl}}"
+                                "{{api_base_url}}"
                             ],
                             "path": [
                                 "facilities",
@@ -785,379 +792,7 @@
             "description": "Facility management endpoints"
         },
         {
-            "name": "04 - Bridge Management",
-            "item": [
-                {
-                    "name": "Register Bridge",
-                    "event": [
-                        {
-                            "listen": "test",
-                            "script": {
-                                "exec": [
-                                    "// Store bridge device ID",
-                                    "if (pm.response.code === 200) {",
-                                    "    var jsonData = pm.response.json();",
-                                    "    if (jsonData.bridge && jsonData.bridge.device_id) {",
-                                    "        pm.environment.set(\"bridge_device_id\", jsonData.bridge.device_id);",
-                                    "    }",
-                                    "}"
-                                ]
-                            }
-                        }
-                    ],
-                    "request": {
-                        "method": "POST",
-                        "header": [
-                            {
-                                "key": "Content-Type",
-                                "value": "application/json"
-                            }
-                        ],
-                        "body": {
-                            "mode": "raw",
-                            "raw": "{\n    \"device_id\": \"bridge_001\",\n    \"facility_id\": {{created_facility_id}},\n    \"name\": \"Test Bridge\",\n    \"description\": \"Test bridge device\",\n    \"ip_address\": \"192.168.1.100\",\n    \"port\": 8080,\n    \"device_type\": \"bridge\",\n    \"firmware_version\": \"1.0.0\",\n    \"status\": \"online\"\n}"
-                        },
-                        "url": {
-                            "raw": "{{baseUrl}}/bridges",
-                            "host": [
-                                "{{baseUrl}}"
-                            ],
-                            "path": [
-                                "bridges"
-                            ]
-                        },
-                        "description": "Register a new bridge device"
-                    }
-                },
-                {
-                    "name": "Get All Bridges",
-                    "request": {
-                        "method": "GET",
-                        "header": [],
-                        "url": {
-                            "raw": "{{baseUrl}}/bridges?facility_id={{created_facility_id}}",
-                            "host": [
-                                "{{baseUrl}}"
-                            ],
-                            "path": [
-                                "bridges"
-                            ],
-                            "query": [
-                                {
-                                    "key": "facility_id",
-                                    "value": "{{created_facility_id}}"
-                                }
-                            ]
-                        },
-                        "description": "Get all bridges for a facility"
-                    }
-                },
-                {
-                    "name": "Update Bridge",
-                    "request": {
-                        "method": "PUT",
-                        "header": [
-                            {
-                                "key": "Content-Type",
-                                "value": "application/json"
-                            }
-                        ],
-                        "body": {
-                            "mode": "raw",
-                            "raw": "{\n    \"name\": \"Updated Test Bridge\",\n    \"description\": \"Updated bridge device\",\n    \"ip_address\": \"192.168.1.101\",\n    \"status\": \"online\"\n}"
-                        },
-                        "url": {
-                            "raw": "{{baseUrl}}/bridges/{{bridge_device_id}}",
-                            "host": [
-                                "{{baseUrl}}"
-                            ],
-                            "path": [
-                                "bridges",
-                                "{{bridge_device_id}}"
-                            ]
-                        },
-                        "description": "Update bridge device"
-                    }
-                },
-                {
-                    "name": "Register Edge Connection",
-                    "request": {
-                        "method": "POST",
-                        "header": [
-                            {
-                                "key": "Content-Type",
-                                "value": "application/json"
-                            }
-                        ],
-                        "body": {
-                            "mode": "raw",
-                            "raw": "{\n    \"edge_device_id\": \"camera_001\",\n    \"edge_device_type\": \"camera\",\n    \"connection_status\": \"connected\",\n    \"last_seen\": \"2025-09-05T12:00:00Z\"\n}"
-                        },
-                        "url": {
-                            "raw": "{{baseUrl}}/bridges/{{bridge_device_id}}/connections",
-                            "host": [
-                                "{{baseUrl}}"
-                            ],
-                            "path": [
-                                "bridges",
-                                "{{bridge_device_id}}",
-                                "connections"
-                            ]
-                        },
-                        "description": "Register edge device connection to bridge"
-                    }
-                },
-                {
-                    "name": "Get Edge Connections",
-                    "request": {
-                        "method": "GET",
-                        "header": [],
-                        "url": {
-                            "raw": "{{baseUrl}}/bridges/{{bridge_device_id}}/connections",
-                            "host": [
-                                "{{baseUrl}}"
-                            ],
-                            "path": [
-                                "bridges",
-                                "{{bridge_device_id}}",
-                                "connections"
-                            ]
-                        },
-                        "description": "Get all edge connections for a bridge"
-                    }
-                },
-                {
-                    "name": "Get Bridge Activities",
-                    "request": {
-                        "method": "GET",
-                        "header": [],
-                        "url": {
-                            "raw": "{{baseUrl}}/bridges/{{bridge_device_id}}/activities?limit=10",
-                            "host": [
-                                "{{baseUrl}}"
-                            ],
-                            "path": [
-                                "bridges",
-                                "{{bridge_device_id}}",
-                                "activities"
-                            ],
-                            "query": [
-                                {
-                                    "key": "limit",
-                                    "value": "10"
-                                }
-                            ]
-                        },
-                        "description": "Get bridge activity logs"
-                    }
-                },
-                {
-                    "name": "Unregister Bridge",
-                    "request": {
-                        "method": "DELETE",
-                        "header": [],
-                        "url": {
-                            "raw": "{{baseUrl}}/bridges/{{bridge_device_id}}",
-                            "host": [
-                                "{{baseUrl}}"
-                            ],
-                            "path": [
-                                "bridges",
-                                "{{bridge_device_id}}"
-                            ]
-                        },
-                        "description": "Unregister bridge device"
-                    }
-                }
-            ],
-            "description": "Bridge device management endpoints"
-        },
-        {
-            "name": "05 - Cameras",
-            "item": [
-                {
-                    "name": "Register Camera",
-                    "event": [
-                        {
-                            "listen": "test",
-                            "script": {
-                                "exec": [
-                                    "// Store camera device ID",
-                                    "if (pm.response.code === 200) {",
-                                    "    var jsonData = pm.response.json();",
-                                    "    if (jsonData.camera && jsonData.camera.device_id) {",
-                                    "        pm.environment.set(\"camera_device_id\", jsonData.camera.device_id);",
-                                    "    }",
-                                    "}"
-                                ]
-                            }
-                        }
-                    ],
-                    "request": {
-                        "method": "POST",
-                        "header": [
-                            {
-                                "key": "Content-Type",
-                                "value": "application/json"
-                            }
-                        ],
-                        "body": {
-                            "mode": "raw",
-                            "raw": "{\n    \"device_id\": \"camera_001\",\n    \"facility_id\": {{created_facility_id}},\n    \"name\": \"Test Camera\",\n    \"description\": \"Test camera device\",\n    \"ip_address\": \"192.168.1.200\",\n    \"port\": 8080,\n    \"device_type\": \"camera\",\n    \"firmware_version\": \"1.0.0\",\n    \"status\": \"online\",\n    \"resolution\": \"1080p\",\n    \"fps\": 30\n}"
-                        },
-                        "url": {
-                            "raw": "{{baseUrl}}/cameras/register",
-                            "host": [
-                                "{{baseUrl}}"
-                            ],
-                            "path": [
-                                "cameras",
-                                "register"
-                            ]
-                        },
-                        "description": "Register a new camera device"
-                    }
-                },
-                {
-                    "name": "Get All Cameras",
-                    "request": {
-                        "method": "GET",
-                        "header": [],
-                        "url": {
-                            "raw": "{{baseUrl}}/cameras?facility_id={{created_facility_id}}",
-                            "host": [
-                                "{{baseUrl}}"
-                            ],
-                            "path": [
-                                "cameras"
-                            ],
-                            "query": [
-                                {
-                                    "key": "facility_id",
-                                    "value": "{{created_facility_id}}"
-                                },
-                                {
-                                    "key": "status",
-                                    "value": "online",
-                                    "disabled": true
-                                }
-                            ]
-                        },
-                        "description": "Get all cameras for a facility"
-                    }
-                },
-                {
-                    "name": "Update Camera",
-                    "request": {
-                        "method": "PUT",
-                        "header": [
-                            {
-                                "key": "Content-Type",
-                                "value": "application/json"
-                            }
-                        ],
-                        "body": {
-                            "mode": "raw",
-                            "raw": "{\n    \"name\": \"Updated Test Camera\",\n    \"description\": \"Updated camera device\",\n    \"ip_address\": \"192.168.1.201\",\n    \"status\": \"online\",\n    \"resolution\": \"4K\",\n    \"fps\": 60\n}"
-                        },
-                        "url": {
-                            "raw": "{{baseUrl}}/cameras/{{camera_device_id}}",
-                            "host": [
-                                "{{baseUrl}}"
-                            ],
-                            "path": [
-                                "cameras",
-                                "{{camera_device_id}}"
-                            ]
-                        },
-                        "description": "Update camera device"
-                    }
-                },
-                {
-                    "name": "Camera Control",
-                    "request": {
-                        "method": "POST",
-                        "header": [
-                            {
-                                "key": "Content-Type",
-                                "value": "application/json"
-                            }
-                        ],
-                        "body": {
-                            "mode": "raw",
-                            "raw": "{\n    \"command\": \"start_recording\",\n    \"parameters\": {\n        \"duration\": 300,\n        \"quality\": \"high\"\n    }\n}"
-                        },
-                        "url": {
-                            "raw": "{{baseUrl}}/cameras/{{camera_device_id}}/control",
-                            "host": [
-                                "{{baseUrl}}"
-                            ],
-                            "path": [
-                                "cameras",
-                                "{{camera_device_id}}",
-                                "control"
-                            ]
-                        },
-                        "description": "Send control command to camera"
-                    }
-                },
-                {
-                    "name": "Get Camera Activities",
-                    "request": {
-                        "method": "GET",
-                        "header": [],
-                        "url": {
-                            "raw": "{{baseUrl}}/cameras/activities?limit=10&facility_id={{created_facility_id}}",
-                            "host": [
-                                "{{baseUrl}}"
-                            ],
-                            "path": [
-                                "cameras",
-                                "activities"
-                            ],
-                            "query": [
-                                {
-                                    "key": "limit",
-                                    "value": "10"
-                                },
-                                {
-                                    "key": "facility_id",
-                                    "value": "{{created_facility_id}}"
-                                },
-                                {
-                                    "key": "device_id",
-                                    "value": "{{camera_device_id}}",
-                                    "disabled": true
-                                }
-                            ]
-                        },
-                        "description": "Get camera activity logs"
-                    }
-                },
-                {
-                    "name": "Unregister Camera",
-                    "request": {
-                        "method": "POST",
-                        "header": [],
-                        "url": {
-                            "raw": "{{baseUrl}}/cameras/{{camera_device_id}}/unregister",
-                            "host": [
-                                "{{baseUrl}}"
-                            ],
-                            "path": [
-                                "cameras",
-                                "{{camera_device_id}}",
-                                "unregister"
-                            ]
-                        },
-                        "description": "Unregister camera device"
-                    }
-                }
-            ],
-            "description": "Camera device management endpoints"
-        },
-        {
-            "name": "06 - Locks",
+            "name": "04 - Locks",
             "item": [
                 {
                     "name": "Register Lock",
@@ -1187,12 +822,12 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\n    \"device_id\": \"lock_001\",\n    \"facility_id\": {{created_facility_id}},\n    \"name\": \"Main Entrance Lock\",\n    \"description\": \"Smart lock for main entrance\",\n    \"ip_address\": \"192.168.1.300\",\n    \"port\": 8080,\n    \"device_type\": \"smart_lock\",\n    \"firmware_version\": \"2.0.0\",\n    \"status\": \"locked\",\n    \"lock_type\": \"electromagnetic\",\n    \"location\": \"main_entrance\"\n}"
+                            "raw": "{\n    \"device_id\": \"lock-{{$randomUUID}}\",\n    \"facility_id\": {{created_facility_id}},\n    \"location\": \"Main Entrance\",\n    \"device_name\": \"Main Door Lock\",\n    \"device_type\": \"smart_lock\",\n    \"bridge_device_id\": \"{{bridge_device_id}}\"\n}"
                         },
                         "url": {
-                            "raw": "{{baseUrl}}/locks/register",
+                            "raw": "{{api_base_url}}/locks/register",
                             "host": [
-                                "{{baseUrl}}"
+                                "{{api_base_url}}"
                             ],
                             "path": [
                                 "locks",
@@ -1208,9 +843,9 @@
                         "method": "GET",
                         "header": [],
                         "url": {
-                            "raw": "{{baseUrl}}/locks?facility_id={{created_facility_id}}",
+                            "raw": "{{api_base_url}}/locks?facility_id={{created_facility_id}}",
                             "host": [
-                                "{{baseUrl}}"
+                                "{{api_base_url}}"
                             ],
                             "path": [
                                 "locks"
@@ -1247,23 +882,23 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\n    \"name\": \"Updated Main Entrance Lock\",\n    \"description\": \"Updated smart lock for main entrance\",\n    \"ip_address\": \"192.168.1.301\",\n    \"status\": \"locked\",\n    \"location\": \"main_entrance_updated\"\n}"
+                            "raw": "{\n    \"device_name\": \"Updated Main Door Lock\",\n    \"location\": \"Updated Main Entrance\"\n}"
                         },
                         "url": {
-                            "raw": "{{baseUrl}}/locks/{{lock_device_id}}",
+                            "raw": "{{api_base_url}}/locks/{{lock_device_id}}",
                             "host": [
-                                "{{baseUrl}}"
+                                "{{api_base_url}}"
                             ],
                             "path": [
                                 "locks",
                                 "{{lock_device_id}}"
                             ]
                         },
-                        "description": "Update lock device"
+                        "description": "Update lock device information"
                     }
                 },
                 {
-                    "name": "Lock Control (Unlock)",
+                    "name": "Lock Control (Unlock/Lock)",
                     "request": {
                         "method": "POST",
                         "header": [
@@ -1274,12 +909,12 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\n    \"command\": \"unlock\",\n    \"parameters\": {\n        \"duration\": 10,\n        \"auto_lock\": true,\n        \"reason\": \"authorized_access\"\n    }\n}"
+                            "raw": "{\n    \"action\": \"unlock\",\n    \"duration_seconds\": 30\n}"
                         },
                         "url": {
-                            "raw": "{{baseUrl}}/locks/{{lock_device_id}}/control",
+                            "raw": "{{api_base_url}}/locks/{{lock_device_id}}/control",
                             "host": [
-                                "{{baseUrl}}"
+                                "{{api_base_url}}"
                             ],
                             "path": [
                                 "locks",
@@ -1287,35 +922,7 @@
                                 "control"
                             ]
                         },
-                        "description": "Send unlock command to lock device"
-                    }
-                },
-                {
-                    "name": "Lock Control (Lock)",
-                    "request": {
-                        "method": "POST",
-                        "header": [
-                            {
-                                "key": "Content-Type",
-                                "value": "application/json"
-                            }
-                        ],
-                        "body": {
-                            "mode": "raw",
-                            "raw": "{\n    \"command\": \"lock\",\n    \"parameters\": {\n        \"force\": false,\n        \"reason\": \"manual_lock\"\n    }\n}"
-                        },
-                        "url": {
-                            "raw": "{{baseUrl}}/locks/{{lock_device_id}}/control",
-                            "host": [
-                                "{{baseUrl}}"
-                            ],
-                            "path": [
-                                "locks",
-                                "{{lock_device_id}}",
-                                "control"
-                            ]
-                        },
-                        "description": "Send lock command to lock device"
+                        "description": "Control lock (unlock/lock)"
                     }
                 },
                 {
@@ -1324,9 +931,9 @@
                         "method": "GET",
                         "header": [],
                         "url": {
-                            "raw": "{{baseUrl}}/locks/activities?limit=10&facility_id={{created_facility_id}}",
+                            "raw": "{{api_base_url}}/locks/activities?page=1&page_size=10&facility_id={{created_facility_id}}",
                             "host": [
-                                "{{baseUrl}}"
+                                "{{api_base_url}}"
                             ],
                             "path": [
                                 "locks",
@@ -1334,7 +941,11 @@
                             ],
                             "query": [
                                 {
-                                    "key": "limit",
+                                    "key": "page",
+                                    "value": "1"
+                                },
+                                {
+                                    "key": "page_size",
                                     "value": "10"
                                 },
                                 {
@@ -1357,9 +968,9 @@
                         "method": "POST",
                         "header": [],
                         "url": {
-                            "raw": "{{baseUrl}}/locks/{{lock_device_id}}/unregister",
+                            "raw": "{{api_base_url}}/locks/{{lock_device_id}}/unregister",
                             "host": [
-                                "{{baseUrl}}"
+                                "{{api_base_url}}"
                             ],
                             "path": [
                                 "locks",
@@ -1374,7 +985,7 @@
             "description": "Lock device management and control endpoints"
         },
         {
-            "name": "07 - Videos",
+            "name": "05 - Videos",
             "item": [
                 {
                     "name": "Upload Video",
@@ -1383,31 +994,11 @@
                             "listen": "test",
                             "script": {
                                 "exec": [
-                                    "pm.test(\"Status code is 201\", function () {",
-                                    "    pm.response.to.have.status(201);",
-                                    "});",
-                                    "",
-                                    "pm.test(\"Response has video object\", function () {",
-                                    "    var jsonData = pm.response.json();",
-                                    "    pm.expect(jsonData).to.have.property('video');",
-                                    "    pm.expect(jsonData.video).to.have.property('id');",
-                                    "    pm.expect(jsonData.video).to.have.property('facility_id');",
-                                    "    pm.expect(jsonData.video).to.have.property('file_url');",
-                                    "});",
-                                    "",
-                                    "pm.test(\"Response has upload_url\", function () {",
-                                    "    var jsonData = pm.response.json();",
-                                    "    pm.expect(jsonData).to.have.property('upload_url');",
-                                    "    pm.expect(jsonData.upload_url).to.be.a('string');",
-                                    "    pm.expect(jsonData.upload_url).to.include('storage.googleapis.com');",
-                                    "});",
-                                    "",
-                                    "// Store video ID for subsequent requests",
-                                    "if (pm.response.code === 201) {",
+                                    "// Store video ID",
+                                    "if (pm.response.code === 200) {",
                                     "    var jsonData = pm.response.json();",
                                     "    if (jsonData.video && jsonData.video.id) {",
                                     "        pm.environment.set(\"video_id\", jsonData.video.id);",
-                                    "        pm.environment.set(\"uploaded_video_url\", jsonData.upload_url);",
                                     "    }",
                                     "}"
                                 ]
@@ -1418,8 +1009,9 @@
                         "method": "POST",
                         "header": [
                             {
-                                "key": "Authorization",
-                                "value": "Bearer {{session_token}}"
+                                "key": "Content-Type",
+                                "value": "multipart/form-data",
+                                "disabled": true
                             }
                         ],
                         "body": {
@@ -1428,45 +1020,35 @@
                                 {
                                     "key": "video",
                                     "type": "file",
-                                    "src": [],
-                                    "description": "Select a video file to upload (MP4, AVI, MOV, etc.)"
+                                    "src": []
                                 },
                                 {
                                     "key": "facility_id",
                                     "value": "{{created_facility_id}}",
-                                    "type": "text",
-                                    "description": "The facility ID where the video was recorded"
+                                    "type": "text"
                                 },
                                 {
-                                    "key": "camera_device_id",
+                                    "key": "device_id",
                                     "value": "{{camera_device_id}}",
-                                    "type": "text",
-                                    "description": "The camera device ID that recorded the video"
+                                    "type": "text"
                                 },
                                 {
-                                    "key": "recording_type",
-                                    "value": "manual",
-                                    "type": "text",
-                                    "description": "Type of recording (manual, scheduled, motion_detected, etc.)"
-                                },
-                                {
-                                    "key": "start_time",
-                                    "value": "{{$isoTimestamp}}",
-                                    "type": "text",
-                                    "description": "When the recording started (RFC3339 format)"
+                                    "key": "description",
+                                    "value": "Test video upload",
+                                    "type": "text"
                                 }
                             ]
                         },
                         "url": {
-                            "raw": "{{baseUrl}}/videos",
+                            "raw": "{{api_base_url}}/videos",
                             "host": [
-                                "{{baseUrl}}"
+                                "{{api_base_url}}"
                             ],
                             "path": [
                                 "videos"
                             ]
                         },
-                        "description": "Upload a video file to cloud storage and create database record with metadata extraction"
+                        "description": "Upload a video file"
                     }
                 },
                 {
@@ -1475,40 +1057,34 @@
                         "method": "GET",
                         "header": [],
                         "url": {
-                            "raw": "{{baseUrl}}/videos?facility_id={{created_facility_id}}&limit=10",
+                            "raw": "{{api_base_url}}/videos?page=1&page_size=10&facility_id={{created_facility_id}}",
                             "host": [
-                                "{{baseUrl}}"
+                                "{{api_base_url}}"
                             ],
                             "path": [
                                 "videos"
                             ],
                             "query": [
                                 {
+                                    "key": "page",
+                                    "value": "1"
+                                },
+                                {
+                                    "key": "page_size",
+                                    "value": "10"
+                                },
+                                {
                                     "key": "facility_id",
                                     "value": "{{created_facility_id}}"
                                 },
                                 {
-                                    "key": "limit",
-                                    "value": "10"
-                                },
-                                {
-                                    "key": "camera_id",
+                                    "key": "device_id",
                                     "value": "{{camera_device_id}}",
-                                    "disabled": true
-                                },
-                                {
-                                    "key": "start_time",
-                                    "value": "2025-01-01T00:00:00Z",
-                                    "disabled": true
-                                },
-                                {
-                                    "key": "end_time",
-                                    "value": "2025-12-31T23:59:59Z",
                                     "disabled": true
                                 }
                             ]
                         },
-                        "description": "Get all videos for a facility"
+                        "description": "Get all videos with optional filtering"
                     }
                 },
                 {
@@ -1523,12 +1099,12 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\n    \"association_type\": \"incident\",\n    \"association_id\": \"incident_001\",\n    \"metadata\": {\n        \"incident_type\": \"security_breach\",\n        \"severity\": \"high\",\n        \"notes\": \"Motion detected at main entrance\"\n    }\n}"
+                            "raw": "{\n    \"device_id\": \"{{camera_device_id}}\",\n    \"association_type\": \"camera_recording\"\n}"
                         },
                         "url": {
-                            "raw": "{{baseUrl}}/videos/{{video_id}}/associate",
+                            "raw": "{{api_base_url}}/videos/{{video_id}}/associate",
                             "host": [
-                                "{{baseUrl}}"
+                                "{{api_base_url}}"
                             ],
                             "path": [
                                 "videos",
@@ -1536,7 +1112,7 @@
                                 "associate"
                             ]
                         },
-                        "description": "Associate video with an incident or event"
+                        "description": "Associate video with a device"
                     }
                 },
                 {
@@ -1545,27 +1121,17 @@
                         "method": "DELETE",
                         "header": [],
                         "url": {
-                            "raw": "{{baseUrl}}/videos/{{video_id}}/disassociate?association_type=incident&association_id=incident_001",
+                            "raw": "{{api_base_url}}/videos/{{video_id}}/disassociate",
                             "host": [
-                                "{{baseUrl}}"
+                                "{{api_base_url}}"
                             ],
                             "path": [
                                 "videos",
                                 "{{video_id}}",
                                 "disassociate"
-                            ],
-                            "query": [
-                                {
-                                    "key": "association_type",
-                                    "value": "incident"
-                                },
-                                {
-                                    "key": "association_id",
-                                    "value": "incident_001"
-                                }
                             ]
                         },
-                        "description": "Remove association from video"
+                        "description": "Remove video association with devices"
                     }
                 },
                 {
@@ -1574,58 +1140,556 @@
                         "method": "DELETE",
                         "header": [],
                         "url": {
-                            "raw": "{{baseUrl}}/videos/{{video_id}}",
+                            "raw": "{{api_base_url}}/videos/{{video_id}}",
                             "host": [
-                                "{{baseUrl}}"
+                                "{{api_base_url}}"
                             ],
                             "path": [
                                 "videos",
                                 "{{video_id}}"
                             ]
                         },
-                        "description": "Delete a video record"
+                        "description": "Delete a video"
                     }
                 }
             ],
-            "description": "Video management endpoints - Upload videos with automatic metadata extraction, cloud storage, progress tracking, and retry logic"
+            "description": "Video management endpoints"
         },
         {
-            "name": "08 - System Health",
+            "name": "06 - Bridges",
             "item": [
                 {
-                    "name": "Health Check",
+                    "name": "Register Bridge",
                     "event": [
                         {
                             "listen": "test",
                             "script": {
                                 "exec": [
-                                    "pm.test(\"Status code is 200\", function () {",
-                                    "    pm.response.to.have.status(200);",
-                                    "});"
+                                    "// Store bridge device ID",
+                                    "if (pm.response.code === 200) {",
+                                    "    var jsonData = pm.response.json();",
+                                    "    if (jsonData.bridge && jsonData.bridge.bridge_device_id) {",
+                                    "        pm.environment.set(\"bridge_device_id\", jsonData.bridge.bridge_device_id);",
+                                    "    }",
+                                    "}"
                                 ]
                             }
                         }
                     ],
                     "request": {
-                        "auth": {
-                            "type": "noauth"
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"bridge_device_id\": \"bridge-{{$randomUUID}}\",\n    \"facility_id\": {{created_facility_id}},\n    \"device_name\": \"Main Bridge Device\",\n    \"location\": \"Server Room\",\n    \"ip_address\": \"192.168.1.100\",\n    \"port\": 8080\n}"
                         },
+                        "url": {
+                            "raw": "{{api_base_url}}/bridges",
+                            "host": [
+                                "{{api_base_url}}"
+                            ],
+                            "path": [
+                                "bridges"
+                            ]
+                        },
+                        "description": "Register a new bridge device"
+                    }
+                },
+                {
+                    "name": "Get All Bridges",
+                    "request": {
                         "method": "GET",
                         "header": [],
                         "url": {
-                            "raw": "{{base_url}}/health",
+                            "raw": "{{api_base_url}}/bridges?facility_id={{created_facility_id}}",
                             "host": [
-                                "{{base_url}}"
+                                "{{api_base_url}}"
                             ],
                             "path": [
-                                "health"
+                                "bridges"
+                            ],
+                            "query": [
+                                {
+                                    "key": "facility_id",
+                                    "value": "{{created_facility_id}}"
+                                },
+                                {
+                                    "key": "status",
+                                    "value": "active",
+                                    "disabled": true
+                                }
                             ]
                         },
-                        "description": "System health check endpoint (public)"
+                        "description": "Get all bridge devices for a facility"
+                    }
+                },
+                {
+                    "name": "Update Bridge",
+                    "request": {
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"device_name\": \"Updated Main Bridge Device\",\n    \"location\": \"Updated Server Room\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{api_base_url}}/bridges/{{bridge_device_id}}",
+                            "host": [
+                                "{{api_base_url}}"
+                            ],
+                            "path": [
+                                "bridges",
+                                "{{bridge_device_id}}"
+                            ]
+                        },
+                        "description": "Update bridge device information"
+                    }
+                },
+                {
+                    "name": "Register Edge Connection",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"edge_device_id\": \"{{lock_device_id}}\",\n    \"device_type\": \"lock\",\n    \"connection_status\": \"connected\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{api_base_url}}/bridges/{{bridge_device_id}}/connections",
+                            "host": [
+                                "{{api_base_url}}"
+                            ],
+                            "path": [
+                                "bridges",
+                                "{{bridge_device_id}}",
+                                "connections"
+                            ]
+                        },
+                        "description": "Register edge device connection to bridge"
+                    }
+                },
+                {
+                    "name": "Get Edge Connections",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{api_base_url}}/bridges/{{bridge_device_id}}/connections",
+                            "host": [
+                                "{{api_base_url}}"
+                            ],
+                            "path": [
+                                "bridges",
+                                "{{bridge_device_id}}",
+                                "connections"
+                            ]
+                        },
+                        "description": "Get all edge device connections for a bridge"
+                    }
+                },
+                {
+                    "name": "Update Edge Connection",
+                    "request": {
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"connection_status\": \"disconnected\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{api_base_url}}/bridges/{{bridge_device_id}}/connections/{{lock_device_id}}",
+                            "host": [
+                                "{{api_base_url}}"
+                            ],
+                            "path": [
+                                "bridges",
+                                "{{bridge_device_id}}",
+                                "connections",
+                                "{{lock_device_id}}"
+                            ]
+                        },
+                        "description": "Update edge device connection status"
+                    }
+                },
+                {
+                    "name": "Delete Edge Connection",
+                    "request": {
+                        "method": "DELETE",
+                        "header": [],
+                        "url": {
+                            "raw": "{{api_base_url}}/bridges/{{bridge_device_id}}/connections/{{lock_device_id}}",
+                            "host": [
+                                "{{api_base_url}}"
+                            ],
+                            "path": [
+                                "bridges",
+                                "{{bridge_device_id}}",
+                                "connections",
+                                "{{lock_device_id}}"
+                            ]
+                        },
+                        "description": "Delete edge device connection from bridge"
+                    }
+                },
+                {
+                    "name": "Get Bridge Activities",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{api_base_url}}/bridges/{{bridge_device_id}}/activities?page=1&page_size=10",
+                            "host": [
+                                "{{api_base_url}}"
+                            ],
+                            "path": [
+                                "bridges",
+                                "{{bridge_device_id}}",
+                                "activities"
+                            ],
+                            "query": [
+                                {
+                                    "key": "page",
+                                    "value": "1"
+                                },
+                                {
+                                    "key": "page_size",
+                                    "value": "10"
+                                }
+                            ]
+                        },
+                        "description": "Get bridge activity logs"
+                    }
+                },
+                {
+                    "name": "Unregister Bridge",
+                    "request": {
+                        "method": "DELETE",
+                        "header": [],
+                        "url": {
+                            "raw": "{{api_base_url}}/bridges/{{bridge_device_id}}",
+                            "host": [
+                                "{{api_base_url}}"
+                            ],
+                            "path": [
+                                "bridges",
+                                "{{bridge_device_id}}"
+                            ]
+                        },
+                        "description": "Unregister bridge device"
                     }
                 }
             ],
-            "description": "System health and status endpoints"
+            "description": "Bridge device management endpoints"
+        },
+        {
+            "name": "07 - Cameras",
+            "item": [
+                {
+                    "name": "Register Camera",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "// Store camera device ID",
+                                    "if (pm.response.code === 200) {",
+                                    "    var jsonData = pm.response.json();",
+                                    "    if (jsonData.camera && jsonData.camera.device_id) {",
+                                    "        pm.environment.set(\"camera_device_id\", jsonData.camera.device_id);",
+                                    "    }",
+                                    "}"
+                                ]
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"device_id\": \"camera-{{$randomUUID}}\",\n    \"facility_id\": {{created_facility_id}},\n    \"location\": \"Main Entrance\",\n    \"device_name\": \"Main Entrance Camera\",\n    \"device_type\": \"security_camera\",\n    \"bridge_device_id\": \"{{bridge_device_id}}\",\n    \"stream_url\": \"rtsp://192.168.1.101:554/stream\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{api_base_url}}/cameras/register",
+                            "host": [
+                                "{{api_base_url}}"
+                            ],
+                            "path": [
+                                "cameras",
+                                "register"
+                            ]
+                        },
+                        "description": "Register a new camera device"
+                    }
+                },
+                {
+                    "name": "Get All Cameras",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{api_base_url}}/cameras?facility_id={{created_facility_id}}",
+                            "host": [
+                                "{{api_base_url}}"
+                            ],
+                            "path": [
+                                "cameras"
+                            ],
+                            "query": [
+                                {
+                                    "key": "facility_id",
+                                    "value": "{{created_facility_id}}"
+                                },
+                                {
+                                    "key": "status",
+                                    "value": "active",
+                                    "disabled": true
+                                },
+                                {
+                                    "key": "location",
+                                    "value": "main_entrance",
+                                    "disabled": true
+                                }
+                            ]
+                        },
+                        "description": "Get all cameras for a facility"
+                    }
+                },
+                {
+                    "name": "Update Camera",
+                    "request": {
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"device_name\": \"Updated Main Entrance Camera\",\n    \"location\": \"Updated Main Entrance\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{api_base_url}}/cameras/{{camera_device_id}}",
+                            "host": [
+                                "{{api_base_url}}"
+                            ],
+                            "path": [
+                                "cameras",
+                                "{{camera_device_id}}"
+                            ]
+                        },
+                        "description": "Update camera device information"
+                    }
+                },
+                {
+                    "name": "Camera Control",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"action\": \"start_recording\",\n    \"duration_seconds\": 60\n}"
+                        },
+                        "url": {
+                            "raw": "{{api_base_url}}/cameras/{{camera_device_id}}/control",
+                            "host": [
+                                "{{api_base_url}}"
+                            ],
+                            "path": [
+                                "cameras",
+                                "{{camera_device_id}}",
+                                "control"
+                            ]
+                        },
+                        "description": "Control camera (start/stop recording, etc.)"
+                    }
+                },
+                {
+                    "name": "Get Camera Activities",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{api_base_url}}/cameras/activities?page=1&page_size=10&facility_id={{created_facility_id}}",
+                            "host": [
+                                "{{api_base_url}}"
+                            ],
+                            "path": [
+                                "cameras",
+                                "activities"
+                            ],
+                            "query": [
+                                {
+                                    "key": "page",
+                                    "value": "1"
+                                },
+                                {
+                                    "key": "page_size",
+                                    "value": "10"
+                                },
+                                {
+                                    "key": "facility_id",
+                                    "value": "{{created_facility_id}}"
+                                },
+                                {
+                                    "key": "device_id",
+                                    "value": "{{camera_device_id}}",
+                                    "disabled": true
+                                }
+                            ]
+                        },
+                        "description": "Get camera activity logs"
+                    }
+                },
+                {
+                    "name": "Unregister Camera",
+                    "request": {
+                        "method": "POST",
+                        "header": [],
+                        "url": {
+                            "raw": "{{api_base_url}}/cameras/{{camera_device_id}}/unregister",
+                            "host": [
+                                "{{api_base_url}}"
+                            ],
+                            "path": [
+                                "cameras",
+                                "{{camera_device_id}}",
+                                "unregister"
+                            ]
+                        },
+                        "description": "Unregister camera device"
+                    }
+                }
+            ],
+            "description": "Camera device management endpoints"
+        },
+        {
+            "name": "08 - Storage",
+            "item": [
+                {
+                    "name": "Serve File",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{api_base_url}}/storage/{{bucket_name}}/{{file_path}}",
+                            "host": [
+                                "{{api_base_url}}"
+                            ],
+                            "path": [
+                                "storage",
+                                "{{bucket_name}}",
+                                "{{file_path}}"
+                            ]
+                        },
+                        "description": "Serve a file from storage"
+                    }
+                },
+                {
+                    "name": "Head File",
+                    "request": {
+                        "method": "HEAD",
+                        "header": [],
+                        "url": {
+                            "raw": "{{api_base_url}}/storage/{{bucket_name}}/{{file_path}}",
+                            "host": [
+                                "{{api_base_url}}"
+                            ],
+                            "path": [
+                                "storage",
+                                "{{bucket_name}}",
+                                "{{file_path}}"
+                            ]
+                        },
+                        "description": "Get file metadata from storage"
+                    }
+                }
+            ],
+            "description": "Storage service endpoints"
+        },
+        {
+            "name": "09 - gRPC Gateway",
+            "item": [
+                {
+                    "name": "gRPC Gateway - GET",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{api_base_url}}/grpc/auth.AuthService/ValidateSession",
+                            "host": [
+                                "{{api_base_url}}"
+                            ],
+                            "path": [
+                                "grpc",
+                                "auth.AuthService",
+                                "ValidateSession"
+                            ]
+                        },
+                        "description": "Access gRPC services via HTTP gateway"
+                    }
+                },
+                {
+                    "name": "gRPC Gateway - POST",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"session_token\": \"{{session_token}}\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{api_base_url}}/grpc/auth.AuthService/ValidateSession",
+                            "host": [
+                                "{{api_base_url}}"
+                            ],
+                            "path": [
+                                "grpc",
+                                "auth.AuthService",
+                                "ValidateSession"
+                            ]
+                        },
+                        "description": "Access gRPC services via HTTP gateway with POST"
+                    }
+                }
+            ],
+            "description": "gRPC Gateway endpoints - access all gRPC services via HTTP"
         }
     ]
 }

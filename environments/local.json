@@ -1,11 +1,17 @@
 {
-    "id": "local-environment-001",
-    "name": "Local Development",
+    "id": "local-environment-v2-001",
+    "name": "Local Development v2 (With Cookies)",
     "values": [
         {
             "key": "base_url",
             "value": "http://localhost:8080",
             "description": "Base URL for HTTP REST API",
+            "enabled": true
+        },
+        {
+            "key": "api_base_url",
+            "value": "http://localhost:8080/api",
+            "description": "API Base URL for HTTP REST API",
             "enabled": true
         },
         {
@@ -27,6 +33,12 @@
             "enabled": true
         },
         {
+            "key": "test_admin_phone",
+            "value": "+1000000001",
+            "description": "Test admin phone number",
+            "enabled": true
+        },
+        {
             "key": "session_token",
             "value": "",
             "description": "Current session token (auto-populated after authentication)",
@@ -45,15 +57,15 @@
             "enabled": true
         },
         {
-            "key": "created_facility_id",
+            "key": "admin_session_token",
             "value": "",
-            "description": "ID of created facility (auto-populated)",
+            "description": "Admin session token for admin operations",
             "enabled": true
         },
         {
-            "key": "test_facility_id",
-            "value": "1",
-            "description": "Test facility ID for operations",
+            "key": "created_facility_id",
+            "value": "",
+            "description": "ID of created facility (auto-populated)",
             "enabled": true
         },
         {
@@ -69,91 +81,59 @@
             "enabled": true
         },
         {
-            "key": "test_bridge_id",
-            "value": "",
-            "description": "Test bridge device ID (auto-populated)",
-            "enabled": true
-        },
-        {
-            "key": "test_camera_id",
-            "value": "",
-            "description": "Test camera device ID (auto-populated)",
-            "enabled": true
-        },
-        {
-            "key": "test_lock_id",
-            "value": "",
-            "description": "Test lock device ID (auto-populated)",
-            "enabled": true
-        },
-        {
-            "key": "created_video_id",
-            "value": "",
-            "description": "ID of created video (auto-populated)",
-            "enabled": true
-        },
-        {
             "key": "test_otp_code",
             "value": "123456",
             "description": "Test OTP code for development",
             "enabled": true
         },
         {
-            "key": "admin_session_token",
+            "key": "default_facility_name",
+            "value": "Test Facility",
+            "description": "Default facility name for testing",
+            "enabled": true
+        },
+        {
+            "key": "default_facility_address",
+            "value": "123 Test Street, Test City, TC 12345",
+            "description": "Default facility address",
+            "enabled": true
+        },
+        {
+            "key": "default_timezone",
+            "value": "America/New_York",
+            "description": "Default timezone for facilities",
+            "enabled": true
+        },
+        {
+            "key": "bridge_device_id",
             "value": "",
-            "description": "Admin session token for privileged operations",
+            "description": "Test bridge device ID (auto-populated)",
+            "enabled": true
+        },
+        {
+            "key": "camera_device_id",
+            "value": "",
+            "description": "Test camera device ID (auto-populated)",
+            "enabled": true
+        },
+        {
+            "key": "lock_device_id",
+            "value": "",
+            "description": "Test lock device ID (auto-populated)",
+            "enabled": true
+        },
+        {
+            "key": "video_id",
+            "value": "",
+            "description": "Test video ID (auto-populated)",
+            "enabled": true
+        },
+        {
+            "key": "uploaded_video_url",
+            "value": "",
+            "description": "URL of uploaded video in cloud storage (auto-populated)",
             "enabled": true
         }
-    ]
-}
-        {
-    "key": "created_user_id",
-    "value": "",
-    "description": "ID of created user (auto-populated)",
-    "enabled": true
-},
-{
-    "key": "created_camera_id",
-    "value": "",
-    "description": "ID of created camera (auto-populated)",
-    "enabled": true
-},
-{
-    "key": "created_lock_id",
-    "value": "",
-    "description": "ID of created lock (auto-populated)",
-    "enabled": true
-},
-{
-    "key": "created_video_id",
-    "value": "",
-    "description": "ID of created video (auto-populated)",
-    "enabled": true
-},
-{
-    "key": "created_bridge_id",
-    "value": "",
-    "description": "ID of created bridge (auto-populated)",
-    "enabled": true
-},
-{
-    "key": "created_membership_phone_id",
-    "value": "",
-    "description": "ID of membership created by phone (auto-populated)",
-    "enabled": true
-},
-{
-    "key": "created_membership_userid_id",
-    "value": "",
-    "description": "ID of membership created by user ID (auto-populated)",
-    "enabled": true
-},
-{
-    "key": "test_phone_number_membership",
-    "value": "+1555987654",
-    "description": "Test phone number for membership creation",
-    "enabled": true
-}
-],
-"_postman_variable_scope": "environment"
+    ],
+    "_postman_variable_scope": "environment"
 }
