@@ -1,0 +1,1631 @@
+{
+    "info": {
+        "name": "RallyMate HTTP REST API v2",
+        "description": "Complete HTTP REST API collection for RallyMate services with cookie-based authentication support",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    },
+    "auth": {
+        "type": "bearer",
+        "bearer": [
+            {
+                "key": "token",
+                "value": "{{session_token}}",
+                "type": "string"
+            }
+        ]
+    },
+    "variable": [
+        {
+            "key": "baseUrl",
+            "value": "{{api_base_url}}"
+        }
+    ],
+    "item": [
+        {
+            "name": "01 - Authentication",
+            "item": [
+                {
+                    "name": "Send OTP",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test(\"Status code is 200\", function () {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});",
+                                    "",
+                                    "pm.test(\"Response has success true\", function () {",
+                                    "    var jsonData = pm.response.json();",
+                                    "    pm.expect(jsonData.success).to.be.true;",
+                                    "});"
+                                ]
+                            }
+                        }
+                    ],
+                    "request": {
+                        "auth": {
+                            "type": "noauth"
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"phone_number\": \"{{test_phone_number}}\",\n    \"device_info\": \"Postman Test Client\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/auth/otp/send",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "auth",
+                                "otp",
+                                "send"
+                            ]
+                        },
+                        "description": "Send OTP to phone number for authentication"
+                    }
+                },
+                {
+                    "name": "Verify OTP (Login)",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test(\"Status code is 200\", function () {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});",
+                                    "",
+                                    "pm.test(\"Response has success true\", function () {",
+                                    "    var jsonData = pm.response.json();",
+                                    "    pm.expect(jsonData.success).to.be.true;",
+                                    "});",
+                                    "",
+                                    "// Auto-populate session variables",
+                                    "if (pm.response.code === 200) {",
+                                    "    var jsonData = pm.response.json();",
+                                    "    if (jsonData.token) {",
+                                    "        pm.environment.set(\"session_token\", jsonData.token);",
+                                    "    }",
+                                    "    if (jsonData.session && jsonData.session.refresh_token) {",
+                                    "        pm.environment.set(\"refresh_token\", jsonData.session.refresh_token);",
+                                    "    }",
+                                    "    if (jsonData.user && jsonData.user.id) {",
+                                    "        pm.environment.set(\"user_id\", jsonData.user.id);",
+                                    "    }",
+                                    "}"
+                                ]
+                            }
+                        }
+                    ],
+                    "request": {
+                        "auth": {
+                            "type": "noauth"
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"phone_number\": \"{{test_phone_number}}\",\n    \"otp_code\": \"{{test_otp_code}}\",\n    \"device_info\": \"Postman Test Client\",\n    \"ip_address\": \"127.0.0.1\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/auth/otp/verify",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "auth",
+                                "otp",
+                                "verify"
+                            ]
+                        },
+                        "description": "Verify OTP and get session tokens + cookies"
+                    }
+                },
+                {
+                    "name": "Get Current Session",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test(\"Status code is 200\", function () {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});",
+                                    "",
+                                    "pm.test(\"Response has success true\", function () {",
+                                    "    var jsonData = pm.response.json();",
+                                    "    pm.expect(jsonData.success).to.be.true;",
+                                    "});"
+                                ]
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/auth/session/current",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "auth",
+                                "session",
+                                "current"
+                            ]
+                        },
+                        "description": "Get current session information (works with cookies or Authorization header)"
+                    }
+                },
+                {
+                    "name": "Refresh Session",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test(\"Status code is 200\", function () {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});",
+                                    "",
+                                    "// Update session token if new one is returned",
+                                    "if (pm.response.code === 200) {",
+                                    "    var jsonData = pm.response.json();",
+                                    "    if (jsonData.session && jsonData.session.session_token) {",
+                                    "        pm.environment.set(\"session_token\", jsonData.session.session_token);",
+                                    "    }",
+                                    "    if (jsonData.session && jsonData.session.refresh_token) {",
+                                    "        pm.environment.set(\"refresh_token\", jsonData.session.refresh_token);",
+                                    "    }",
+                                    "}"
+                                ]
+                            }
+                        }
+                    ],
+                    "request": {
+                        "auth": {
+                            "type": "noauth"
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"refresh_token\": \"{{refresh_token}}\",\n    \"device_info\": \"Postman Test Client\",\n    \"ip_address\": \"127.0.0.1\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/auth/session/refresh",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "auth",
+                                "session",
+                                "refresh"
+                            ]
+                        },
+                        "description": "Refresh session using refresh token (or cookies)"
+                    }
+                },
+                {
+                    "name": "Validate Session",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test(\"Status code is 200\", function () {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});"
+                                ]
+                            }
+                        }
+                    ],
+                    "request": {
+                        "auth": {
+                            "type": "noauth"
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"session_token\": \"{{session_token}}\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/auth/session/validate",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "auth",
+                                "session",
+                                "validate"
+                            ]
+                        },
+                        "description": "Validate a session token"
+                    }
+                },
+                {
+                    "name": "Logout",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test(\"Status code is 200\", function () {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});",
+                                    "",
+                                    "// Clear session variables on successful logout",
+                                    "if (pm.response.code === 200) {",
+                                    "    pm.environment.set(\"session_token\", \"\");",
+                                    "    pm.environment.set(\"refresh_token\", \"\");",
+                                    "}"
+                                ]
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/auth/logout",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "auth",
+                                "logout"
+                            ]
+                        },
+                        "description": "Logout current session (clears cookies)"
+                    }
+                },
+                {
+                    "name": "Logout From All Devices",
+                    "request": {
+                        "method": "POST",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/auth/logout-all",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "auth",
+                                "logout-all"
+                            ]
+                        },
+                        "description": "Logout from all devices"
+                    }
+                }
+            ],
+            "description": "Authentication endpoints with OTP flow and session management"
+        },
+        {
+            "name": "02 - Users",
+            "item": [
+                {
+                    "name": "Get User Profile",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test(\"Status code is 200\", function () {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});"
+                                ]
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/users/profile",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "users",
+                                "profile"
+                            ]
+                        },
+                        "description": "Get current user's profile (shows all memberships including expired)"
+                    }
+                },
+                {
+                    "name": "Update User Profile",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test(\"Status code is 200\", function () {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});"
+                                ]
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"name\": \"Updated Name\",\n    \"email\": \"updated@example.com\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/users/profile",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "users",
+                                "profile"
+                            ]
+                        },
+                        "description": "Update current user's profile"
+                    }
+                },
+                {
+                    "name": "Get All Users (Admin/Manager)",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test(\"Status code is 200\", function () {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});"
+                                ]
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/users?page=1&limit=10",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "users"
+                            ],
+                            "query": [
+                                {
+                                    "key": "page",
+                                    "value": "1"
+                                },
+                                {
+                                    "key": "limit",
+                                    "value": "10"
+                                },
+                                {
+                                    "key": "facility_id",
+                                    "value": "{{created_facility_id}}",
+                                    "disabled": true
+                                },
+                                {
+                                    "key": "role",
+                                    "value": "player",
+                                    "disabled": true
+                                }
+                            ]
+                        },
+                        "description": "Get all users (excludes users with only expired memberships and system admins)"
+                    }
+                },
+                {
+                    "name": "Create User (Admin)",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test(\"Status code is 200\", function () {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});",
+                                    "",
+                                    "// Store created user ID",
+                                    "if (pm.response.code === 200) {",
+                                    "    var jsonData = pm.response.json();",
+                                    "    if (jsonData.user && jsonData.user.id) {",
+                                    "        pm.environment.set(\"created_user_id\", jsonData.user.id);",
+                                    "    }",
+                                    "}"
+                                ]
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"name\": \"Test User\",\n    \"phone_number\": \"+1987654321\",\n    \"email\": \"testuser@example.com\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/users",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "users"
+                            ]
+                        },
+                        "description": "Create a new user (admin only)"
+                    }
+                },
+                {
+                    "name": "Update User (Admin)",
+                    "request": {
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"name\": \"Updated Test User\",\n    \"email\": \"updated.testuser@example.com\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/users/{{created_user_id}}",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "users",
+                                "{{created_user_id}}"
+                            ]
+                        },
+                        "description": "Update a user (admin only)"
+                    }
+                },
+                {
+                    "name": "Delete User (Admin)",
+                    "request": {
+                        "method": "DELETE",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/users/{{created_user_id}}",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "users",
+                                "{{created_user_id}}"
+                            ]
+                        },
+                        "description": "Delete a user (admin only)"
+                    }
+                },
+                {
+                    "name": "Create Membership by Phone",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "// Store created membership ID",
+                                    "if (pm.response.code === 200) {",
+                                    "    var jsonData = pm.response.json();",
+                                    "    if (jsonData.membership && jsonData.membership.id) {",
+                                    "        pm.environment.set(\"created_membership_id\", jsonData.membership.id);",
+                                    "    }",
+                                    "}"
+                                ]
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"phone_number\": \"+1987654321\",\n    \"facility_id\": {{created_facility_id}},\n    \"role\": \"player\",\n    \"expiry_date\": \"2025-12-31T23:59:59Z\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/users/memberships/phone",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "users",
+                                "memberships",
+                                "phone"
+                            ]
+                        },
+                        "description": "Create membership by phone number"
+                    }
+                },
+                {
+                    "name": "Create Membership by User ID",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"user_id\": {{created_user_id}},\n    \"facility_id\": {{created_facility_id}},\n    \"role\": \"player\",\n    \"expiry_date\": \"2025-12-31T23:59:59Z\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/users/memberships/userid",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "users",
+                                "memberships",
+                                "userid"
+                            ]
+                        },
+                        "description": "Create membership by user ID"
+                    }
+                },
+                {
+                    "name": "Delete Membership",
+                    "request": {
+                        "method": "DELETE",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/users/memberships/{{created_membership_id}}",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "users",
+                                "memberships",
+                                "{{created_membership_id}}"
+                            ]
+                        },
+                        "description": "Delete a membership"
+                    }
+                }
+            ],
+            "description": "User management endpoints with strict authorization"
+        },
+        {
+            "name": "03 - Facilities",
+            "item": [
+                {
+                    "name": "Get All Facilities",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test(\"Status code is 200\", function () {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});"
+                                ]
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/facilities?page=1&limit=10",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "facilities"
+                            ],
+                            "query": [
+                                {
+                                    "key": "page",
+                                    "value": "1"
+                                },
+                                {
+                                    "key": "limit",
+                                    "value": "10"
+                                }
+                            ]
+                        },
+                        "description": "Get all facilities (requires valid membership)"
+                    }
+                },
+                {
+                    "name": "Create Facility (Admin)",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test(\"Status code is 200\", function () {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});",
+                                    "",
+                                    "// Store created facility ID",
+                                    "if (pm.response.code === 200) {",
+                                    "    var jsonData = pm.response.json();",
+                                    "    if (jsonData.facility && jsonData.facility.id) {",
+                                    "        pm.environment.set(\"created_facility_id\", jsonData.facility.id);",
+                                    "    }",
+                                    "}"
+                                ]
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"name\": \"{{default_facility_name}}\",\n    \"address\": \"{{default_facility_address}}\",\n    \"description\": \"Test facility created via Postman\",\n    \"timezone\": \"{{default_timezone}}\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/facilities",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "facilities"
+                            ]
+                        },
+                        "description": "Create a new facility (admin only)"
+                    }
+                },
+                {
+                    "name": "Get Facility by ID",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/facilities/{{created_facility_id}}",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "facilities",
+                                "{{created_facility_id}}"
+                            ]
+                        },
+                        "description": "Get facility details by ID"
+                    }
+                },
+                {
+                    "name": "Update Facility",
+                    "request": {
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"name\": \"Updated {{default_facility_name}}\",\n    \"description\": \"Updated facility description\",\n    \"timezone\": \"{{default_timezone}}\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/facilities/{{created_facility_id}}",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "facilities",
+                                "{{created_facility_id}}"
+                            ]
+                        },
+                        "description": "Update facility (admin or manager only)"
+                    }
+                },
+                {
+                    "name": "Delete Facility (Admin)",
+                    "request": {
+                        "method": "DELETE",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/facilities/{{created_facility_id}}",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "facilities",
+                                "{{created_facility_id}}"
+                            ]
+                        },
+                        "description": "Delete facility (admin only)"
+                    }
+                }
+            ],
+            "description": "Facility management endpoints"
+        },
+        {
+            "name": "04 - Bridge Management",
+            "item": [
+                {
+                    "name": "Register Bridge",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "// Store bridge device ID",
+                                    "if (pm.response.code === 200) {",
+                                    "    var jsonData = pm.response.json();",
+                                    "    if (jsonData.bridge && jsonData.bridge.device_id) {",
+                                    "        pm.environment.set(\"bridge_device_id\", jsonData.bridge.device_id);",
+                                    "    }",
+                                    "}"
+                                ]
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"device_id\": \"bridge_001\",\n    \"facility_id\": {{created_facility_id}},\n    \"name\": \"Test Bridge\",\n    \"description\": \"Test bridge device\",\n    \"ip_address\": \"192.168.1.100\",\n    \"port\": 8080,\n    \"device_type\": \"bridge\",\n    \"firmware_version\": \"1.0.0\",\n    \"status\": \"online\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/bridges",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "bridges"
+                            ]
+                        },
+                        "description": "Register a new bridge device"
+                    }
+                },
+                {
+                    "name": "Get All Bridges",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/bridges?facility_id={{created_facility_id}}",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "bridges"
+                            ],
+                            "query": [
+                                {
+                                    "key": "facility_id",
+                                    "value": "{{created_facility_id}}"
+                                }
+                            ]
+                        },
+                        "description": "Get all bridges for a facility"
+                    }
+                },
+                {
+                    "name": "Update Bridge",
+                    "request": {
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"name\": \"Updated Test Bridge\",\n    \"description\": \"Updated bridge device\",\n    \"ip_address\": \"192.168.1.101\",\n    \"status\": \"online\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/bridges/{{bridge_device_id}}",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "bridges",
+                                "{{bridge_device_id}}"
+                            ]
+                        },
+                        "description": "Update bridge device"
+                    }
+                },
+                {
+                    "name": "Register Edge Connection",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"edge_device_id\": \"camera_001\",\n    \"edge_device_type\": \"camera\",\n    \"connection_status\": \"connected\",\n    \"last_seen\": \"2025-09-05T12:00:00Z\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/bridges/{{bridge_device_id}}/connections",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "bridges",
+                                "{{bridge_device_id}}",
+                                "connections"
+                            ]
+                        },
+                        "description": "Register edge device connection to bridge"
+                    }
+                },
+                {
+                    "name": "Get Edge Connections",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/bridges/{{bridge_device_id}}/connections",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "bridges",
+                                "{{bridge_device_id}}",
+                                "connections"
+                            ]
+                        },
+                        "description": "Get all edge connections for a bridge"
+                    }
+                },
+                {
+                    "name": "Get Bridge Activities",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/bridges/{{bridge_device_id}}/activities?limit=10",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "bridges",
+                                "{{bridge_device_id}}",
+                                "activities"
+                            ],
+                            "query": [
+                                {
+                                    "key": "limit",
+                                    "value": "10"
+                                }
+                            ]
+                        },
+                        "description": "Get bridge activity logs"
+                    }
+                },
+                {
+                    "name": "Unregister Bridge",
+                    "request": {
+                        "method": "DELETE",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/bridges/{{bridge_device_id}}",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "bridges",
+                                "{{bridge_device_id}}"
+                            ]
+                        },
+                        "description": "Unregister bridge device"
+                    }
+                }
+            ],
+            "description": "Bridge device management endpoints"
+        },
+        {
+            "name": "05 - Cameras",
+            "item": [
+                {
+                    "name": "Register Camera",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "// Store camera device ID",
+                                    "if (pm.response.code === 200) {",
+                                    "    var jsonData = pm.response.json();",
+                                    "    if (jsonData.camera && jsonData.camera.device_id) {",
+                                    "        pm.environment.set(\"camera_device_id\", jsonData.camera.device_id);",
+                                    "    }",
+                                    "}"
+                                ]
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"device_id\": \"camera_001\",\n    \"facility_id\": {{created_facility_id}},\n    \"name\": \"Test Camera\",\n    \"description\": \"Test camera device\",\n    \"ip_address\": \"192.168.1.200\",\n    \"port\": 8080,\n    \"device_type\": \"camera\",\n    \"firmware_version\": \"1.0.0\",\n    \"status\": \"online\",\n    \"resolution\": \"1080p\",\n    \"fps\": 30\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/cameras/register",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "cameras",
+                                "register"
+                            ]
+                        },
+                        "description": "Register a new camera device"
+                    }
+                },
+                {
+                    "name": "Get All Cameras",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/cameras?facility_id={{created_facility_id}}",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "cameras"
+                            ],
+                            "query": [
+                                {
+                                    "key": "facility_id",
+                                    "value": "{{created_facility_id}}"
+                                },
+                                {
+                                    "key": "status",
+                                    "value": "online",
+                                    "disabled": true
+                                }
+                            ]
+                        },
+                        "description": "Get all cameras for a facility"
+                    }
+                },
+                {
+                    "name": "Update Camera",
+                    "request": {
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"name\": \"Updated Test Camera\",\n    \"description\": \"Updated camera device\",\n    \"ip_address\": \"192.168.1.201\",\n    \"status\": \"online\",\n    \"resolution\": \"4K\",\n    \"fps\": 60\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/cameras/{{camera_device_id}}",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "cameras",
+                                "{{camera_device_id}}"
+                            ]
+                        },
+                        "description": "Update camera device"
+                    }
+                },
+                {
+                    "name": "Camera Control",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"command\": \"start_recording\",\n    \"parameters\": {\n        \"duration\": 300,\n        \"quality\": \"high\"\n    }\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/cameras/{{camera_device_id}}/control",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "cameras",
+                                "{{camera_device_id}}",
+                                "control"
+                            ]
+                        },
+                        "description": "Send control command to camera"
+                    }
+                },
+                {
+                    "name": "Get Camera Activities",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/cameras/activities?limit=10&facility_id={{created_facility_id}}",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "cameras",
+                                "activities"
+                            ],
+                            "query": [
+                                {
+                                    "key": "limit",
+                                    "value": "10"
+                                },
+                                {
+                                    "key": "facility_id",
+                                    "value": "{{created_facility_id}}"
+                                },
+                                {
+                                    "key": "device_id",
+                                    "value": "{{camera_device_id}}",
+                                    "disabled": true
+                                }
+                            ]
+                        },
+                        "description": "Get camera activity logs"
+                    }
+                },
+                {
+                    "name": "Unregister Camera",
+                    "request": {
+                        "method": "POST",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/cameras/{{camera_device_id}}/unregister",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "cameras",
+                                "{{camera_device_id}}",
+                                "unregister"
+                            ]
+                        },
+                        "description": "Unregister camera device"
+                    }
+                }
+            ],
+            "description": "Camera device management endpoints"
+        },
+        {
+            "name": "06 - Locks",
+            "item": [
+                {
+                    "name": "Register Lock",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "// Store lock device ID",
+                                    "if (pm.response.code === 200) {",
+                                    "    var jsonData = pm.response.json();",
+                                    "    if (jsonData.lock && jsonData.lock.device_id) {",
+                                    "        pm.environment.set(\"lock_device_id\", jsonData.lock.device_id);",
+                                    "    }",
+                                    "}"
+                                ]
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"device_id\": \"lock_001\",\n    \"facility_id\": {{created_facility_id}},\n    \"name\": \"Main Entrance Lock\",\n    \"description\": \"Smart lock for main entrance\",\n    \"ip_address\": \"192.168.1.300\",\n    \"port\": 8080,\n    \"device_type\": \"smart_lock\",\n    \"firmware_version\": \"2.0.0\",\n    \"status\": \"locked\",\n    \"lock_type\": \"electromagnetic\",\n    \"location\": \"main_entrance\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/locks/register",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "locks",
+                                "register"
+                            ]
+                        },
+                        "description": "Register a new lock device"
+                    }
+                },
+                {
+                    "name": "Get All Locks",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/locks?facility_id={{created_facility_id}}",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "locks"
+                            ],
+                            "query": [
+                                {
+                                    "key": "facility_id",
+                                    "value": "{{created_facility_id}}"
+                                },
+                                {
+                                    "key": "status",
+                                    "value": "locked",
+                                    "disabled": true
+                                },
+                                {
+                                    "key": "location",
+                                    "value": "main_entrance",
+                                    "disabled": true
+                                }
+                            ]
+                        },
+                        "description": "Get all locks for a facility"
+                    }
+                },
+                {
+                    "name": "Update Lock",
+                    "request": {
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"name\": \"Updated Main Entrance Lock\",\n    \"description\": \"Updated smart lock for main entrance\",\n    \"ip_address\": \"192.168.1.301\",\n    \"status\": \"locked\",\n    \"location\": \"main_entrance_updated\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/locks/{{lock_device_id}}",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "locks",
+                                "{{lock_device_id}}"
+                            ]
+                        },
+                        "description": "Update lock device"
+                    }
+                },
+                {
+                    "name": "Lock Control (Unlock)",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"command\": \"unlock\",\n    \"parameters\": {\n        \"duration\": 10,\n        \"auto_lock\": true,\n        \"reason\": \"authorized_access\"\n    }\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/locks/{{lock_device_id}}/control",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "locks",
+                                "{{lock_device_id}}",
+                                "control"
+                            ]
+                        },
+                        "description": "Send unlock command to lock device"
+                    }
+                },
+                {
+                    "name": "Lock Control (Lock)",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"command\": \"lock\",\n    \"parameters\": {\n        \"force\": false,\n        \"reason\": \"manual_lock\"\n    }\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/locks/{{lock_device_id}}/control",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "locks",
+                                "{{lock_device_id}}",
+                                "control"
+                            ]
+                        },
+                        "description": "Send lock command to lock device"
+                    }
+                },
+                {
+                    "name": "Get Lock Activities",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/locks/activities?limit=10&facility_id={{created_facility_id}}",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "locks",
+                                "activities"
+                            ],
+                            "query": [
+                                {
+                                    "key": "limit",
+                                    "value": "10"
+                                },
+                                {
+                                    "key": "facility_id",
+                                    "value": "{{created_facility_id}}"
+                                },
+                                {
+                                    "key": "device_id",
+                                    "value": "{{lock_device_id}}",
+                                    "disabled": true
+                                }
+                            ]
+                        },
+                        "description": "Get lock activity logs"
+                    }
+                },
+                {
+                    "name": "Unregister Lock",
+                    "request": {
+                        "method": "POST",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/locks/{{lock_device_id}}/unregister",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "locks",
+                                "{{lock_device_id}}",
+                                "unregister"
+                            ]
+                        },
+                        "description": "Unregister lock device"
+                    }
+                }
+            ],
+            "description": "Lock device management and control endpoints"
+        },
+        {
+            "name": "07 - Videos",
+            "item": [
+                {
+                    "name": "Upload Video",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test(\"Status code is 201\", function () {",
+                                    "    pm.response.to.have.status(201);",
+                                    "});",
+                                    "",
+                                    "pm.test(\"Response has video object\", function () {",
+                                    "    var jsonData = pm.response.json();",
+                                    "    pm.expect(jsonData).to.have.property('video');",
+                                    "    pm.expect(jsonData.video).to.have.property('id');",
+                                    "    pm.expect(jsonData.video).to.have.property('facility_id');",
+                                    "    pm.expect(jsonData.video).to.have.property('file_url');",
+                                    "});",
+                                    "",
+                                    "pm.test(\"Response has upload_url\", function () {",
+                                    "    var jsonData = pm.response.json();",
+                                    "    pm.expect(jsonData).to.have.property('upload_url');",
+                                    "    pm.expect(jsonData.upload_url).to.be.a('string');",
+                                    "    pm.expect(jsonData.upload_url).to.include('storage.googleapis.com');",
+                                    "});",
+                                    "",
+                                    "// Store video ID for subsequent requests",
+                                    "if (pm.response.code === 201) {",
+                                    "    var jsonData = pm.response.json();",
+                                    "    if (jsonData.video && jsonData.video.id) {",
+                                    "        pm.environment.set(\"video_id\", jsonData.video.id);",
+                                    "        pm.environment.set(\"uploaded_video_url\", jsonData.upload_url);",
+                                    "    }",
+                                    "}"
+                                ]
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{session_token}}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "formdata",
+                            "formdata": [
+                                {
+                                    "key": "video",
+                                    "type": "file",
+                                    "src": [],
+                                    "description": "Select a video file to upload (MP4, AVI, MOV, etc.)"
+                                },
+                                {
+                                    "key": "facility_id",
+                                    "value": "{{created_facility_id}}",
+                                    "type": "text",
+                                    "description": "The facility ID where the video was recorded"
+                                },
+                                {
+                                    "key": "camera_device_id",
+                                    "value": "{{camera_device_id}}",
+                                    "type": "text",
+                                    "description": "The camera device ID that recorded the video"
+                                },
+                                {
+                                    "key": "recording_type",
+                                    "value": "manual",
+                                    "type": "text",
+                                    "description": "Type of recording (manual, scheduled, motion_detected, etc.)"
+                                },
+                                {
+                                    "key": "start_time",
+                                    "value": "{{$isoTimestamp}}",
+                                    "type": "text",
+                                    "description": "When the recording started (RFC3339 format)"
+                                }
+                            ]
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/videos",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "videos"
+                            ]
+                        },
+                        "description": "Upload a video file to cloud storage and create database record with metadata extraction"
+                    }
+                },
+                {
+                    "name": "Get All Videos",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/videos?facility_id={{created_facility_id}}&limit=10",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "videos"
+                            ],
+                            "query": [
+                                {
+                                    "key": "facility_id",
+                                    "value": "{{created_facility_id}}"
+                                },
+                                {
+                                    "key": "limit",
+                                    "value": "10"
+                                },
+                                {
+                                    "key": "camera_id",
+                                    "value": "{{camera_device_id}}",
+                                    "disabled": true
+                                },
+                                {
+                                    "key": "start_time",
+                                    "value": "2025-01-01T00:00:00Z",
+                                    "disabled": true
+                                },
+                                {
+                                    "key": "end_time",
+                                    "value": "2025-12-31T23:59:59Z",
+                                    "disabled": true
+                                }
+                            ]
+                        },
+                        "description": "Get all videos for a facility"
+                    }
+                },
+                {
+                    "name": "Associate Video",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"association_type\": \"incident\",\n    \"association_id\": \"incident_001\",\n    \"metadata\": {\n        \"incident_type\": \"security_breach\",\n        \"severity\": \"high\",\n        \"notes\": \"Motion detected at main entrance\"\n    }\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/videos/{{video_id}}/associate",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "videos",
+                                "{{video_id}}",
+                                "associate"
+                            ]
+                        },
+                        "description": "Associate video with an incident or event"
+                    }
+                },
+                {
+                    "name": "Disassociate Video",
+                    "request": {
+                        "method": "DELETE",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/videos/{{video_id}}/disassociate?association_type=incident&association_id=incident_001",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "videos",
+                                "{{video_id}}",
+                                "disassociate"
+                            ],
+                            "query": [
+                                {
+                                    "key": "association_type",
+                                    "value": "incident"
+                                },
+                                {
+                                    "key": "association_id",
+                                    "value": "incident_001"
+                                }
+                            ]
+                        },
+                        "description": "Remove association from video"
+                    }
+                },
+                {
+                    "name": "Delete Video",
+                    "request": {
+                        "method": "DELETE",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/videos/{{video_id}}",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "videos",
+                                "{{video_id}}"
+                            ]
+                        },
+                        "description": "Delete a video record"
+                    }
+                }
+            ],
+            "description": "Video management endpoints - Upload videos with automatic metadata extraction, cloud storage, progress tracking, and retry logic"
+        },
+        {
+            "name": "08 - System Health",
+            "item": [
+                {
+                    "name": "Health Check",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test(\"Status code is 200\", function () {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});"
+                                ]
+                            }
+                        }
+                    ],
+                    "request": {
+                        "auth": {
+                            "type": "noauth"
+                        },
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{base_url}}/health",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "health"
+                            ]
+                        },
+                        "description": "System health check endpoint (public)"
+                    }
+                }
+            ],
+            "description": "System health and status endpoints"
+        }
+    ]
+}

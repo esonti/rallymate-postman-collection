@@ -1,57 +1,227 @@
-# RallyMate API Testing Collections
+# RallyMate Postman Collections v2
 
-This repository contains Postman collections for testing the RallyMate API services, including both HTTP REST and gRPC interfaces.
+This directory contains comprehensive Postman collections and environments for testing RallyMate services locally. All collections have been updated to reflect the current state of the codebase with proper session management and authorization.
 
-## 📁 Collections Structure
+## What's Included
 
-```
-collections/
-├── rest/                          # HTTP REST API collections
-│   ├── RallyMate-Auth-REST.json          # Authentication endpoints
-│   ├── RallyMate-Users-REST.json         # User management endpoints
-│   ├── RallyMate-Facilities-REST.json    # Facility management endpoints
-│   ├── RallyMate-Locks-REST.json         # Smart lock endpoints
-│   ├── RallyMate-Cameras-REST.json       # Camera endpoints
-│   ├── RallyMate-Videos-REST.json        # Video management endpoints
-│   └── RallyMate-Bridge-REST.json        # Bridge device endpoints
-├── grpc/                          # gRPC API collections
-│   ├── RallyMate-Auth-gRPC.json          # Authentication gRPC services
-│   ├── RallyMate-Users-gRPC.json         # User management gRPC services
-│   ├── RallyMate-Facilities-gRPC.json    # Facility management gRPC services
-│   ├── RallyMate-Locks-gRPC.json         # Smart lock gRPC services
-│   ├── RallyMate-Cameras-gRPC.json       # Camera gRPC services
-│   ├── RallyMate-Videos-gRPC.json        # Video management gRPC services
-│   └── RallyMate-Bridge-gRPC.json        # Bridge device gRPC services
-└── environments/                  # Environment configurations
-    ├── local.json                 # Local development environment
-    ├── dev.json                   # Development environment
-    └── prod.json                  # Production environment
-```
+### Environment Files
+- **`local-updated-v2.json`** - Complete environment configuration for local testing
 
-## 🚀 Quick Start
+### Collection Files
+- **HTTP REST API** - `collections/rest/RallyMate_HTTP_REST_API_v2.postman_collection.json`
+- **gRPC API** - `collections/grpc/RallyMate_gRPC_API_v2.postman_collection.json`
 
-### Prerequisites
-- [Postman](https://www.postman.com/downloads/) desktop app or web version
-- Running RallyMate services (local or cloud deployment)
+## Quick Setup
 
-### Import Collections
-
-1. **Import REST Collections:**
+1. **Import Environment**
    - Open Postman
-   - Click "Import" button
-   - Select all files from `collections/rest/` directory
-   - Import the environment file from `environments/`
+   - Click "Import" → Select `environments/local-updated-v2.json`
+   - Set this as your active environment
 
-2. **Import gRPC Collections:**
-   - For gRPC testing, you'll need Postman with gRPC support
-   - Import files from `collections/grpc/` directory
-   - Configure the gRPC server URL in the environment
+2. **Import Collections**
+   - Import both collection files from the respective folders
+   - Both collections are pre-configured to use the environment variables
 
-### Environment Setup
+3. **Start Local Services**
+   ```bash
+   cd rallymate-services
+   make run
+   ```
 
-Update the environment variables to match your deployment:
+## Authentication Flow
 
-- **Local Development:** Use `local.json`
+### Cookie-Based Authentication (Recommended)
+The new implementation supports session persistence via cookies:
+
+1. **Send OTP** - Use your phone number
+2. **Verify OTP** - Provide the OTP code
+3. **Automatic Session** - Session and refresh tokens are now set as HttpOnly cookies
+4. **Session Persistence** - Continue testing without re-authenticating
+
+### Token-Based Authentication (Legacy)
+If you prefer manual token management:
+
+1. Use the "Verify OTP" endpoint
+2. Copy the `session_token` from the response
+3. Update the `{{session_token}}` environment variable
+
+## Environment Variables
+
+### Required Setup
+- `test_phone_number` - Your phone number for OTP testing
+- `test_otp_code` - Use "123456" for local testing
+
+### Auto-Populated Variables
+These are automatically set during authentication:
+- `session_token` - Current session token
+- `refresh_token` - Token for session refresh
+- `user_id` - Current user ID
+- `created_facility_id` - ID of test facility (set during creation)
+- `created_user_id` - ID of test user (set during creation)
+- `created_membership_id` - ID of test membership (set during creation)
+- `bridge_device_id` - ID of test bridge device (set during creation)
+- `camera_device_id` - ID of test camera device (set during creation)
+- `lock_device_id` - ID of test lock device (set during creation)
+- `video_id` - ID of test video (set during creation)
+
+## Testing Workflow
+
+### 1. Authentication Test
+```
+01 - Authentication → Send OTP
+01 - Authentication → Verify OTP
+01 - Authentication → Get Current Session
+```
+
+### 2. Profile Access (Always Available)
+```
+02 - Users → Get User Profile
+02 - Users → Update User Profile
+```
+
+### 3. System Data Access (Requires Valid Membership)
+```
+03 - Facilities → Get All Facilities
+04 - Bridge Management → Get All Bridges
+```
+
+### 4. Admin Operations (Requires Admin Role)
+```
+02 - Users → Create User
+03 - Facilities → Create Facility
+```
+
+## Authorization Logic
+
+### Membership Expiry Enforcement
+- **Expired Members**: Can only access profile endpoints
+- **Valid Members**: Can access all facility data for their memberships
+- **Admins**: Can access all data and perform admin operations
+
+### Session Management
+- **Session Tokens**: 24-hour expiry
+- **Refresh Tokens**: 30-day expiry
+- **Cookies**: HttpOnly, Secure, SameSite=Strict
+- **Auto-Refresh**: Use refresh token to get new session token
+
+## Collection Structure
+
+### HTTP REST Collection
+- **Authentication** - OTP flow, session management, logout
+- **Users** - Profile, user management, membership management
+- **Facilities** - Facility CRUD operations
+- **Bridge Management** - Bridge registration and management
+- **Cameras** - Camera registration, control, and activity monitoring
+- **Locks** - Lock registration, control (lock/unlock), and activity monitoring
+- **Videos** - Video creation, association, and management
+- **System Health** - Health check endpoints
+
+### gRPC Collection
+- **Authentication Service** - OTP and session management
+- **Users Service** - User and membership operations
+- **Facilities Service** - Facility operations
+- **Bridge Service** - Bridge operations
+- **Cameras Service** - Camera operations
+- **Videos Service** - Video operations
+- **Locks Service** - Lock operations
+- **System Support Service** - Health and system info
+
+## Testing Membership Expiry
+
+### Create Expired Membership
+```json
+{
+    "phone_number": "+1987654321",
+    "facility_id": {{created_facility_id}},
+    "role": "player",
+    "expiry_date": "2020-12-31T23:59:59Z"  // Past date
+}
+```
+
+### Test Access Restriction
+1. Create user with expired membership
+2. Login as that user
+3. Try accessing facilities - should get 403 Forbidden
+4. Access profile - should work normally
+
+## Common Test Scenarios
+
+### 1. New User Registration Flow
+```
+1. Send OTP
+2. Verify OTP (creates user if doesn't exist)
+3. Get Profile (shows empty memberships)
+4. Admin creates membership for user
+5. User can now access facility data
+```
+
+### 2. Session Persistence Test
+```
+1. Login and verify session works
+2. Close Postman/browser
+3. Reopen and try any authenticated endpoint
+4. Should work without re-authentication (cookies)
+```
+
+### 3. Admin Workflow Test
+```
+1. Login as system admin
+2. Create facility
+3. Create user
+4. Create membership for user
+5. Verify user can access facility data
+```
+
+## Environment Configuration
+
+### Server URLs
+- **HTTP**: `http://localhost:8080`
+- **gRPC**: `http://localhost:9090`
+- **Health**: `http://localhost:8080`
+
+### Test Data
+- **Phone**: `+1234567890` (use your actual number for SMS)
+- **OTP**: `123456` (default for local development)
+- **Timezone**: `America/New_York`
+
+## Troubleshooting
+
+### 401 Unauthorized
+- Check if session token is valid
+- Try refreshing session using refresh token
+- Re-authenticate if needed
+
+### 403 Forbidden
+- Check if user has valid (non-expired) membership
+- Verify user has required role for the operation
+- System admins: ensure admin role is assigned
+
+### 404 Not Found
+- Verify resource IDs are correct
+- Check if resource exists in database
+- Ensure proper facility access permissions
+
+### Cookie Issues
+- Ensure you're using the same domain/port
+- Check that cookies are enabled in Postman
+- Use "Authorization" header as fallback
+
+## Notes
+
+### Development vs Production
+- These collections are configured for local development
+- For production, update the environment URLs
+- Production will require actual SMS for OTP verification
+
+### Database State
+- Test data persists between runs
+- Use DELETE endpoints to clean up test data
+- Or restart services to reset database
+
+### gRPC Testing
+- gRPC endpoints use JSON over HTTP for Postman compatibility
+- Content-Type should be `application/grpc+json`
+- Real gRPC clients use binary protobuf format
   - `base_url`: `http://localhost:8080`
   - `grpc_url`: `localhost:50051`
 

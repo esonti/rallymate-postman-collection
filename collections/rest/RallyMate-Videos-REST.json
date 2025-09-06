@@ -11,7 +11,7 @@
             "name": "Video Management",
             "item": [
                 {
-                    "name": "Create Video",
+                    "name": "Upload Video",
                     "event": [
                         {
                             "listen": "test",
@@ -26,12 +26,21 @@
                                     "    pm.expect(jsonData).to.have.property('video');",
                                     "    pm.expect(jsonData.video).to.have.property('id');",
                                     "    pm.expect(jsonData.video).to.have.property('facility_id');",
+                                    "    pm.expect(jsonData.video).to.have.property('file_url');",
+                                    "});",
+                                    "",
+                                    "pm.test(\"Response has upload_url\", function () {",
+                                    "    var jsonData = pm.response.json();",
+                                    "    pm.expect(jsonData).to.have.property('upload_url');",
+                                    "    pm.expect(jsonData.upload_url).to.be.a('string');",
+                                    "    pm.expect(jsonData.upload_url).to.include('storage.googleapis.com');",
                                     "});",
                                     "",
                                     "// Store video ID for subsequent requests",
                                     "if (pm.response.code === 201) {",
                                     "    var response = pm.response.json();",
                                     "    pm.environment.set('video_id', response.video.id);",
+                                    "    pm.environment.set('uploaded_video_url', response.upload_url);",
                                     "}"
                                 ]
                             }
@@ -41,17 +50,44 @@
                         "method": "POST",
                         "header": [
                             {
-                                "key": "Content-Type",
-                                "value": "application/json"
-                            },
-                            {
                                 "key": "Authorization",
                                 "value": "Bearer {{session_token}}"
                             }
                         ],
                         "body": {
-                            "mode": "raw",
-                            "raw": "{\n    \"facility_id\": {{test_facility_id}},\n    \"camera_device_id\": \"{{camera_device_id}}\",\n    \"file_url\": \"https://storage.googleapis.com/test-bucket/video-{{$timestamp}}.mp4\",\n    \"thumbnail_url\": \"https://storage.googleapis.com/test-bucket/thumb-{{$timestamp}}.jpg\",\n    \"start_timestamp\": {{$timestamp}}000,\n    \"duration_seconds\": 300,\n    \"file_size_bytes\": 52428800,\n    \"recording_type\": \"manual\"\n}"
+                            "mode": "formdata",
+                            "formdata": [
+                                {
+                                    "key": "video",
+                                    "type": "file",
+                                    "src": [],
+                                    "description": "Select a video file to upload (MP4, AVI, MOV, etc.)"
+                                },
+                                {
+                                    "key": "facility_id",
+                                    "value": "{{test_facility_id}}",
+                                    "type": "text",
+                                    "description": "The facility ID where the video was recorded"
+                                },
+                                {
+                                    "key": "camera_device_id",
+                                    "value": "{{camera_device_id}}",
+                                    "type": "text",
+                                    "description": "The camera device ID that recorded the video"
+                                },
+                                {
+                                    "key": "recording_type",
+                                    "value": "manual",
+                                    "type": "text",
+                                    "description": "Type of recording (manual, scheduled, motion_detected, etc.)"
+                                },
+                                {
+                                    "key": "start_time",
+                                    "value": "{{$isoTimestamp}}",
+                                    "type": "text",
+                                    "description": "When the recording started (RFC3339 format)"
+                                }
+                            ]
                         },
                         "url": {
                             "raw": "{{base_url}}/api/videos",
