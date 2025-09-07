@@ -133,6 +133,72 @@
             "value": "",
             "description": "URL of uploaded video in cloud storage (auto-populated)",
             "enabled": true
+        },
+        {
+            "key": "test_device_id",
+            "value": "device123",
+            "description": "Test device ID for OTC authentication",
+            "enabled": true
+        },
+        {
+            "key": "test_otc_code",
+            "value": "ABCDEF",
+            "description": "Test OTC code for device authentication",
+            "enabled": true
+        },
+        {
+            "key": "device_session_token",
+            "value": "",
+            "description": "Current device session token (auto-populated after OTC authentication)",
+            "enabled": true
+        },
+        {
+            "key": "device_refresh_token",
+            "value": "",
+            "description": "Current device refresh token (auto-populated after OTC authentication)",
+            "enabled": true
+        },
+        {
+            "key": "test_edge_device_id",
+            "value": "edge_device_001",
+            "description": "Test edge device ID for bridge connections",
+            "enabled": true
+        },
+        {
+            "key": "test_lock_device_id",
+            "value": "lock_device_001",
+            "description": "Test lock device ID for registration",
+            "enabled": true
+        },
+        {
+            "key": "test_camera_device_id",
+            "value": "camera_device_001",
+            "description": "Test camera device ID for registration",
+            "enabled": true
+        },
+        {
+            "key": "test_bridge_device_id",
+            "value": "bridge_device_001",
+            "description": "Test bridge device ID for registration",
+            "enabled": true
+        },
+        {
+            "key": "created_lock_activity_id",
+            "value": "",
+            "description": "ID of created lock activity (auto-populated)",
+            "enabled": true
+        },
+        {
+            "key": "created_camera_activity_id",
+            "value": "",
+            "description": "ID of created camera activity (auto-populated)",
+            "enabled": true
+        },
+        {
+            "key": "created_bridge_activity_id",
+            "value": "",
+            "description": "ID of created bridge activity (auto-populated)",
+            "enabled": true
         }
     ],
     "_postman_variable_scope": "environment"

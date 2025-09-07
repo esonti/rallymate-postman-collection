@@ -1,7 +1,7 @@
 {
     "info": {
         "name": "RallyMate HTTP REST API v2 - Complete",
-        "description": "Complete HTTP REST API collection for RallyMate services with all endpoints from the latest service implementation",
+        "description": "Complete HTTP REST API collection for RallyMate services with all endpoints from the latest service implementation.\n\nIMPORTANT ENUM VALUES:\n\n**Membership Roles:**\n- MEMBERSHIP_ROLE_UNSPECIFIED\n- MEMBERSHIP_ROLE_PLAYER  \n- MEMBERSHIP_ROLE_MANAGER\n\n**Lock Actions:**\n- LOCK_ACTION_UNSPECIFIED\n- LOCK\n- UNLOCK\n- STATUS_CHECK\n\n**Lock States:**\n- LOCK_STATE_UNSPECIFIED\n- LOCKED\n- UNLOCKED\n- JAMMED\n\n**Camera Actions:**\n- CAMERA_ACTION_UNSPECIFIED\n- START_LIVE_STREAM\n- STOP_LIVE_STREAM\n- START_RECORD\n- STOP_RECORD\n- STATUS_CHECK\n\n**Connection Status (for locks, cameras, bridges):**\n- UNKNOWN\n- CONNECTED\n- DISCONNECTED\n- DEGRADED",
         "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
     },
     "auth": {
@@ -368,6 +368,162 @@
                         },
                         "description": "Admin endpoint to logout a user from all devices"
                     }
+                },
+                {
+                    "name": "Send OTC (Device)",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test(\"Status code is 200\", function () {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});",
+                                    "",
+                                    "pm.test(\"Response has success true\", function () {",
+                                    "    var jsonData = pm.response.json();",
+                                    "    pm.expect(jsonData.success).to.be.true;",
+                                    "});"
+                                ]
+                            }
+                        }
+                    ],
+                    "request": {
+                        "auth": {
+                            "type": "noauth"
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"device_id\": \"{{test_device_id}}\",\n    \"device_info\": \"IoT Camera v1.0\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{api_base_url}}/auth/otc/send",
+                            "host": [
+                                "{{api_base_url}}"
+                            ],
+                            "path": [
+                                "auth",
+                                "otc",
+                                "send"
+                            ]
+                        },
+                        "description": "Send OTC to facility managers for device authentication"
+                    }
+                },
+                {
+                    "name": "Verify OTC (Device)",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test(\"Status code is 200\", function () {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});",
+                                    "",
+                                    "pm.test(\"Response has success true\", function () {",
+                                    "    var jsonData = pm.response.json();",
+                                    "    pm.expect(jsonData.success).to.be.true;",
+                                    "});",
+                                    "",
+                                    "// Auto-populate device session variables",
+                                    "if (pm.response.code === 200) {",
+                                    "    var jsonData = pm.response.json();",
+                                    "    if (jsonData.session && jsonData.session.session_token) {",
+                                    "        pm.environment.set(\"device_session_token\", jsonData.session.session_token);",
+                                    "    }",
+                                    "    if (jsonData.session && jsonData.session.refresh_token) {",
+                                    "        pm.environment.set(\"device_refresh_token\", jsonData.session.refresh_token);",
+                                    "    }",
+                                    "}"
+                                ]
+                            }
+                        }
+                    ],
+                    "request": {
+                        "auth": {
+                            "type": "noauth"
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"device_id\": \"{{test_device_id}}\",\n    \"otc_code\": \"{{test_otc_code}}\",\n    \"device_info\": \"IoT Camera v1.0\",\n    \"ip_address\": \"192.168.1.100\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{api_base_url}}/auth/otc/verify",
+                            "host": [
+                                "{{api_base_url}}"
+                            ],
+                            "path": [
+                                "auth",
+                                "otc",
+                                "verify"
+                            ]
+                        },
+                        "description": "Verify OTC and get device session token"
+                    }
+                },
+                {
+                    "name": "Get Device Sessions",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test(\"Status code is 200\", function () {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});",
+                                    "",
+                                    "pm.test(\"Response has sessions array\", function () {",
+                                    "    var jsonData = pm.response.json();",
+                                    "    pm.expect(jsonData.sessions).to.be.an('array');",
+                                    "});"
+                                ]
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{api_base_url}}/auth/device-sessions?device_id={{test_device_id}}&page=1&page_size=20",
+                            "host": [
+                                "{{api_base_url}}"
+                            ],
+                            "path": [
+                                "auth",
+                                "device-sessions"
+                            ],
+                            "query": [
+                                {
+                                    "key": "device_id",
+                                    "value": "{{test_device_id}}"
+                                },
+                                {
+                                    "key": "page",
+                                    "value": "1"
+                                },
+                                {
+                                    "key": "page_size",
+                                    "value": "20"
+                                }
+                            ]
+                        },
+                        "description": "Get paginated list of device sessions"
+                    }
                 }
             ],
             "description": "Authentication endpoints with OTP flow and session management"
@@ -449,7 +605,7 @@
                                 },
                                 {
                                     "key": "role",
-                                    "value": "player",
+                                    "value": "MEMBERSHIP_ROLE_PLAYER",
                                     "disabled": true
                                 },
                                 {
@@ -459,7 +615,7 @@
                                 }
                             ]
                         },
-                        "description": "Get all users with optional filtering"
+                        "description": "Get all users with optional filtering. Available roles: MEMBERSHIP_ROLE_UNSPECIFIED, MEMBERSHIP_ROLE_PLAYER, MEMBERSHIP_ROLE_MANAGER"
                     }
                 },
                 {
@@ -577,7 +733,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\n    \"phone_number\": \"+1555987654\",\n    \"facility_id\": {{created_facility_id}},\n    \"role\": \"player\",\n    \"expiry_date\": \"2025-12-31T23:59:59Z\"\n}"
+                            "raw": "{\n    \"phone_number\": \"+1555987654\",\n    \"facility_id\": {{created_facility_id}},\n    \"role\": \"MEMBERSHIP_ROLE_PLAYER\",\n    \"expiry_date\": \"2025-12-31T23:59:59Z\"\n}"
                         },
                         "url": {
                             "raw": "{{api_base_url}}/users/memberships/phone",
@@ -590,7 +746,7 @@
                                 "phone"
                             ]
                         },
-                        "description": "Create membership by phone number"
+                        "description": "Create membership by phone number. Available roles: MEMBERSHIP_ROLE_PLAYER, MEMBERSHIP_ROLE_MANAGER"
                     }
                 },
                 {
@@ -605,7 +761,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\n    \"user_id\": {{created_user_id}},\n    \"facility_id\": {{created_facility_id}},\n    \"role\": \"player\",\n    \"expiry_date\": \"2025-12-31T23:59:59Z\"\n}"
+                            "raw": "{\n    \"user_id\": {{created_user_id}},\n    \"facility_id\": {{created_facility_id}},\n    \"role\": \"MEMBERSHIP_ROLE_PLAYER\",\n    \"expiry_date\": \"2025-12-31T23:59:59Z\"\n}"
                         },
                         "url": {
                             "raw": "{{api_base_url}}/users/memberships/userid",
@@ -618,7 +774,7 @@
                                 "userid"
                             ]
                         },
-                        "description": "Create membership by user ID"
+                        "description": "Create membership by user ID. Available roles: MEMBERSHIP_ROLE_PLAYER, MEMBERSHIP_ROLE_MANAGER"
                     }
                 },
                 {
@@ -822,7 +978,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\n    \"device_id\": \"lock-{{$randomUUID}}\",\n    \"facility_id\": {{created_facility_id}},\n    \"location\": \"Main Entrance\",\n    \"device_name\": \"Main Door Lock\",\n    \"device_type\": \"smart_lock\",\n    \"bridge_device_id\": \"{{bridge_device_id}}\"\n}"
+                            "raw": "{\n    \"device_id\": \"{{test_lock_device_id}}\",\n    \"facility_id\": {{created_facility_id}},\n    \"name\": \"Main Door Lock\"\n}"
                         },
                         "url": {
                             "raw": "{{api_base_url}}/locks/register",
@@ -856,18 +1012,18 @@
                                     "value": "{{created_facility_id}}"
                                 },
                                 {
-                                    "key": "status",
-                                    "value": "locked",
+                                    "key": "state",
+                                    "value": "LOCKED",
                                     "disabled": true
                                 },
                                 {
-                                    "key": "location",
-                                    "value": "main_entrance",
+                                    "key": "edge_connectivity",
+                                    "value": "CONNECTED",
                                     "disabled": true
                                 }
                             ]
                         },
-                        "description": "Get all locks for a facility"
+                        "description": "Get all locks for a facility. Available states: LOCK_STATE_UNSPECIFIED, LOCKED, UNLOCKED, JAMMED. Available connectivity: UNKNOWN, CONNECTED, DISCONNECTED, DEGRADED"
                     }
                 },
                 {
@@ -882,7 +1038,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\n    \"device_name\": \"Updated Main Door Lock\",\n    \"location\": \"Updated Main Entrance\"\n}"
+                            "raw": "{\n    \"facility_id\": {{created_facility_id}},\n    \"device_id\": \"{{lock_device_id}}\",\n    \"name\": \"Updated Main Door Lock\",\n    \"firmware_version\": \"1.2.3\",\n    \"edge_connectivity\": \"CONNECTED\",\n    \"state\": \"LOCKED\"\n}"
                         },
                         "url": {
                             "raw": "{{api_base_url}}/locks/{{lock_device_id}}",
@@ -909,7 +1065,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\n    \"action\": \"unlock\",\n    \"duration_seconds\": 30\n}"
+                            "raw": "{\n    \"facility_id\": {{created_facility_id}},\n    \"device_id\": \"{{lock_device_id}}\",\n    \"user_id\": {{user_id}},\n    \"action\": \"UNLOCK\",\n    \"reason\": \"User requested access\"\n}"
                         },
                         "url": {
                             "raw": "{{api_base_url}}/locks/{{lock_device_id}}/control",
@@ -922,7 +1078,7 @@
                                 "control"
                             ]
                         },
-                        "description": "Control lock (unlock/lock)"
+                        "description": "Control lock (UNLOCK/LOCK/STATUS_CHECK). Available actions: LOCK_ACTION_UNSPECIFIED, LOCK, UNLOCK, STATUS_CHECK"
                     }
                 },
                 {
@@ -1168,8 +1324,8 @@
                                     "// Store bridge device ID",
                                     "if (pm.response.code === 200) {",
                                     "    var jsonData = pm.response.json();",
-                                    "    if (jsonData.bridge && jsonData.bridge.bridge_device_id) {",
-                                    "        pm.environment.set(\"bridge_device_id\", jsonData.bridge.bridge_device_id);",
+                                    "    if (jsonData.bridge && jsonData.bridge.device_id) {",
+                                    "        pm.environment.set(\"bridge_device_id\", jsonData.bridge.device_id);",
                                     "    }",
                                     "}"
                                 ]
@@ -1186,7 +1342,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\n    \"bridge_device_id\": \"bridge-{{$randomUUID}}\",\n    \"facility_id\": {{created_facility_id}},\n    \"device_name\": \"Main Bridge Device\",\n    \"location\": \"Server Room\",\n    \"ip_address\": \"192.168.1.100\",\n    \"port\": 8080\n}"
+                            "raw": "{\n    \"device_id\": \"{{test_bridge_device_id}}\",\n    \"facility_id\": {{created_facility_id}},\n    \"name\": \"Main Bridge Device\"\n}"
                         },
                         "url": {
                             "raw": "{{api_base_url}}/bridges",
@@ -1432,7 +1588,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\n    \"device_id\": \"camera-{{$randomUUID}}\",\n    \"facility_id\": {{created_facility_id}},\n    \"location\": \"Main Entrance\",\n    \"device_name\": \"Main Entrance Camera\",\n    \"device_type\": \"security_camera\",\n    \"bridge_device_id\": \"{{bridge_device_id}}\",\n    \"stream_url\": \"rtsp://192.168.1.101:554/stream\"\n}"
+                            "raw": "{\n    \"device_id\": \"{{test_camera_device_id}}\",\n    \"facility_id\": {{created_facility_id}},\n    \"name\": \"Main Entrance Camera\"\n}"
                         },
                         "url": {
                             "raw": "{{api_base_url}}/cameras/register",
@@ -1519,7 +1675,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\n    \"action\": \"start_recording\",\n    \"duration_seconds\": 60\n}"
+                            "raw": "{\n    \"facility_id\": {{created_facility_id}},\n    \"device_id\": \"{{camera_device_id}}\",\n    \"user_id\": {{user_id}},\n    \"action\": \"START_RECORD\",\n    \"reason\": \"User initiated recording\"\n}"
                         },
                         "url": {
                             "raw": "{{api_base_url}}/cameras/{{camera_device_id}}/control",
@@ -1532,7 +1688,7 @@
                                 "control"
                             ]
                         },
-                        "description": "Control camera (start/stop recording, etc.)"
+                        "description": "Control camera operations. Available actions: CAMERA_ACTION_UNSPECIFIED, START_LIVE_STREAM, STOP_LIVE_STREAM, START_RECORD, STOP_RECORD, STATUS_CHECK"
                     }
                 },
                 {
