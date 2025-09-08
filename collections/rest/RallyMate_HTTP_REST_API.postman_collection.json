@@ -111,14 +111,14 @@
                                     "// Auto-populate session variables",
                                     "if (pm.response.code === 200) {",
                                     "    var jsonData = pm.response.json();",
-                                    "    if (jsonData.token) {",
-                                    "        pm.environment.set(\"session_token\", jsonData.token);",
+                                    "    if (jsonData.session && jsonData.session.session_token) {",
+                                    "        pm.environment.set(\"session_token\", jsonData.session.session_token);",
                                     "    }",
                                     "    if (jsonData.session && jsonData.session.refresh_token) {",
                                     "        pm.environment.set(\"refresh_token\", jsonData.session.refresh_token);",
                                     "    }",
-                                    "    if (jsonData.user && jsonData.user.id) {",
-                                    "        pm.environment.set(\"user_id\", jsonData.user.id);",
+                                    "    if (jsonData.session && jsonData.session.user_id) {",
+                                    "        pm.environment.set(\"user_id\", jsonData.session.user_id);",
                                     "    }",
                                     "}"
                                 ]

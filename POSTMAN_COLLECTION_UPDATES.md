@@ -189,7 +189,108 @@ Available values:
 ### 5. Updated Descriptions
 All endpoint descriptions now include available enum values for reference.
 
-### 6. Fixed Test Scripts
+### 6. HTTP API Protobuf Compliance Update
+
+#### Fixed VerifyOTP Response Structure
+**Before (non-compliant with protobuf):**
+```go
+type VerifyOTPResponse struct {
+    Success bool                 `json:"success"`
+    Message string               `json:"message"`
+    Token   string               `json:"token,omitempty"`        // NOT IN PROTO!
+    User    *models.User         `json:"user,omitempty"`         // NOT IN PROTO!
+    Session *UserSessionResponse `json:"session,omitempty"`      // Wrong type
+}
+```
+
+**After (compliant with protobuf):**
+```go
+type VerifyOTPResponse struct {
+    Success bool                 `json:"success"`
+    Message string               `json:"message"`
+    Session *models.UserSession  `json:"session,omitempty"`      // Matches proto UserSession
+}
+```
+
+#### Fixed VerifyOTC Response Structure
+**Before (non-compliant with protobuf):**
+```go
+type VerifyOTCResponse struct {
+    Success bool                   `json:"success"`
+    Message string                 `json:"message"`
+    Session *DeviceSessionResponse `json:"session,omitempty"`   // Wrong type
+}
+```
+
+**After (compliant with protobuf):**
+```go
+type VerifyOTCResponse struct {
+    Success bool                   `json:"success"`
+    Message string                 `json:"message"`
+    Session *models.DeviceSession  `json:"session,omitempty"`   // Matches proto DeviceSession
+}
+```
+
+#### Benefits of Compliance
+- **Consistency**: HTTP and gRPC APIs now return identical response structures
+- **Type Safety**: Using actual model types instead of custom response types
+- **Maintainability**: Single source of truth for response structure (protobuf)
+- **API Documentation**: Protobuf definitions accurately represent both gRPC and HTTP responses
+
+Both VerifyOTP and VerifyOTC now return exactly what's defined in `auth.proto`:
+```json
+{
+    "success": true,
+    "message": "OTP/OTC verified successfully",
+    "session": {
+        "id": 123,
+        "user_id": 456,           // Only in VerifyOTP
+        "device_id": "device-xyz", // Only in VerifyOTC
+        "session_token": "jwt_token_here",
+        "refresh_token": "refresh_token_here",
+        "status": "SESSION_STATUS_ACTIVE",
+        "expires_at": "2025-09-08T23:07:29Z",
+        "last_accessed_at": "2025-09-07T23:07:29Z",
+        "created_at": "2025-09-07T23:07:29Z",
+        "updated_at": "2025-09-07T23:07:29Z",
+        "device_info": "Postman Test Client",
+        "ip_address": "127.0.0.1"
+    }
+}
+```
+
+### 7. Updated Authentication Response Handling
+
+#### VerifyOTP Response Format Update
+**Before (inconsistent):**
+- Test script expected `jsonData.token` for session token
+- Test script expected `jsonData.user.id` for user ID
+
+**After (consistent with VerifyOTC):**
+- Test script now uses `jsonData.session.session_token` for session token
+- Test script now uses `jsonData.session.user_id` for user ID
+- Response format is now consistent between VerifyOTP and VerifyOTC
+
+Both VerifyOTP and VerifyOTC now return:
+```json
+{
+    "success": true,
+    "message": "OTP/OTC verified successfully",
+    "session": {
+        "id": 123,
+        "session_token": "jwt_token_here",
+        "refresh_token": "refresh_token_here",
+        "user_id": 456,     // Only in VerifyOTP
+        "device_id": "xyz", // Only in VerifyOTC
+        "status": "SESSION_STATUS_ACTIVE",
+        "expires_at": "2025-09-08T23:07:29Z",
+        "device_info": "Postman Test Client",
+        "ip_address": "127.0.0.1"
+    }
+}
+```
+
+### 7. Fixed Test Scripts
 Updated bridge registration test script to extract `device_id` instead of `bridge_device_id` from response.
 
 ### 7. Health Check Verification
@@ -197,7 +298,8 @@ Confirmed that health check endpoint (`GET /health`) is correctly configured and
 
 ## Verification Status
 
-✅ **Authentication endpoints** - All OTP/OTC flows correct
+✅ **Authentication endpoints** - HTTP API now strictly compliant with protobuf definitions
+✅ **Response consistency** - VerifyOTP and VerifyOTC have identical structure and format
 ✅ **User management** - Profile, users, memberships with correct role enums
 ✅ **Facility management** - CRUD operations correct
 ✅ **Lock management** - Registration, control, activities with correct enums
