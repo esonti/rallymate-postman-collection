@@ -1,17 +1,22 @@
 # RallyMate Postman Collections v2
 
-This directory contains comprehensive Postman collections and environments for testing RallyMate services locally. All collections have been updated to reflect the current state of the codebase with proper session management and authorization.
+This directory contains comprehensive Postman collections and environments for testing RallyMate services locally and edge deployment scenarios.
 
 ## What's Included
 
 ### Environment Files
 - **`local-updated-v2.json`** - Complete environment configuration for local testing
+- **`edge-api-local.json`** - Local bridge testing environment
+- **`edge-api-pi-zero.json`** - Pi Zero bridge testing environment
 
 ### Collection Files
 - **HTTP REST API** - `collections/rest/RallyMate_HTTP_REST_API_v2.postman_collection.json`
 - **gRPC API** - `collections/grpc/RallyMate_gRPC_API_v2.postman_collection.json`
+- **Edge API** - `collections/rest/RallyMate_Edge_API.postman_collection.json` 🆕
 
 ## Quick Setup
+
+### Core API Testing (RallyMate Platform)
 
 1. **Import Environment**
    - Open Postman
@@ -27,6 +32,26 @@ This directory contains comprehensive Postman collections and environments for t
    cd rallymate-services
    make run
    ```
+
+### Edge API Testing (Bridge Devices)
+
+1. **Import Edge API Collection**
+   - Import `collections/rest/RallyMate_Edge_API.postman_collection.json`
+
+2. **Import Environment**
+   - For local bridge: Import `environments/edge-api-local.json`
+   - For Pi Zero bridge: Import `environments/edge-api-pi-zero.json`
+
+3. **Configure Bridge Connection**
+   - Update `bridge_host` with your bridge's IP or hostname
+   - Ensure bridge is running and accessible
+
+4. **Test Basic Connectivity**
+   ```
+   GET {{base_url}}/api/health
+   ```
+
+For detailed Edge API documentation, see [Edge API README](collections/rest/Edge_API_README.md).
 
 ## Authentication Flow
 

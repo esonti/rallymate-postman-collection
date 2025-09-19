@@ -1,0 +1,829 @@
+{
+    "info": {
+        "name": "RallyMate Edge API",
+        "description": "Comprehensive collection for testing RallyMate Bridge Edge API endpoints. This collection covers all device discovery, management, health monitoring, and provisioning operations.",
+        "version": "1.0.0",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    },
+    "variable": [
+        {
+            "key": "bridge_host",
+            "value": "{{bridge_host}}",
+            "type": "string",
+            "description": "Bridge host address (e.g., bridge.local, 192.168.1.100)"
+        },
+        {
+            "key": "bridge_port",
+            "value": "{{bridge_port}}",
+            "type": "string",
+            "description": "Bridge API port (default: 8090)"
+        },
+        {
+            "key": "base_url",
+            "value": "http://{{bridge_host}}:{{bridge_port}}",
+            "type": "string",
+            "description": "Complete base URL for Edge API"
+        }
+    ],
+    "item": [
+        {
+            "name": "Health Monitoring",
+            "description": "Health and system monitoring endpoints",
+            "item": [
+                {
+                    "name": "Get Basic Health",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/health",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "health"
+                            ]
+                        },
+                        "description": "Returns basic health status of the bridge"
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Get System Information",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/health/system",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "health",
+                                "system"
+                            ]
+                        },
+                        "description": "Returns detailed system information including hardware, OS, and resource usage"
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Get Connectivity Status",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/health/connectivity",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "health",
+                                "connectivity"
+                            ]
+                        },
+                        "description": "Returns connectivity status for MQTT, network, and external services"
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Get Performance Metrics",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/health/metrics",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "health",
+                                "metrics"
+                            ]
+                        },
+                        "description": "Returns performance metrics, resource usage, and operational statistics"
+                    },
+                    "response": []
+                }
+            ]
+        },
+        {
+            "name": "Discovery Service",
+            "description": "Bridge discovery and service advertisement",
+            "item": [
+                {
+                    "name": "Get Bridge Information",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/discovery",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "discovery"
+                            ]
+                        },
+                        "description": "Returns basic bridge identification and status for service discovery"
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Get Service Information",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/discovery/service",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "discovery",
+                                "service"
+                            ]
+                        },
+                        "description": "Returns detailed service information and capabilities"
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Get Network Information",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/discovery/network",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "discovery",
+                                "network"
+                            ]
+                        },
+                        "description": "Returns network configuration and connectivity details"
+                    },
+                    "response": []
+                }
+            ]
+        },
+        {
+            "name": "Device Management",
+            "description": "Device discovery, connection, and control operations",
+            "item": [
+                {
+                    "name": "List All Devices",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/devices",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "devices"
+                            ],
+                            "query": [
+                                {
+                                    "key": "include_disconnected",
+                                    "value": "true",
+                                    "description": "Include disconnected devices in the response",
+                                    "disabled": true
+                                }
+                            ]
+                        },
+                        "description": "Returns all discovered devices with their current status"
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Get Specific Device",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/devices/{{device_id}}",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "devices",
+                                "{{device_id}}"
+                            ]
+                        },
+                        "description": "Returns detailed information for a specific device"
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Discover New Devices",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"protocols\": [],\n  \"timeout_seconds\": 30,\n  \"force_refresh\": false\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/api/devices/discover",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "devices",
+                                "discover"
+                            ]
+                        },
+                        "description": "Performs a new device discovery scan using mDNS"
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Connect to Device",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"connection_timeout\": 30,\n  \"force_reconnect\": false\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/api/devices/{{device_id}}/connect",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "devices",
+                                "{{device_id}}",
+                                "connect"
+                            ]
+                        },
+                        "description": "Establishes connection to a specific device"
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Disconnect from Device",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"graceful\": true\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/api/devices/{{device_id}}/disconnect",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "devices",
+                                "{{device_id}}",
+                                "disconnect"
+                            ]
+                        },
+                        "description": "Disconnects from a specific device"
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Send Device Command",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"command_type\": \"lock\",\n  \"parameters\": {\n    \"action\": \"unlock\",\n    \"duration\": 30\n  },\n  \"timeout_seconds\": 10\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/api/devices/{{device_id}}/command",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "devices",
+                                "{{device_id}}",
+                                "command"
+                            ]
+                        },
+                        "description": "Sends a command to a specific device (e.g., lock/unlock)"
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Get Device Status",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/devices/{{device_id}}/status",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "devices",
+                                "{{device_id}}",
+                                "status"
+                            ]
+                        },
+                        "description": "Returns current status and state of a specific device"
+                    },
+                    "response": []
+                }
+            ]
+        },
+        {
+            "name": "Provisioning",
+            "description": "Bridge provisioning and authentication management",
+            "item": [
+                {
+                    "name": "Get Provisioning Status",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/provision/status",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "provision",
+                                "status"
+                            ]
+                        },
+                        "description": "Returns current provisioning status of the bridge"
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Provision with One-Time Code",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"otc\": \"{{otc_code}}\",\n  \"facility_id\": \"{{facility_id}}\",\n  \"device_name\": \"Bridge - {{bridge_name}}\"\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/api/provision/otc",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "provision",
+                                "otc"
+                            ]
+                        },
+                        "description": "Provisions the bridge using a One-Time Code from the RallyMate platform"
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Validate Session Token",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{session_token}}",
+                                "type": "text"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"token\": \"{{session_token}}\"\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/api/provision/validate",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "provision",
+                                "validate"
+                            ]
+                        },
+                        "description": "Validates the current session token"
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Refresh Session Token",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"refresh_token\": \"{{refresh_token}}\"\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/api/provision/refresh",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "provision",
+                                "refresh"
+                            ]
+                        },
+                        "description": "Refreshes the session token using the refresh token"
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Reset Provisioning",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"confirm\": true,\n  \"preserve_device_id\": false\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/api/provision/reset",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "provision",
+                                "reset"
+                            ]
+                        },
+                        "description": "Resets the bridge to unprovisioned state (WARNING: This will disconnect the bridge from RallyMate platform)"
+                    },
+                    "response": []
+                }
+            ]
+        },
+        {
+            "name": "Testing Workflows",
+            "description": "Common testing workflows and scenarios",
+            "item": [
+                {
+                    "name": "Complete Health Check",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/health",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "health"
+                            ]
+                        },
+                        "description": "Step 1: Basic health check"
+                    },
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test('Health endpoint responds', function () {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});",
+                                    "",
+                                    "pm.test('Response has status field', function () {",
+                                    "    const responseJson = pm.response.json();",
+                                    "    pm.expect(responseJson).to.have.property('status');",
+                                    "});",
+                                    "",
+                                    "// Set device_id from health response if available",
+                                    "const responseJson = pm.response.json();",
+                                    "if (responseJson.device_id) {",
+                                    "    pm.collectionVariables.set('device_id', responseJson.device_id);",
+                                    "}"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "response": []
+                },
+                {
+                    "name": "Device Discovery Workflow",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"timeout_seconds\": 30,\n  \"force_refresh\": true\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/api/devices/discover",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "devices",
+                                "discover"
+                            ]
+                        },
+                        "description": "Step 2: Discover available devices"
+                    },
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test('Discovery completes successfully', function () {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});",
+                                    "",
+                                    "const responseJson = pm.response.json();",
+                                    "pm.test('Discovery returns devices array', function () {",
+                                    "    pm.expect(responseJson).to.have.property('devices');",
+                                    "    pm.expect(responseJson.devices).to.be.an('array');",
+                                    "});",
+                                    "",
+                                    "// Store first device ID for subsequent tests",
+                                    "if (responseJson.devices && responseJson.devices.length > 0) {",
+                                    "    pm.collectionVariables.set('first_device_id', responseJson.devices[0].device_id);",
+                                    "}"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "response": []
+                }
+            ]
+        }
+    ],
+    "event": [
+        {
+            "listen": "prerequest",
+            "script": {
+                "type": "text/javascript",
+                "exec": [
+                    "// Set default values if not provided",
+                    "if (!pm.collectionVariables.get('bridge_host')) {",
+                    "    pm.collectionVariables.set('bridge_host', 'bridge.local');",
+                    "}",
+                    "if (!pm.collectionVariables.get('bridge_port')) {",
+                    "    pm.collectionVariables.set('bridge_port', '8090');",
+                    "}",
+                    "",
+                    "// Common headers and setup",
+                    "pm.request.headers.add({",
+                    "    key: 'User-Agent',",
+                    "    value: 'RallyMate-EdgeAPI-Test/1.0'",
+                    "});"
+                ]
+            }
+        },
+        {
+            "listen": "test",
+            "script": {
+                "type": "text/javascript",
+                "exec": [
+                    "// Common test validations",
+                    "pm.test('Response time is reasonable', function () {",
+                    "    pm.expect(pm.response.responseTime).to.be.below(5000);",
+                    "});",
+                    "",
+                    "pm.test('Response has JSON content type', function () {",
+                    "    pm.expect(pm.response.headers.get('Content-Type')).to.include('application/json');",
+                    "});"
+                ]
+            }
+        }
+    ]
+}

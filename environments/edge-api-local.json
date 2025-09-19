@@ -1,0 +1,69 @@
+{
+    "id": "edge-api-environment-001",
+    "name": "RallyMate Edge API - Local Bridge",
+    "values": [
+        {
+            "key": "bridge_host",
+            "value": "bridge.local",
+            "description": "Bridge hostname or IP address (e.g., bridge.local, 192.168.1.100)",
+            "enabled": true
+        },
+        {
+            "key": "bridge_port",
+            "value": "8090",
+            "description": "Bridge API port (default: 8090)",
+            "enabled": true
+        },
+        {
+            "key": "base_url",
+            "value": "http://{{bridge_host}}:{{bridge_port}}",
+            "description": "Complete base URL for Edge API",
+            "enabled": true
+        },
+        {
+            "key": "device_id",
+            "value": "",
+            "description": "Device ID for testing (will be populated by tests)",
+            "enabled": true
+        },
+        {
+            "key": "first_device_id",
+            "value": "",
+            "description": "First discovered device ID (populated by discovery workflow)",
+            "enabled": true
+        },
+        {
+            "key": "facility_id",
+            "value": "facility-001",
+            "description": "Facility ID for provisioning tests",
+            "enabled": true
+        },
+        {
+            "key": "bridge_name",
+            "value": "Test Bridge",
+            "description": "Bridge name for provisioning",
+            "enabled": true
+        },
+        {
+            "key": "otc_code",
+            "value": "",
+            "description": "One-Time Code for provisioning (get from RallyMate platform)",
+            "enabled": true
+        },
+        {
+            "key": "session_token",
+            "value": "",
+            "description": "Session token (populated after provisioning)",
+            "enabled": true
+        },
+        {
+            "key": "refresh_token",
+            "value": "",
+            "description": "Refresh token (populated after provisioning)",
+            "enabled": true
+        }
+    ],
+    "_postman_variable_scope": "environment",
+    "_postman_exported_at": "2025-09-19T12:00:00.000Z",
+    "_postman_exported_using": "Postman/10.18.0"
+}
