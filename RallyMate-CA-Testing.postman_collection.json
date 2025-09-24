@@ -1,0 +1,572 @@
+{
+    "info": {
+        "name": "RallyMate CA Testing Collection",
+        "description": "Comprehensive API testing collection for RallyMate Certificate Authority service",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+        "version": "1.0.0"
+    },
+    "variable": [
+        {
+            "key": "rallymate_ca_http_url",
+            "value": "http://localhost:8082",
+            "description": "RallyMate CA HTTP API base URL"
+        },
+        {
+            "key": "rallymate_ca_grpc_url",
+            "value": "localhost:50052",
+            "description": "RallyMate CA gRPC API endpoint"
+        },
+        {
+            "key": "rallymate_services_http_url",
+            "value": "http://localhost:8080",
+            "description": "RallyMate Services HTTP API base URL"
+        },
+        {
+            "key": "rallymate_services_grpc_url",
+            "value": "localhost:50051",
+            "description": "RallyMate Services gRPC API endpoint"
+        },
+        {
+            "key": "sonti_ca_url",
+            "value": "http://localhost:9000",
+            "description": "Sonti Certificates CA API base URL"
+        },
+        {
+            "key": "session_token",
+            "value": "",
+            "description": "Session token from authentication"
+        },
+        {
+            "key": "certificate_id",
+            "value": "",
+            "description": "Certificate ID for operations"
+        }
+    ],
+    "auth": {
+        "type": "noauth"
+    },
+    "item": [
+        {
+            "name": "0. Health Checks",
+            "description": "Verify all services are running and healthy",
+            "item": [
+                {
+                    "name": "RallyMate CA Health Check",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{rallymate_ca_http_url}}/health",
+                            "host": [
+                                "{{rallymate_ca_http_url}}"
+                            ],
+                            "path": [
+                                "health"
+                            ]
+                        },
+                        "description": "Check if RallyMate CA service is healthy"
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Sonti CA Health Check",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{sonti_ca_url}}/health",
+                            "host": [
+                                "{{sonti_ca_url}}"
+                            ],
+                            "path": [
+                                "health"
+                            ]
+                        },
+                        "description": "Check if Sonti Certificates CA is healthy"
+                    },
+                    "response": []
+                },
+                {
+                    "name": "RallyMate Services Health Check",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{rallymate_services_http_url}}/health",
+                            "host": [
+                                "{{rallymate_services_http_url}}"
+                            ],
+                            "path": [
+                                "health"
+                            ]
+                        },
+                        "description": "Check if RallyMate Services is healthy"
+                    },
+                    "response": []
+                }
+            ]
+        },
+        {
+            "name": "1. Authentication Setup",
+            "description": "Get session tokens for authenticated requests",
+            "item": [
+                {
+                    "name": "Login to RallyMate Services",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"email\": \"eshwar.sonti@gmail.com\",\n    \"password\": \"demo-password\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{rallymate_services_http_url}}/api/auth/login",
+                            "host": [
+                                "{{rallymate_services_http_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "auth",
+                                "login"
+                            ]
+                        },
+                        "description": "Login to get session token for CA operations"
+                    },
+                    "response": [],
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "// Extract session token from response",
+                                    "if (pm.response.code === 200) {",
+                                    "    const responseJson = pm.response.json();",
+                                    "    if (responseJson.session_token) {",
+                                    "        pm.collectionVariables.set('session_token', responseJson.session_token);",
+                                    "        console.log('Session token saved:', responseJson.session_token);",
+                                    "    }",
+                                    "}"
+                                ]
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Create Demo User (if needed)",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"email\": \"demo@rallymate.com\",\n    \"password\": \"demo-password\",\n    \"name\": \"Demo User\",\n    \"phone\": \"+1234567890\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{rallymate_services_http_url}}/api/auth/register",
+                            "host": [
+                                "{{rallymate_services_http_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "auth",
+                                "register"
+                            ]
+                        },
+                        "description": "Create a demo user for testing if default admin doesn't work"
+                    },
+                    "response": []
+                }
+            ]
+        },
+        {
+            "name": "2. CA Certificate Operations",
+            "description": "Get CA public certificates and information",
+            "item": [
+                {
+                    "name": "Get CA Certificate",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{rallymate_ca_http_url}}/api/certificates/ca",
+                            "host": [
+                                "{{rallymate_ca_http_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "certificates",
+                                "ca"
+                            ]
+                        },
+                        "description": "Get the CA public certificate for validation"
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Get Certificate Revocation List (CRL)",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{rallymate_ca_http_url}}/api/certificates/crl",
+                            "host": [
+                                "{{rallymate_ca_http_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "certificates",
+                                "crl"
+                            ]
+                        },
+                        "description": "Get the current Certificate Revocation List"
+                    },
+                    "response": []
+                }
+            ]
+        },
+        {
+            "name": "3. Server Certificate Operations",
+            "description": "Request and manage server certificates for tunnel services",
+            "item": [
+                {
+                    "name": "Request Server Certificate",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"session_token\": \"{{session_token}}\",\n    \"hostname\": \"tunnel.rallymate.local\",\n    \"additional_hostnames\": [\"tunnel-backup.rallymate.local\", \"192.168.1.100\"],\n    \"validity_duration\": \"720h\",\n    \"metadata\": {\n        \"service_type\": \"tunnel\",\n        \"environment\": \"development\"\n    },\n    \"facility_id\": \"demo-facility-1\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{rallymate_ca_http_url}}/api/certificates/server",
+                            "host": [
+                                "{{rallymate_ca_http_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "certificates",
+                                "server"
+                            ]
+                        },
+                        "description": "Request a server certificate for tunnel service"
+                    },
+                    "response": [],
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "// Extract certificate ID from response",
+                                    "if (pm.response.code === 200) {",
+                                    "    const responseJson = pm.response.json();",
+                                    "    if (responseJson.certificate_id) {",
+                                    "        pm.collectionVariables.set('certificate_id', responseJson.certificate_id);",
+                                    "        console.log('Certificate ID saved:', responseJson.certificate_id);",
+                                    "    }",
+                                    "}"
+                                ]
+                            }
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "4. Client Certificate Operations",
+            "description": "Request and manage client certificates for bridge/device access",
+            "item": [
+                {
+                    "name": "Request Client Certificate",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"session_token\": \"{{session_token}}\",\n    \"username\": \"bridge-device-001\",\n    \"validity_duration\": \"168h\",\n    \"metadata\": {\n        \"device_type\": \"bridge\",\n        \"environment\": \"development\",\n        \"device_id\": \"bridge-001\"\n    },\n    \"facility_id\": \"demo-facility-1\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{rallymate_ca_http_url}}/api/certificates/client",
+                            "host": [
+                                "{{rallymate_ca_http_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "certificates",
+                                "client"
+                            ]
+                        },
+                        "description": "Request a client certificate for bridge device"
+                    },
+                    "response": []
+                }
+            ]
+        },
+        {
+            "name": "5. Certificate Management",
+            "description": "List, get details, and manage existing certificates",
+            "item": [
+                {
+                    "name": "List Certificates",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{session_token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{rallymate_ca_http_url}}/api/certificates",
+                            "host": [
+                                "{{rallymate_ca_http_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "certificates"
+                            ]
+                        },
+                        "description": "List all certificates for the authenticated user"
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Get Certificate Details",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{session_token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{rallymate_ca_http_url}}/api/certificates/{{certificate_id}}",
+                            "host": [
+                                "{{rallymate_ca_http_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "certificates",
+                                "{{certificate_id}}"
+                            ]
+                        },
+                        "description": "Get details of a specific certificate"
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Get Certificate Status",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{session_token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{rallymate_ca_http_url}}/api/certificates/{{certificate_id}}/status",
+                            "host": [
+                                "{{rallymate_ca_http_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "certificates",
+                                "{{certificate_id}}",
+                                "status"
+                            ]
+                        },
+                        "description": "Check the status of a specific certificate"
+                    },
+                    "response": []
+                }
+            ]
+        },
+        {
+            "name": "6. Certificate Lifecycle",
+            "description": "Renew and revoke certificates",
+            "item": [
+                {
+                    "name": "Renew Certificate",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{session_token}}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"validity_duration\": \"720h\",\n    \"metadata\": {\n        \"renewal_reason\": \"proactive_renewal\"\n    }\n}"
+                        },
+                        "url": {
+                            "raw": "{{rallymate_ca_http_url}}/api/certificates/{{certificate_id}}/renew",
+                            "host": [
+                                "{{rallymate_ca_http_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "certificates",
+                                "{{certificate_id}}",
+                                "renew"
+                            ]
+                        },
+                        "description": "Renew an existing certificate"
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Revoke Certificate",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{session_token}}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"certificate_id\": \"{{certificate_id}}\",\n    \"reason\": \"Device compromised for testing\",\n    \"metadata\": {\n        \"revocation_type\": \"security_incident\"\n    }\n}"
+                        },
+                        "url": {
+                            "raw": "{{rallymate_ca_http_url}}/api/certificates/revoke",
+                            "host": [
+                                "{{rallymate_ca_http_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "certificates",
+                                "revoke"
+                            ]
+                        },
+                        "description": "Revoke a certificate"
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Bulk Revoke Certificates",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{session_token}}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"certificate_ids\": [\"{{certificate_id}}\"],\n    \"reason\": \"Facility compromise simulation\",\n    \"metadata\": {\n        \"incident_id\": \"test-incident-001\",\n        \"facility_id\": \"demo-facility-1\"\n    }\n}"
+                        },
+                        "url": {
+                            "raw": "{{rallymate_ca_http_url}}/api/certificates/bulk-revoke",
+                            "host": [
+                                "{{rallymate_ca_http_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "certificates",
+                                "bulk-revoke"
+                            ]
+                        },
+                        "description": "Bulk revoke multiple certificates (facility/device compromise)"
+                    },
+                    "response": []
+                }
+            ]
+        },
+        {
+            "name": "7. Direct Sonti CA API",
+            "description": "Direct API calls to the underlying Sonti Certificates CA",
+            "item": [
+                {
+                    "name": "Sonti CA Root Certificate",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{sonti_ca_url}}/root.crt",
+                            "host": [
+                                "{{sonti_ca_url}}"
+                            ],
+                            "path": [
+                                "root.crt"
+                            ]
+                        },
+                        "description": "Get the root CA certificate from Sonti"
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Sonti CA Configuration",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{sonti_ca_url}}/config",
+                            "host": [
+                                "{{sonti_ca_url}}"
+                            ],
+                            "path": [
+                                "config"
+                            ]
+                        },
+                        "description": "Get CA configuration from Sonti"
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Sonti SSH Host Key",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{sonti_ca_url}}/ssh/config",
+                            "host": [
+                                "{{sonti_ca_url}}"
+                            ],
+                            "path": [
+                                "ssh",
+                                "config"
+                            ]
+                        },
+                        "description": "Get SSH host key configuration"
+                    },
+                    "response": []
+                }
+            ]
+        }
+    ]
+}

@@ -1,0 +1,165 @@
+{
+    "info": {
+        "name": "RallyMate CA gRPC Testing Collection",
+        "description": "gRPC API testing collection for RallyMate Certificate Authority service",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+        "version": "1.0.0"
+    },
+    "variable": [
+        {
+            "key": "rallymate_ca_grpc_url",
+            "value": "localhost:50052",
+            "description": "RallyMate CA gRPC endpoint"
+        },
+        {
+            "key": "rallymate_services_grpc_url",
+            "value": "localhost:50051",
+            "description": "RallyMate Services gRPC endpoint"
+        },
+        {
+            "key": "session_token",
+            "value": "demo-session-token",
+            "description": "Session token for authentication"
+        }
+    ],
+    "item": [
+        {
+            "name": "gRPC Certificate Operations",
+            "description": "Direct gRPC calls to Certificate Authority service",
+            "item": [
+                {
+                    "name": "RequestServerCertificate",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/grpc"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"session_token\": \"{{session_token}}\",\n  \"hostname\": \"tunnel.rallymate.local\",\n  \"additional_hostnames\": [\"tunnel-backup.rallymate.local\"],\n  \"validity_duration\": \"720h\",\n  \"metadata\": {\n    \"service_type\": \"tunnel\",\n    \"environment\": \"development\"\n  },\n  \"facility_id\": \"demo-facility-1\"\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": {
+                            "raw": "grpc://{{rallymate_ca_grpc_url}}/ca.certs.CertificateService/RequestServerCertificate",
+                            "protocol": "grpc",
+                            "host": [
+                                "{{rallymate_ca_grpc_url}}"
+                            ],
+                            "path": [
+                                "ca.certs.CertificateService",
+                                "RequestServerCertificate"
+                            ]
+                        },
+                        "description": "gRPC call to request server certificate"
+                    }
+                },
+                {
+                    "name": "RequestClientCertificate",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/grpc"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"session_token\": \"{{session_token}}\",\n  \"username\": \"bridge-device-001\",\n  \"validity_duration\": \"168h\",\n  \"metadata\": {\n    \"device_type\": \"bridge\",\n    \"environment\": \"development\"\n  },\n  \"facility_id\": \"demo-facility-1\"\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": {
+                            "raw": "grpc://{{rallymate_ca_grpc_url}}/ca.certs.CertificateService/RequestClientCertificate",
+                            "protocol": "grpc",
+                            "host": [
+                                "{{rallymate_ca_grpc_url}}"
+                            ],
+                            "path": [
+                                "ca.certs.CertificateService",
+                                "RequestClientCertificate"
+                            ]
+                        },
+                        "description": "gRPC call to request client certificate"
+                    }
+                },
+                {
+                    "name": "GetCACertificate",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/grpc"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": {
+                            "raw": "grpc://{{rallymate_ca_grpc_url}}/ca.certs.CertificateService/GetCACertificate",
+                            "protocol": "grpc",
+                            "host": [
+                                "{{rallymate_ca_grpc_url}}"
+                            ],
+                            "path": [
+                                "ca.certs.CertificateService",
+                                "GetCACertificate"
+                            ]
+                        },
+                        "description": "gRPC call to get CA certificate"
+                    }
+                },
+                {
+                    "name": "ListCertificates",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/grpc"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"session_token\": \"{{session_token}}\",\n  \"page_size\": 10,\n  \"page_token\": \"\"\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": {
+                            "raw": "grpc://{{rallymate_ca_grpc_url}}/ca.certs.CertificateService/ListCertificates",
+                            "protocol": "grpc",
+                            "host": [
+                                "{{rallymate_ca_grpc_url}}"
+                            ],
+                            "path": [
+                                "ca.certs.CertificateService",
+                                "ListCertificates"
+                            ]
+                        },
+                        "description": "gRPC call to list certificates"
+                    }
+                }
+            ]
+        }
+    ]
+}
