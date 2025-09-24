@@ -1,18 +1,58 @@
-# RallyMate Postman Collections v2
+# RallyMate API Testing Collections
 
-This directory contains comprehensive Postman collections and environments for testing RallyMate services locally and edge deployment scenarios.
+Comprehensive Postman collections for testing all RallyMate platform services, including REST APIs, gRPC services, and integration scenarios.
 
-## What's Included
+## Overview
+
+This collection provides complete API testing capabilities for:
+- **Core Platform APIs**: Main RallyMate services (HTTP/gRPC)
+- **Certificate Authority**: CA service testing and validation
+- **Bridge Services**: Device bridge API testing
+- **Integration Scenarios**: End-to-end workflow testing
+- **Development Workflows**: Local development and testing
+
+## Collection Structure
 
 ### Environment Files
-- **`local-updated-v2.json`** - Complete environment configuration for local testing
+- **`local-updated-v2.json`** - Complete local development environment
 - **`edge-api-local.json`** - Local bridge testing environment
 - **`edge-api-pi-zero.json`** - Pi Zero bridge testing environment
+- **`ca-testing.json`** - Certificate Authority testing environment
 
-### Collection Files
-- **HTTP REST API** - `collections/rest/RallyMate_HTTP_REST_API_v2.postman_collection.json`
-- **gRPC API** - `collections/grpc/RallyMate_gRPC_API_v2.postman_collection.json`
-- **Edge API** - `collections/rest/RallyMate_Edge_API.postman_collection.json` 🆕
+### API Collections
+
+#### Core Platform APIs
+- **`RallyMate_HTTP_REST_API_v2.postman_collection.json`**
+  - Complete REST API testing for main services
+  - User authentication and management
+  - Facility management operations
+  - Device control and monitoring
+  - Video and media management
+
+- **`RallyMate_gRPC_API_v2.postman_collection.json`**
+  - gRPC service testing with Postman
+  - High-performance API testing
+  - Protocol buffer message validation
+  - Service discovery and health checks
+
+#### Service-Specific Collections
+- **`CA_Testing.postman_collection.json`** 🆕
+  - Certificate Authority API testing
+  - Certificate issuance workflows
+  - Session token validation
+  - Certificate lifecycle management
+
+- **`Bridge_Testing.postman_collection.json`** 🆕
+  - Bridge service API testing
+  - Device provisioning workflows
+  - Tunnel management operations
+  - Health monitoring endpoints
+
+- **`RallyMate_Edge_API.postman_collection.json`**
+  - Edge device API testing
+  - Local network device control
+  - mDNS discovery testing
+  - IoT device integration
 
 ## Quick Setup
 
@@ -48,15 +88,417 @@ This directory contains comprehensive Postman collections and environments for t
 
 4. **Test Basic Connectivity**
    ```
-   GET {{base_url}}/api/health
+## Quick Setup
+
+### Prerequisites
+- Postman installed and running
+- RallyMate services running locally (via `docker-compose up`)
+- Network access to target environment
+
+### Core Platform Testing
+
+1. **Import Environment**:
+   ```
+   File → Import → environments/local-updated-v2.json
    ```
 
-For detailed Edge API documentation, see [Edge API README](collections/rest/Edge_API_README.md).
+2. **Import Core Collections**:
+   ```
+   File → Import → RallyMate_HTTP_REST_API_v2.postman_collection.json
+   File → Import → RallyMate_gRPC_API_v2.postman_collection.json
+   ```
 
-## Authentication Flow
+3. **Set Active Environment**:
+   - Click environment dropdown
+   - Select "RallyMate Local v2"
 
-### Cookie-Based Authentication (Recommended)
-The new implementation supports session persistence via cookies:
+4. **Verify Services**:
+   ```
+   GET {{base_url}}/health
+   GET {{bridge_url}}/api/health
+   GET {{ca_url}}/health
+   ```
+
+### Certificate Authority Testing
+
+1. **Import CA Environment & Collection**:
+   ```
+   File → Import → ca-testing.json
+   File → Import → CA_Testing.postman_collection.json
+   ```
+
+2. **Test Certificate Workflows**:
+   - Session validation
+   - Certificate issuance
+   - Certificate verification
+
+### Bridge Service Testing
+
+1. **Import Bridge Collection**:
+   ```
+   File → Import → Bridge_Testing.postman_collection.json
+   ```
+
+2. **Configure Environment Variables**:
+   ```json
+   {
+     "bridge_url": "http://localhost:8090",
+     "ca_url": "http://localhost:8082",
+     "tunnel_url": "http://localhost:5022"
+   }
+   ```
+
+## Environment Configuration
+
+### Local Development Environment (local-updated-v2.json)
+
+```json
+{
+  "base_url": "http://localhost:8080",
+  "bridge_url": "http://localhost:8090", 
+  "ca_url": "http://localhost:8082",
+  "tunnel_url": "http://localhost:5022",
+  "eventstream_url": "ws://localhost:8000",
+  "database_url": "postgresql://rallymate:password@localhost:5432/rallymate"
+}
+```
+
+### Bridge Testing Environments
+
+**Local Bridge (edge-api-local.json)**:
+```json
+{
+  "bridge_host": "localhost",
+  "bridge_port": "8090",
+  "bridge_url": "http://localhost:8090"
+}
+```
+
+**Pi Zero Bridge (edge-api-pi-zero.json)**:
+```json
+{
+  "bridge_host": "192.168.1.100",
+  "bridge_port": "8090", 
+  "bridge_url": "http://192.168.1.100:8090"
+}
+```
+
+## Authentication Workflows
+
+### Session-Based Authentication
+
+1. **Login Request**:
+   ```
+   POST {{base_url}}/api/auth/login
+   {
+     "email": "user@example.com",
+     "password": "password"
+   }
+   ```
+
+2. **Cookie Persistence**:
+   - Sessions automatically saved in cookies
+   - No manual token management needed
+   - Automatic renewal on subsequent requests
+
+### Token-Based Authentication (Alternative)
+
+1. **Login and Extract Token**:
+   ```javascript
+   // Post-request script
+   const response = pm.response.json();
+   pm.environment.set("auth_token", response.token);
+   ```
+
+2. **Use Token in Headers**:
+   ```
+   Authorization: Bearer {{auth_token}}
+   ```
+
+## Testing Workflows
+
+### Core Service Testing
+
+1. **Health Checks**:
+   - Main services: `GET /health`
+   - Bridge service: `GET /api/health`
+   - CA service: `GET /health`
+
+2. **User Management**:
+   - Registration workflow
+   - Login/logout flow
+   - Profile management
+   - Password reset
+
+3. **Facility Management**:
+   - Create/update facilities
+   - Membership operations
+   - Device registration
+   - Access control
+
+### Certificate Authority Testing
+
+1. **Session Validation**:
+   ```
+   POST {{ca_url}}/api/validate-session
+   {
+     "session_token": "{{session_token}}"
+   }
+   ```
+
+2. **Certificate Issuance**:
+   ```
+   POST {{ca_url}}/api/certificates/client
+   {
+     "session_token": "{{bridge_token}}",
+     "client_id": "bridge-001",
+     "validity_duration": "8h"
+   }
+   ```
+
+3. **Certificate Verification**:
+   ```
+   GET {{ca_url}}/api/certificates/{{cert_id}}/status
+   ```
+
+### Bridge Service Testing
+
+1. **Device Registration**:
+   ```
+   POST {{bridge_url}}/api/v1/devices/register
+   {
+     "device_id": "device-001",
+     "device_type": "sensor"
+   }
+   ```
+
+2. **Certificate Provisioning**:
+   ```
+   POST {{bridge_url}}/api/v1/devices/{{device_id}}/certificate
+   ```
+
+3. **Tunnel Management**:
+   ```
+   POST {{bridge_url}}/api/v1/tunnels
+   {
+     "device_id": "device-001",
+     "tunnel_type": "ssh"
+   }
+   ```
+
+### Integration Testing
+
+1. **End-to-End Device Provisioning**:
+   - Device registration
+   - Authentication
+   - Certificate provisioning  
+   - Tunnel creation
+
+2. **Cross-Service Communication**:
+   - Bridge ↔ CA communication
+   - Bridge ↔ Tunnel service
+   - Services ↔ Database
+
+## Advanced Testing Scenarios
+
+### Load Testing
+
+Use Postman's Collection Runner or Newman:
+
+```bash
+# Install Newman
+npm install -g newman
+
+# Run collection with multiple iterations
+newman run RallyMate_HTTP_REST_API_v2.postman_collection.json \
+  -e local-updated-v2.json \
+  -n 100 \
+  --delay-request 100
+
+# Generate HTML report
+newman run RallyMate_HTTP_REST_API_v2.postman_collection.json \
+  -e local-updated-v2.json \
+  -r htmlextra
+```
+
+### Automated Testing
+
+Create test scripts in collection requests:
+
+```javascript
+// Test response status
+pm.test("Status code is 200", function () {
+    pm.response.to.have.status(200);
+});
+
+// Test response time
+pm.test("Response time is less than 500ms", function () {
+    pm.expect(pm.response.responseTime).to.be.below(500);
+});
+
+// Test response data
+pm.test("Response contains expected data", function () {
+    const response = pm.response.json();
+    pm.expect(response).to.have.property('status', 'success');
+});
+
+// Set environment variables
+pm.test("Extract and set session token", function () {
+    const response = pm.response.json();
+    pm.environment.set("session_token", response.session_token);
+});
+```
+
+## Troubleshooting
+
+### Common Issues
+
+1. **Connection Refused**:
+   ```
+   Error: connect ECONNREFUSED 127.0.0.1:8080
+   ```
+   - Verify services are running: `docker-compose ps`
+   - Check port mapping in docker-compose.yml
+   - Confirm firewall settings
+
+2. **Authentication Failures**:
+   ```
+   401 Unauthorized
+   ```
+   - Check session token validity
+   - Verify user credentials
+   - Confirm auth service is running
+
+3. **SSL/TLS Errors**:
+   ```
+   SSL Error: unable to verify certificate
+   ```
+   - In Postman: Settings → Turn off "SSL certificate verification"
+   - For production: Use proper certificates
+
+4. **gRPC Testing Issues**:
+   - Enable "gRPC" mode in Postman request settings
+   - Import .proto files if available
+   - Check service reflection is enabled
+
+### Debug Strategies
+
+1. **Check Service Logs**:
+   ```bash
+   docker-compose logs -f rallymate-services
+   docker-compose logs -f rallymate-bridge
+   docker-compose logs -f rallymate-ca
+   ```
+
+2. **Validate Environment Variables**:
+   - Click "Environment Quick Look" (eye icon)
+   - Verify all required variables are set
+   - Check variable scope (global vs environment)
+
+3. **Network Connectivity**:
+   ```bash
+   # Test connectivity
+   curl http://localhost:8080/health
+   curl http://localhost:8090/api/health
+   curl http://localhost:8082/health
+   ```
+
+4. **Database Connectivity**:
+   ```bash
+   # Connect to database
+   docker-compose exec rallymate-database psql -U rallymate -d rallymate
+   ```
+
+## Best Practices
+
+### Collection Organization
+- **Group Related Requests**: Use folders for logical grouping
+- **Consistent Naming**: Use clear, descriptive request names
+- **Environment Variables**: Use variables for all configurable values
+- **Pre-request Scripts**: Setup common authentication/configuration
+- **Test Scripts**: Add automated validation for all requests
+
+### Environment Management
+- **Separate Environments**: Different environments for dev/staging/prod
+- **Sensitive Data**: Use Postman Vault for secrets
+- **Version Control**: Export and version control collections
+- **Documentation**: Include comprehensive request descriptions
+
+### Testing Strategy
+- **Sequential Testing**: Use Collection Runner for workflow testing
+- **Parallel Testing**: Use Newman for load testing
+- **Automated Validation**: Include assertions in all test requests
+- **Error Handling**: Test both success and failure scenarios
+
+## CI/CD Integration
+
+### Newman Integration
+
+Create automated tests in your CI/CD pipeline:
+
+```yaml
+# GitHub Actions example
+name: API Tests
+on: [push, pull_request]
+
+jobs:
+  api-tests:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Start services
+      run: docker-compose up -d
+    - name: Wait for services
+      run: sleep 30
+    - name: Run Postman tests
+      run: |
+        npx newman run rallymate-postman-collection/RallyMate_HTTP_REST_API_v2.postman_collection.json \
+        -e rallymate-postman-collection/local-updated-v2.json \
+        --reporters cli,junit
+    - name: Cleanup
+      run: docker-compose down
+```
+
+## Contributing
+
+### Adding New Collections
+
+1. **Create Collection**:
+   - Organize requests logically
+   - Use consistent naming
+   - Add comprehensive documentation
+
+2. **Update Environment**:
+   - Add new variables as needed
+   - Document variable purposes
+   - Test across environments
+
+3. **Test Validation**:
+   - Add test scripts to all requests
+   - Validate response structure
+   - Check error conditions
+
+4. **Documentation**:
+   - Update README with new collection info
+   - Include example requests
+   - Document any special requirements
+
+### Maintenance Guidelines
+
+- **Regular Updates**: Keep collections current with API changes
+- **Version Control**: Use semantic versioning for collections
+- **Testing**: Validate collections before committing changes
+- **Documentation**: Keep documentation comprehensive and current
+
+## Support
+
+For issues with the Postman collections:
+
+1. **Check Service Health**: Verify all services are running and healthy
+2. **Validate Environment**: Ensure all environment variables are set correctly
+3. **Review Logs**: Check service logs for error details
+4. **Test Connectivity**: Verify network connectivity to services
+5. **Consult Documentation**: Review API documentation for endpoint details
 
 1. **Send OTP** - Use your phone number
 2. **Verify OTP** - Provide the OTP code
