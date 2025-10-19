@@ -1,0 +1,1068 @@
+{
+  "info": {
+    "name": "RallyMate BridgeService",
+    "description": "Auto-generated collection for BridgeService service with realistic test data",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_postman_id": "2e4db459-e7b1-4a6b-b905-3541ce5a348a",
+    "version": "2.0.0"
+  },
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{session_token}}",
+        "type": "string"
+      }
+    ]
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:8080",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Register Bridge",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/api/bridges/register",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "bridges",
+            "register"
+          ]
+        },
+        "description": "**RPC:** RegisterBridge\n\n**Request:** RegisterBridgeRequest\n\n**Response:** RegisterBridgeResponse\n\n**Endpoint:** POST /api/bridges/register",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"facility_id\": \"{{facility_id}}\",\n  \"device_id\": \"bridge-001\",\n  \"name\": \"Main Bridge Device\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "// Validate response status",
+              "pm.test('Status is 200 OK', function() {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "// Validate response time",
+              "pm.test('Response time under 2s', function() {",
+              "    pm.expect(pm.response.responseTime).to.be.below(2000);",
+              "});",
+              "",
+              "// Parse and extract response data",
+              "if (pm.response.code === 200) {",
+              "    try {",
+              "        const response = pm.response.json();",
+              "        console.log('\u2705 Response:', JSON.stringify(response, null, 2));",
+              "",
+              "        // Extract bridge device ID",
+              "        if (response.bridge && response.bridge.device_id) {",
+              "            pm.collectionVariables.set('bridge_device_id', response.bridge.device_id);",
+              "            console.log('\ud83c\udf09 Bridge ID:', response.bridge.device_id);",
+              "        }",
+              "",
+              "    } catch (e) {",
+              "        console.log('\u26a0\ufe0f Could not parse response:', e);",
+              "    }",
+              "}"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Unregister Bridge",
+      "request": {
+        "method": "DELETE",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/api/bridges/{{device_id}}/unregister",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "bridges",
+            "{{device_id}}",
+            "unregister"
+          ]
+        },
+        "description": "**RPC:** UnregisterBridge\n\n**Request:** UnregisterBridgeRequest\n\n**Response:** UnregisterBridgeResponse\n\n**Endpoint:** DELETE /api/bridges/{device_id}/unregister"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "// Validate response status",
+              "pm.test('Status is 200 OK', function() {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "// Validate response time",
+              "pm.test('Response time under 2s', function() {",
+              "    pm.expect(pm.response.responseTime).to.be.below(2000);",
+              "});",
+              "",
+              "// Parse and extract response data",
+              "if (pm.response.code === 200) {",
+              "    try {",
+              "        const response = pm.response.json();",
+              "        console.log('\u2705 Response:', JSON.stringify(response, null, 2));",
+              "",
+              "        // Extract bridge device ID",
+              "        if (response.bridge && response.bridge.device_id) {",
+              "            pm.collectionVariables.set('bridge_device_id', response.bridge.device_id);",
+              "            console.log('\ud83c\udf09 Bridge ID:', response.bridge.device_id);",
+              "        }",
+              "",
+              "    } catch (e) {",
+              "        console.log('\u26a0\ufe0f Could not parse response:', e);",
+              "    }",
+              "}"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Update Bridge",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/api/bridges/{{device_id}}",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "bridges",
+            "{{device_id}}"
+          ]
+        },
+        "description": "**RPC:** UpdateBridge\n\n**Request:** UpdateBridgeRequest\n\n**Response:** UpdateBridgeResponse\n\n**Endpoint:** PUT /api/bridges/{device_id}",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"facility_id\": \"{{facility_id}}\",\n  \"name\": \"Main Bridge Device\",\n  \"firmware_version\": \"v1.2.3\",\n  \"internet_connectivity\": \"ENUM_VALUE_rallymate.common.ConnectivityStatus\",\n  \"mqtt_connectivity\": \"ENUM_VALUE_rallymate.common.ConnectivityStatus\",\n  \"tunnel_connectivity\": \"ENUM_VALUE_rallymate.common.ConnectivityStatus\",\n  \"operation_state\": \"ENUM_VALUE_rallymate.devices.bridge.BridgeOperationState\",\n  \"device_info\": [\n    \"Test Device - Postman Collection\"\n  ]\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "// Validate response status",
+              "pm.test('Status is 200 OK', function() {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "// Validate response time",
+              "pm.test('Response time under 2s', function() {",
+              "    pm.expect(pm.response.responseTime).to.be.below(2000);",
+              "});",
+              "",
+              "// Parse and extract response data",
+              "if (pm.response.code === 200) {",
+              "    try {",
+              "        const response = pm.response.json();",
+              "        console.log('\u2705 Response:', JSON.stringify(response, null, 2));",
+              "",
+              "    } catch (e) {",
+              "        console.log('\u26a0\ufe0f Could not parse response:', e);",
+              "    }",
+              "}"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Get Bridges",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/api/bridges",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "bridges"
+          ]
+        },
+        "description": "**RPC:** GetBridges\n\n**Request:** GetBridgesRequest\n\n**Response:** GetBridgesResponse\n\n**Endpoint:** GET /api/bridges"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "// Validate response status",
+              "pm.test('Status is 200 OK', function() {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "// Validate response time",
+              "pm.test('Response time under 2s', function() {",
+              "    pm.expect(pm.response.responseTime).to.be.below(2000);",
+              "});",
+              "",
+              "// Parse and extract response data",
+              "if (pm.response.code === 200) {",
+              "    try {",
+              "        const response = pm.response.json();",
+              "        console.log('\u2705 Response:', JSON.stringify(response, null, 2));",
+              "",
+              "    } catch (e) {",
+              "        console.log('\u26a0\ufe0f Could not parse response:', e);",
+              "    }",
+              "}"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Register Edge Connection",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/api/bridges/{{bridge_device_id}}/connections",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "bridges",
+            "{{bridge_device_id}}",
+            "connections"
+          ]
+        },
+        "description": "**RPC:** RegisterEdgeConnection\n\n**Request:** RegisterEdgeConnectionRequest\n\n**Response:** RegisterEdgeConnectionResponse\n\n**Endpoint:** POST /api/bridges/{bridge_device_id}/connections",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"facility_id\": \"{{facility_id}}\",\n  \"edge_device_id\": \"device-001\",\n  \"edge_device_type\": \"test_edge_device_type\",\n  \"edge_port\": 8554,\n  \"operation_state\": \"ENUM_VALUE_rallymate.devices.bridge.BridgeOperationState\",\n  \"edge_connection_info\": []\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "// Validate response status",
+              "pm.test('Status is 200 OK', function() {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "// Validate response time",
+              "pm.test('Response time under 2s', function() {",
+              "    pm.expect(pm.response.responseTime).to.be.below(2000);",
+              "});",
+              "",
+              "// Parse and extract response data",
+              "if (pm.response.code === 200) {",
+              "    try {",
+              "        const response = pm.response.json();",
+              "        console.log('\u2705 Response:', JSON.stringify(response, null, 2));",
+              "",
+              "        // Extract connection ID",
+              "        if (response.edge_connection && response.edge_connection.id) {",
+              "            pm.collectionVariables.set('connection_id', response.edge_connection.id);",
+              "            console.log('\ud83d\udd17 Connection ID:', response.edge_connection.id);",
+              "        }",
+              "",
+              "    } catch (e) {",
+              "        console.log('\u26a0\ufe0f Could not parse response:', e);",
+              "    }",
+              "}"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Delete Edge Connection",
+      "request": {
+        "method": "DELETE",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/api/bridges/connections/{{connection_id}}",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "bridges",
+            "connections",
+            "{{connection_id}}"
+          ]
+        },
+        "description": "**RPC:** DeleteEdgeConnection\n\n**Request:** DeleteEdgeConnectionRequest\n\n**Response:** DeleteEdgeConnectionResponse\n\n**Endpoint:** DELETE /api/bridges/connections/{connection_id}"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "// Validate response status",
+              "pm.test('Status is 200 OK', function() {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "// Validate response time",
+              "pm.test('Response time under 2s', function() {",
+              "    pm.expect(pm.response.responseTime).to.be.below(2000);",
+              "});",
+              "",
+              "// Parse and extract response data",
+              "if (pm.response.code === 200) {",
+              "    try {",
+              "        const response = pm.response.json();",
+              "        console.log('\u2705 Response:', JSON.stringify(response, null, 2));",
+              "",
+              "    } catch (e) {",
+              "        console.log('\u26a0\ufe0f Could not parse response:', e);",
+              "    }",
+              "}"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Update Edge Connection",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/api/bridges/{{bridge_device_id}}/connections/{{edge_device_id}}",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "bridges",
+            "{{bridge_device_id}}",
+            "connections",
+            "{{edge_device_id}}"
+          ]
+        },
+        "description": "**RPC:** UpdateEdgeConnection\n\n**Request:** UpdateEdgeConnectionRequest\n\n**Response:** UpdateEdgeConnectionResponse\n\n**Endpoint:** PUT /api/bridges/{bridge_device_id}/connections/{edge_device_id}",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"facility_id\": \"{{facility_id}}\",\n  \"operation_state\": \"ENUM_VALUE_rallymate.devices.bridge.BridgeOperationState\",\n  \"edge_port\": 8554,\n  \"edge_connection_info\": []\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "// Validate response status",
+              "pm.test('Status is 200 OK', function() {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "// Validate response time",
+              "pm.test('Response time under 2s', function() {",
+              "    pm.expect(pm.response.responseTime).to.be.below(2000);",
+              "});",
+              "",
+              "// Parse and extract response data",
+              "if (pm.response.code === 200) {",
+              "    try {",
+              "        const response = pm.response.json();",
+              "        console.log('\u2705 Response:', JSON.stringify(response, null, 2));",
+              "",
+              "    } catch (e) {",
+              "        console.log('\u26a0\ufe0f Could not parse response:', e);",
+              "    }",
+              "}"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Get Edge Connections",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/api/bridges/{{bridge_device_id}}/connections",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "bridges",
+            "{{bridge_device_id}}",
+            "connections"
+          ]
+        },
+        "description": "**RPC:** GetEdgeConnections\n\n**Request:** GetEdgeConnectionsRequest\n\n**Response:** GetEdgeConnectionsResponse\n\n**Endpoint:** GET /api/bridges/{bridge_device_id}/connections"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "// Validate response status",
+              "pm.test('Status is 200 OK', function() {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "// Validate response time",
+              "pm.test('Response time under 2s', function() {",
+              "    pm.expect(pm.response.responseTime).to.be.below(2000);",
+              "});",
+              "",
+              "// Parse and extract response data",
+              "if (pm.response.code === 200) {",
+              "    try {",
+              "        const response = pm.response.json();",
+              "        console.log('\u2705 Response:', JSON.stringify(response, null, 2));",
+              "",
+              "    } catch (e) {",
+              "        console.log('\u26a0\ufe0f Could not parse response:', e);",
+              "    }",
+              "}"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Get Bridge Activities",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/api/bridges/activities",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "bridges",
+            "activities"
+          ]
+        },
+        "description": "**RPC:** GetBridgeActivities\n\n**Request:** GetBridgeActivitiesRequest\n\n**Response:** GetBridgeActivitiesResponse\n\n**Endpoint:** GET /api/bridges/activities"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "// Validate response status",
+              "pm.test('Status is 200 OK', function() {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "// Validate response time",
+              "pm.test('Response time under 2s', function() {",
+              "    pm.expect(pm.response.responseTime).to.be.below(2000);",
+              "});",
+              "",
+              "// Parse and extract response data",
+              "if (pm.response.code === 200) {",
+              "    try {",
+              "        const response = pm.response.json();",
+              "        console.log('\u2705 Response:', JSON.stringify(response, null, 2));",
+              "",
+              "    } catch (e) {",
+              "        console.log('\u26a0\ufe0f Could not parse response:', e);",
+              "    }",
+              "}"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Create Tunnel",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/api/tunnels",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "tunnels"
+          ]
+        },
+        "description": "**RPC:** CreateTunnel\n\n**Request:** CreateTunnelRequest\n\n**Response:** CreateTunnelResponse\n\n**Endpoint:** POST /api/tunnels",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"facility_id\": \"{{facility_id}}\",\n  \"device_id\": \"device-001\",\n  \"edge_port\": 8554,\n  \"bridge_device_id\": \"device-001\",\n  \"preferred_cloud_port\": 12886\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "// Validate response status",
+              "pm.test('Status is 200 OK', function() {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "// Validate response time",
+              "pm.test('Response time under 2s', function() {",
+              "    pm.expect(pm.response.responseTime).to.be.below(2000);",
+              "});",
+              "",
+              "// Parse and extract response data",
+              "if (pm.response.code === 200) {",
+              "    try {",
+              "        const response = pm.response.json();",
+              "        console.log('\u2705 Response:', JSON.stringify(response, null, 2));",
+              "",
+              "        // Extract tunnel information",
+              "        if (response.tunnel && response.tunnel.id) {",
+              "            pm.collectionVariables.set('tunnel_id', response.tunnel.id);",
+              "            console.log('\ud83d\ude87 Tunnel ID:', response.tunnel.id);",
+              "        }",
+              "        if (response.tunnel && response.tunnel.cloud_port) {",
+              "            pm.collectionVariables.set('cloud_port', response.tunnel.cloud_port);",
+              "        }",
+              "",
+              "    } catch (e) {",
+              "        console.log('\u26a0\ufe0f Could not parse response:', e);",
+              "    }",
+              "}"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Reserve Tunnel",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/api/tunnels/reserve",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "tunnels",
+            "reserve"
+          ]
+        },
+        "description": "**RPC:** ReserveTunnel\n\n**Request:** ReserveTunnelRequest\n\n**Response:** ReserveTunnelResponse\n\n**Endpoint:** POST /api/tunnels/reserve",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"facility_id\": \"{{facility_id}}\",\n  \"cloud_port\": 12886,\n  \"device_id\": \"device-001\",\n  \"edge_port\": 8554,\n  \"bridge_device_id\": \"device-001\",\n  \"reservation_duration_minutes\": 60\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "// Validate response status",
+              "pm.test('Status is 200 OK', function() {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "// Validate response time",
+              "pm.test('Response time under 2s', function() {",
+              "    pm.expect(pm.response.responseTime).to.be.below(2000);",
+              "});",
+              "",
+              "// Parse and extract response data",
+              "if (pm.response.code === 200) {",
+              "    try {",
+              "        const response = pm.response.json();",
+              "        console.log('\u2705 Response:', JSON.stringify(response, null, 2));",
+              "",
+              "        // Extract tunnel information",
+              "        if (response.tunnel && response.tunnel.id) {",
+              "            pm.collectionVariables.set('tunnel_id', response.tunnel.id);",
+              "            console.log('\ud83d\ude87 Tunnel ID:', response.tunnel.id);",
+              "        }",
+              "        if (response.tunnel && response.tunnel.cloud_port) {",
+              "            pm.collectionVariables.set('cloud_port', response.tunnel.cloud_port);",
+              "        }",
+              "",
+              "    } catch (e) {",
+              "        console.log('\u26a0\ufe0f Could not parse response:', e);",
+              "    }",
+              "}"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Establish Tunnel",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/api/tunnels/{{tunnel_id}}/establish",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "tunnels",
+            "{{tunnel_id}}",
+            "establish"
+          ]
+        },
+        "description": "**RPC:** EstablishTunnel\n\n**Request:** EstablishTunnelRequest\n\n**Response:** EstablishTunnelResponse\n\n**Endpoint:** POST /api/tunnels/{tunnel_id}/establish",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"session_id\": 1\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "// Validate response status",
+              "pm.test('Status is 200 OK', function() {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "// Validate response time",
+              "pm.test('Response time under 2s', function() {",
+              "    pm.expect(pm.response.responseTime).to.be.below(2000);",
+              "});",
+              "",
+              "// Parse and extract response data",
+              "if (pm.response.code === 200) {",
+              "    try {",
+              "        const response = pm.response.json();",
+              "        console.log('\u2705 Response:', JSON.stringify(response, null, 2));",
+              "",
+              "        // Extract tunnel information",
+              "        if (response.tunnel && response.tunnel.id) {",
+              "            pm.collectionVariables.set('tunnel_id', response.tunnel.id);",
+              "            console.log('\ud83d\ude87 Tunnel ID:', response.tunnel.id);",
+              "        }",
+              "        if (response.tunnel && response.tunnel.cloud_port) {",
+              "            pm.collectionVariables.set('cloud_port', response.tunnel.cloud_port);",
+              "        }",
+              "",
+              "    } catch (e) {",
+              "        console.log('\u26a0\ufe0f Could not parse response:', e);",
+              "    }",
+              "}"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Close Tunnel",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/api/tunnels/{{tunnel_id}}/close",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "tunnels",
+            "{{tunnel_id}}",
+            "close"
+          ]
+        },
+        "description": "**RPC:** CloseTunnel\n\n**Request:** CloseTunnelRequest\n\n**Response:** CloseTunnelResponse\n\n**Endpoint:** POST /api/tunnels/{tunnel_id}/close",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"session_id\": 1\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "// Validate response status",
+              "pm.test('Status is 200 OK', function() {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "// Validate response time",
+              "pm.test('Response time under 2s', function() {",
+              "    pm.expect(pm.response.responseTime).to.be.below(2000);",
+              "});",
+              "",
+              "// Parse and extract response data",
+              "if (pm.response.code === 200) {",
+              "    try {",
+              "        const response = pm.response.json();",
+              "        console.log('\u2705 Response:', JSON.stringify(response, null, 2));",
+              "",
+              "        // Extract tunnel information",
+              "        if (response.tunnel && response.tunnel.id) {",
+              "            pm.collectionVariables.set('tunnel_id', response.tunnel.id);",
+              "            console.log('\ud83d\ude87 Tunnel ID:', response.tunnel.id);",
+              "        }",
+              "        if (response.tunnel && response.tunnel.cloud_port) {",
+              "            pm.collectionVariables.set('cloud_port', response.tunnel.cloud_port);",
+              "        }",
+              "",
+              "    } catch (e) {",
+              "        console.log('\u26a0\ufe0f Could not parse response:', e);",
+              "    }",
+              "}"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Get Tunnels",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/api/tunnels",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "tunnels"
+          ]
+        },
+        "description": "**RPC:** GetTunnels\n\n**Request:** GetTunnelsRequest\n\n**Response:** GetTunnelsResponse\n\n**Endpoint:** GET /api/tunnels"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "// Validate response status",
+              "pm.test('Status is 200 OK', function() {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "// Validate response time",
+              "pm.test('Response time under 2s', function() {",
+              "    pm.expect(pm.response.responseTime).to.be.below(2000);",
+              "});",
+              "",
+              "// Parse and extract response data",
+              "if (pm.response.code === 200) {",
+              "    try {",
+              "        const response = pm.response.json();",
+              "        console.log('\u2705 Response:', JSON.stringify(response, null, 2));",
+              "",
+              "        // Extract tunnel information",
+              "        if (response.tunnel && response.tunnel.id) {",
+              "            pm.collectionVariables.set('tunnel_id', response.tunnel.id);",
+              "            console.log('\ud83d\ude87 Tunnel ID:', response.tunnel.id);",
+              "        }",
+              "        if (response.tunnel && response.tunnel.cloud_port) {",
+              "            pm.collectionVariables.set('cloud_port', response.tunnel.cloud_port);",
+              "        }",
+              "",
+              "    } catch (e) {",
+              "        console.log('\u26a0\ufe0f Could not parse response:', e);",
+              "    }",
+              "}"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Get Available Ports",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/api/tunnels/ports/available",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "tunnels",
+            "ports",
+            "available"
+          ]
+        },
+        "description": "**RPC:** GetAvailablePorts\n\n**Request:** GetAvailablePortsRequest\n\n**Response:** GetAvailablePortsResponse\n\n**Endpoint:** GET /api/tunnels/ports/available"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "// Validate response status",
+              "pm.test('Status is 200 OK', function() {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "// Validate response time",
+              "pm.test('Response time under 2s', function() {",
+              "    pm.expect(pm.response.responseTime).to.be.below(2000);",
+              "});",
+              "",
+              "// Parse and extract response data",
+              "if (pm.response.code === 200) {",
+              "    try {",
+              "        const response = pm.response.json();",
+              "        console.log('\u2705 Response:', JSON.stringify(response, null, 2));",
+              "",
+              "    } catch (e) {",
+              "        console.log('\u26a0\ufe0f Could not parse response:', e);",
+              "    }",
+              "}"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Update Tunnel Stats",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/api/tunnels/{{tunnel_id}}/stats",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "tunnels",
+            "{{tunnel_id}}",
+            "stats"
+          ]
+        },
+        "description": "**RPC:** UpdateTunnelStats\n\n**Request:** UpdateTunnelStatsRequest\n\n**Response:** UpdateTunnelStatsResponse\n\n**Endpoint:** PUT /api/tunnels/{tunnel_id}/stats",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"session_id\": 1,\n  \"session_duration_seconds\": 60,\n  \"session_ended\": false\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "// Validate response status",
+              "pm.test('Status is 200 OK', function() {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "// Validate response time",
+              "pm.test('Response time under 2s', function() {",
+              "    pm.expect(pm.response.responseTime).to.be.below(2000);",
+              "});",
+              "",
+              "// Parse and extract response data",
+              "if (pm.response.code === 200) {",
+              "    try {",
+              "        const response = pm.response.json();",
+              "        console.log('\u2705 Response:', JSON.stringify(response, null, 2));",
+              "",
+              "        // Extract tunnel information",
+              "        if (response.tunnel && response.tunnel.id) {",
+              "            pm.collectionVariables.set('tunnel_id', response.tunnel.id);",
+              "            console.log('\ud83d\ude87 Tunnel ID:', response.tunnel.id);",
+              "        }",
+              "        if (response.tunnel && response.tunnel.cloud_port) {",
+              "            pm.collectionVariables.set('cloud_port', response.tunnel.cloud_port);",
+              "        }",
+              "",
+              "    } catch (e) {",
+              "        console.log('\u26a0\ufe0f Could not parse response:', e);",
+              "    }",
+              "}"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ]
+    }
+  ]
+}

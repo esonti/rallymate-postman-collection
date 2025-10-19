@@ -1,0 +1,398 @@
+{
+  "info": {
+    "name": "RallyMate CamerasService",
+    "description": "Auto-generated collection for CamerasService service with realistic test data",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_postman_id": "dbe17ea7-3ed4-4445-8b6e-898e8335d767",
+    "version": "2.0.0"
+  },
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{session_token}}",
+        "type": "string"
+      }
+    ]
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:8080",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Register Camera",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/api/cameras/register",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "cameras",
+            "register"
+          ]
+        },
+        "description": "**RPC:** RegisterCamera\n\n**Request:** RegisterCameraRequest\n\n**Response:** RegisterCameraResponse\n\n**Endpoint:** POST /api/cameras/register",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"facility_id\": \"{{facility_id}}\",\n  \"device_id\": \"camera-court-01\",\n  \"name\": \"Court 1 Camera\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "// Validate response status",
+              "pm.test('Status is 200 OK', function() {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "// Validate response time",
+              "pm.test('Response time under 2s', function() {",
+              "    pm.expect(pm.response.responseTime).to.be.below(2000);",
+              "});",
+              "",
+              "// Parse and extract response data",
+              "if (pm.response.code === 200) {",
+              "    try {",
+              "        const response = pm.response.json();",
+              "        console.log('\u2705 Response:', JSON.stringify(response, null, 2));",
+              "",
+              "        // Extract camera device ID",
+              "        if (response.camera && response.camera.device_id) {",
+              "            pm.collectionVariables.set('camera_device_id', response.camera.device_id);",
+              "            console.log('\ud83d\udcf9 Camera ID:', response.camera.device_id);",
+              "        }",
+              "",
+              "    } catch (e) {",
+              "        console.log('\u26a0\ufe0f Could not parse response:', e);",
+              "    }",
+              "}"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Unregister Camera",
+      "request": {
+        "method": "DELETE",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/api/cameras/{{device_id}}/unregister",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "cameras",
+            "{{device_id}}",
+            "unregister"
+          ]
+        },
+        "description": "**RPC:** UnregisterCamera\n\n**Request:** UnregisterCameraRequest\n\n**Response:** UnregisterCameraResponse\n\n**Endpoint:** DELETE /api/cameras/{device_id}/unregister"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "// Validate response status",
+              "pm.test('Status is 200 OK', function() {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "// Validate response time",
+              "pm.test('Response time under 2s', function() {",
+              "    pm.expect(pm.response.responseTime).to.be.below(2000);",
+              "});",
+              "",
+              "// Parse and extract response data",
+              "if (pm.response.code === 200) {",
+              "    try {",
+              "        const response = pm.response.json();",
+              "        console.log('\u2705 Response:', JSON.stringify(response, null, 2));",
+              "",
+              "        // Extract camera device ID",
+              "        if (response.camera && response.camera.device_id) {",
+              "            pm.collectionVariables.set('camera_device_id', response.camera.device_id);",
+              "            console.log('\ud83d\udcf9 Camera ID:', response.camera.device_id);",
+              "        }",
+              "",
+              "    } catch (e) {",
+              "        console.log('\u26a0\ufe0f Could not parse response:', e);",
+              "    }",
+              "}"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Update Camera",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/api/cameras/{{device_id}}",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "cameras",
+            "{{device_id}}"
+          ]
+        },
+        "description": "**RPC:** UpdateCamera\n\n**Request:** UpdateCameraRequest\n\n**Response:** UpdateCameraResponse\n\n**Endpoint:** PUT /api/cameras/{device_id}",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"facility_id\": \"{{facility_id}}\",\n  \"name\": \"Court 1 Camera\",\n  \"stream_url\": \"rtsp://192.168.1.100:8554/stream\",\n  \"firmware_version\": \"v1.2.3\",\n  \"edge_connectivity\": \"ENUM_VALUE_rallymate.common.ConnectivityStatus\",\n  \"tunnel_connectivity\": \"ENUM_VALUE_rallymate.common.ConnectivityStatus\",\n  \"device_info\": [\n    \"Test Device - Postman Collection\"\n  ]\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "// Validate response status",
+              "pm.test('Status is 200 OK', function() {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "// Validate response time",
+              "pm.test('Response time under 2s', function() {",
+              "    pm.expect(pm.response.responseTime).to.be.below(2000);",
+              "});",
+              "",
+              "// Parse and extract response data",
+              "if (pm.response.code === 200) {",
+              "    try {",
+              "        const response = pm.response.json();",
+              "        console.log('\u2705 Response:', JSON.stringify(response, null, 2));",
+              "",
+              "    } catch (e) {",
+              "        console.log('\u26a0\ufe0f Could not parse response:', e);",
+              "    }",
+              "}"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Get Cameras",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/api/cameras",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "cameras"
+          ]
+        },
+        "description": "**RPC:** GetCameras\n\n**Request:** GetCamerasRequest\n\n**Response:** GetCamerasResponse\n\n**Endpoint:** GET /api/cameras"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "// Validate response status",
+              "pm.test('Status is 200 OK', function() {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "// Validate response time",
+              "pm.test('Response time under 2s', function() {",
+              "    pm.expect(pm.response.responseTime).to.be.below(2000);",
+              "});",
+              "",
+              "// Parse and extract response data",
+              "if (pm.response.code === 200) {",
+              "    try {",
+              "        const response = pm.response.json();",
+              "        console.log('\u2705 Response:', JSON.stringify(response, null, 2));",
+              "",
+              "    } catch (e) {",
+              "        console.log('\u26a0\ufe0f Could not parse response:', e);",
+              "    }",
+              "}"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Camera Control",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/api/cameras/{{device_id}}/control",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "cameras",
+            "{{device_id}}",
+            "control"
+          ]
+        },
+        "description": "**RPC:** CameraControl\n\n**Request:** CameraControlRequest\n\n**Response:** CameraControlResponse\n\n**Endpoint:** POST /api/cameras/{device_id}/control",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"facility_id\": \"{{facility_id}}\",\n  \"user_id\": \"{{user_id}}\",\n  \"action\": \"ENUM_VALUE_rallymate.devices.camera.CameraAction\",\n  \"reason\": \"Testing via Postman collection\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "// Validate response status",
+              "pm.test('Status is 200 OK', function() {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "// Validate response time",
+              "pm.test('Response time under 2s', function() {",
+              "    pm.expect(pm.response.responseTime).to.be.below(2000);",
+              "});",
+              "",
+              "// Parse and extract response data",
+              "if (pm.response.code === 200) {",
+              "    try {",
+              "        const response = pm.response.json();",
+              "        console.log('\u2705 Response:', JSON.stringify(response, null, 2));",
+              "",
+              "    } catch (e) {",
+              "        console.log('\u26a0\ufe0f Could not parse response:', e);",
+              "    }",
+              "}"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Get Camera Activities",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/api/cameras/activities",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "cameras",
+            "activities"
+          ]
+        },
+        "description": "**RPC:** GetCameraActivities\n\n**Request:** GetCameraActivitiesRequest\n\n**Response:** GetCameraActivitiesResponse\n\n**Endpoint:** GET /api/cameras/activities"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "// Validate response status",
+              "pm.test('Status is 200 OK', function() {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "// Validate response time",
+              "pm.test('Response time under 2s', function() {",
+              "    pm.expect(pm.response.responseTime).to.be.below(2000);",
+              "});",
+              "",
+              "// Parse and extract response data",
+              "if (pm.response.code === 200) {",
+              "    try {",
+              "        const response = pm.response.json();",
+              "        console.log('\u2705 Response:', JSON.stringify(response, null, 2));",
+              "",
+              "    } catch (e) {",
+              "        console.log('\u26a0\ufe0f Could not parse response:', e);",
+              "    }",
+              "}"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ]
+    }
+  ]
+}

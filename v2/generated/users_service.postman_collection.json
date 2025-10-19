@@ -1,0 +1,761 @@
+{
+  "info": {
+    "name": "RallyMate UsersService",
+    "description": "Auto-generated collection for UsersService service with realistic test data",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_postman_id": "ac3742fc-abaa-460f-b10f-83d6c7f27d82",
+    "version": "2.0.0"
+  },
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{session_token}}",
+        "type": "string"
+      }
+    ]
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:8080",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Get Users",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/api/users",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "users"
+          ]
+        },
+        "description": "**RPC:** GetUsers\n\n**Request:** GetUsersRequest\n\n**Response:** GetUsersResponse\n\n**Endpoint:** GET /api/users"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "// Validate response status",
+              "pm.test('Status is 200 OK', function() {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "// Validate response time",
+              "pm.test('Response time under 2s', function() {",
+              "    pm.expect(pm.response.responseTime).to.be.below(2000);",
+              "});",
+              "",
+              "// Parse and extract response data",
+              "if (pm.response.code === 200) {",
+              "    try {",
+              "        const response = pm.response.json();",
+              "        console.log('\u2705 Response:', JSON.stringify(response, null, 2));",
+              "",
+              "    } catch (e) {",
+              "        console.log('\u26a0\ufe0f Could not parse response:', e);",
+              "    }",
+              "}"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Get User Profile",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/api/users/profile",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "users",
+            "profile"
+          ]
+        },
+        "description": "**RPC:** GetUserProfile\n\n**Request:** GetUserProfileRequest\n\n**Response:** GetUserProfileResponse\n\n**Endpoint:** GET /api/users/profile"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "// Validate response status",
+              "pm.test('Status is 200 OK', function() {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "// Validate response time",
+              "pm.test('Response time under 2s', function() {",
+              "    pm.expect(pm.response.responseTime).to.be.below(2000);",
+              "});",
+              "",
+              "// Parse and extract response data",
+              "if (pm.response.code === 200) {",
+              "    try {",
+              "        const response = pm.response.json();",
+              "        console.log('\u2705 Response:', JSON.stringify(response, null, 2));",
+              "",
+              "    } catch (e) {",
+              "        console.log('\u26a0\ufe0f Could not parse response:', e);",
+              "    }",
+              "}"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Create User",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/api/users",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "users"
+          ]
+        },
+        "description": "**RPC:** CreateUser\n\n**Request:** CreateUserRequest\n\n**Response:** CreateUserResponse\n\n**Endpoint:** POST /api/users",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"phone_number\": \"+1234567890\",\n  \"name\": \"Test User\",\n  \"email\": \"test.user@example.com\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "// Validate response status",
+              "pm.test('Status is 200 OK', function() {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "// Validate response time",
+              "pm.test('Response time under 2s', function() {",
+              "    pm.expect(pm.response.responseTime).to.be.below(2000);",
+              "});",
+              "",
+              "// Parse and extract response data",
+              "if (pm.response.code === 200) {",
+              "    try {",
+              "        const response = pm.response.json();",
+              "        console.log('\u2705 Response:', JSON.stringify(response, null, 2));",
+              "",
+              "        // Extract user ID",
+              "        if (response.user && response.user.id) {",
+              "            pm.collectionVariables.set('user_id', response.user.id);",
+              "            console.log('\ud83d\udc64 User ID:', response.user.id);",
+              "        }",
+              "",
+              "    } catch (e) {",
+              "        console.log('\u26a0\ufe0f Could not parse response:', e);",
+              "    }",
+              "}"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Update User",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/api/users/{{id}}",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "users",
+            "{{id}}"
+          ]
+        },
+        "description": "**RPC:** UpdateUser\n\n**Request:** UpdateUserRequest\n\n**Response:** UpdateUserResponse\n\n**Endpoint:** PUT /api/users/{id}",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Test User\",\n  \"email\": \"test.user@example.com\",\n  \"is_active\": true\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "// Validate response status",
+              "pm.test('Status is 200 OK', function() {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "// Validate response time",
+              "pm.test('Response time under 2s', function() {",
+              "    pm.expect(pm.response.responseTime).to.be.below(2000);",
+              "});",
+              "",
+              "// Parse and extract response data",
+              "if (pm.response.code === 200) {",
+              "    try {",
+              "        const response = pm.response.json();",
+              "        console.log('\u2705 Response:', JSON.stringify(response, null, 2));",
+              "",
+              "    } catch (e) {",
+              "        console.log('\u26a0\ufe0f Could not parse response:', e);",
+              "    }",
+              "}"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Delete User",
+      "request": {
+        "method": "DELETE",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/api/users/{{id}}",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "users",
+            "{{id}}"
+          ]
+        },
+        "description": "**RPC:** DeleteUser\n\n**Request:** DeleteUserRequest\n\n**Response:** DeleteUserResponse\n\n**Endpoint:** DELETE /api/users/{id}"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "// Validate response status",
+              "pm.test('Status is 200 OK', function() {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "// Validate response time",
+              "pm.test('Response time under 2s', function() {",
+              "    pm.expect(pm.response.responseTime).to.be.below(2000);",
+              "});",
+              "",
+              "// Parse and extract response data",
+              "if (pm.response.code === 200) {",
+              "    try {",
+              "        const response = pm.response.json();",
+              "        console.log('\u2705 Response:', JSON.stringify(response, null, 2));",
+              "",
+              "    } catch (e) {",
+              "        console.log('\u26a0\ufe0f Could not parse response:', e);",
+              "    }",
+              "}"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Discover Users",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/api/users/discover",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "users",
+            "discover"
+          ]
+        },
+        "description": "**RPC:** DiscoverUsers\n\n**Request:** DiscoverUsersRequest\n\n**Response:** DiscoverUsersResponse\n\n**Endpoint:** GET /api/users/discover"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "// Validate response status",
+              "pm.test('Status is 200 OK', function() {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "// Validate response time",
+              "pm.test('Response time under 2s', function() {",
+              "    pm.expect(pm.response.responseTime).to.be.below(2000);",
+              "});",
+              "",
+              "// Parse and extract response data",
+              "if (pm.response.code === 200) {",
+              "    try {",
+              "        const response = pm.response.json();",
+              "        console.log('\u2705 Response:', JSON.stringify(response, null, 2));",
+              "",
+              "    } catch (e) {",
+              "        console.log('\u26a0\ufe0f Could not parse response:', e);",
+              "    }",
+              "}"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Create Membership By Phone",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/api/users/memberships/phone",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "users",
+            "memberships",
+            "phone"
+          ]
+        },
+        "description": "**RPC:** CreateMembershipByPhone\n\n**Request:** CreateMembershipByPhoneRequest\n\n**Response:** CreateMembershipResponse\n\n**Endpoint:** POST /api/users/memberships/phone",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"phone_number\": \"+1234567890\",\n  \"facility_id\": \"{{facility_id}}\",\n  \"role\": \"MEMBERSHIP_ROLE_PLAYER\",\n  \"start_date\": \"2025-10-16T11:57:47.548657Z\",\n  \"expiry_date\": \"2025-11-15T11:57:47.548664Z\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "// Validate response status",
+              "pm.test('Status is 200 OK', function() {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "// Validate response time",
+              "pm.test('Response time under 2s', function() {",
+              "    pm.expect(pm.response.responseTime).to.be.below(2000);",
+              "});",
+              "",
+              "// Parse and extract response data",
+              "if (pm.response.code === 200) {",
+              "    try {",
+              "        const response = pm.response.json();",
+              "        console.log('\u2705 Response:', JSON.stringify(response, null, 2));",
+              "",
+              "        // Extract membership ID",
+              "        if (response.membership && response.membership.id) {",
+              "            pm.collectionVariables.set('membership_id', response.membership.id);",
+              "            console.log('\ud83c\udfab Membership ID:', response.membership.id);",
+              "        }",
+              "",
+              "    } catch (e) {",
+              "        console.log('\u26a0\ufe0f Could not parse response:', e);",
+              "    }",
+              "}"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Create Membership By User Id",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/api/users/memberships/user",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "users",
+            "memberships",
+            "user"
+          ]
+        },
+        "description": "**RPC:** CreateMembershipByUserId\n\n**Request:** CreateMembershipByUserIdRequest\n\n**Response:** CreateMembershipResponse\n\n**Endpoint:** POST /api/users/memberships/user",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"user_id\": \"{{user_id}}\",\n  \"facility_id\": \"{{facility_id}}\",\n  \"role\": \"MEMBERSHIP_ROLE_PLAYER\",\n  \"start_date\": \"2025-10-16T11:57:47.548693Z\",\n  \"expiry_date\": \"2025-11-15T11:57:47.548695Z\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "// Validate response status",
+              "pm.test('Status is 200 OK', function() {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "// Validate response time",
+              "pm.test('Response time under 2s', function() {",
+              "    pm.expect(pm.response.responseTime).to.be.below(2000);",
+              "});",
+              "",
+              "// Parse and extract response data",
+              "if (pm.response.code === 200) {",
+              "    try {",
+              "        const response = pm.response.json();",
+              "        console.log('\u2705 Response:', JSON.stringify(response, null, 2));",
+              "",
+              "        // Extract user ID",
+              "        if (response.user && response.user.id) {",
+              "            pm.collectionVariables.set('user_id', response.user.id);",
+              "            console.log('\ud83d\udc64 User ID:', response.user.id);",
+              "        }",
+              "",
+              "        // Extract membership ID",
+              "        if (response.membership && response.membership.id) {",
+              "            pm.collectionVariables.set('membership_id', response.membership.id);",
+              "            console.log('\ud83c\udfab Membership ID:', response.membership.id);",
+              "        }",
+              "",
+              "    } catch (e) {",
+              "        console.log('\u26a0\ufe0f Could not parse response:', e);",
+              "    }",
+              "}"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Update Membership",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/api/users/memberships/{{membership_id}}",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "users",
+            "memberships",
+            "{{membership_id}}"
+          ]
+        },
+        "description": "**RPC:** UpdateMembership\n\n**Request:** UpdateMembershipRequest\n\n**Response:** UpdateMembershipResponse\n\n**Endpoint:** PUT /api/users/memberships/{membership_id}",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"role\": \"MEMBERSHIP_ROLE_PLAYER\",\n  \"start_date\": \"2025-10-16T11:57:47.548707Z\",\n  \"expiry_date\": \"2025-11-15T11:57:47.548708Z\",\n  \"is_active\": true\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "// Validate response status",
+              "pm.test('Status is 200 OK', function() {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "// Validate response time",
+              "pm.test('Response time under 2s', function() {",
+              "    pm.expect(pm.response.responseTime).to.be.below(2000);",
+              "});",
+              "",
+              "// Parse and extract response data",
+              "if (pm.response.code === 200) {",
+              "    try {",
+              "        const response = pm.response.json();",
+              "        console.log('\u2705 Response:', JSON.stringify(response, null, 2));",
+              "",
+              "    } catch (e) {",
+              "        console.log('\u26a0\ufe0f Could not parse response:', e);",
+              "    }",
+              "}"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Delete Membership",
+      "request": {
+        "method": "DELETE",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/api/users/memberships/{{membership_id}}",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "users",
+            "memberships",
+            "{{membership_id}}"
+          ]
+        },
+        "description": "**RPC:** DeleteMembership\n\n**Request:** DeleteMembershipRequest\n\n**Response:** DeleteMembershipResponse\n\n**Endpoint:** DELETE /api/users/memberships/{membership_id}"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "// Validate response status",
+              "pm.test('Status is 200 OK', function() {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "// Validate response time",
+              "pm.test('Response time under 2s', function() {",
+              "    pm.expect(pm.response.responseTime).to.be.below(2000);",
+              "});",
+              "",
+              "// Parse and extract response data",
+              "if (pm.response.code === 200) {",
+              "    try {",
+              "        const response = pm.response.json();",
+              "        console.log('\u2705 Response:', JSON.stringify(response, null, 2));",
+              "",
+              "    } catch (e) {",
+              "        console.log('\u26a0\ufe0f Could not parse response:', e);",
+              "    }",
+              "}"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Get User Memberships",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/api/users/{{user_id}}/memberships",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "users",
+            "{{user_id}}",
+            "memberships"
+          ]
+        },
+        "description": "**RPC:** GetUserMemberships\n\n**Request:** GetUserMembershipsRequest\n\n**Response:** GetUserMembershipsResponse\n\n**Endpoint:** GET /api/users/{user_id}/memberships"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "// Validate response status",
+              "pm.test('Status is 200 OK', function() {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "// Validate response time",
+              "pm.test('Response time under 2s', function() {",
+              "    pm.expect(pm.response.responseTime).to.be.below(2000);",
+              "});",
+              "",
+              "// Parse and extract response data",
+              "if (pm.response.code === 200) {",
+              "    try {",
+              "        const response = pm.response.json();",
+              "        console.log('\u2705 Response:', JSON.stringify(response, null, 2));",
+              "",
+              "    } catch (e) {",
+              "        console.log('\u26a0\ufe0f Could not parse response:', e);",
+              "    }",
+              "}"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Get Facility Memberships",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/api/facilities/{{facility_id}}/memberships",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "facilities",
+            "{{facility_id}}",
+            "memberships"
+          ]
+        },
+        "description": "**RPC:** GetFacilityMemberships\n\n**Request:** GetFacilityMembershipsRequest\n\n**Response:** GetFacilityMembershipsResponse\n\n**Endpoint:** GET /api/facilities/{facility_id}/memberships"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "// Validate response status",
+              "pm.test('Status is 200 OK', function() {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "// Validate response time",
+              "pm.test('Response time under 2s', function() {",
+              "    pm.expect(pm.response.responseTime).to.be.below(2000);",
+              "});",
+              "",
+              "// Parse and extract response data",
+              "if (pm.response.code === 200) {",
+              "    try {",
+              "        const response = pm.response.json();",
+              "        console.log('\u2705 Response:', JSON.stringify(response, null, 2));",
+              "",
+              "    } catch (e) {",
+              "        console.log('\u26a0\ufe0f Could not parse response:', e);",
+              "    }",
+              "}"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ]
+    }
+  ]
+}

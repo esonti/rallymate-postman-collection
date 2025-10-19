@@ -1,0 +1,226 @@
+{
+	"info": {
+		"_postman_id": "edge-api-health-001",
+		"name": "RallyMate Edge API - Health Service",
+		"description": "Health and monitoring endpoints for RallyMate Edge Bridge. Provides bridge health status, system metrics, connectivity checks, and operational metrics.\n\n**Service**: edge.health.HealthService\n**Base URL**: http://{{bridge_ip}}:{{bridge_port}}\n**Port**: 8090 (default)\n**Authentication**: None (local bridge access)",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"variable": [
+		{
+			"key": "bridge_ip",
+			"value": "10.10.100.150",
+			"type": "string"
+		},
+		{
+			"key": "bridge_port",
+			"value": "8090",
+			"type": "string"
+		},
+		{
+			"key": "base_url",
+			"value": "http://{{bridge_ip}}:{{bridge_port}}",
+			"type": "string"
+		}
+	],
+	"item": [
+		{
+			"name": "Get Bridge Health",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Response has health status\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData).to.have.property('status');",
+							"    pm.expect(jsonData).to.have.property('timestamp');",
+							"});",
+							"",
+							"pm.test(\"Health status is valid\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(['healthy', 'degraded', 'unhealthy']).to.include(jsonData.status);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/api/health",
+					"host": ["{{base_url}}"],
+					"path": ["api", "health"]
+				},
+				"description": "Get comprehensive bridge health status including:\n- Overall health status (healthy/degraded/unhealthy)\n- System information (CPU, memory, disk)\n- Connectivity status (MQTT, backend, network, devices)\n- Resource usage metrics\n- Software version information\n- Uptime\n\n**Endpoint**: GET /api/health\n**Returns**: GetHealthResponse"
+			},
+			"response": [
+				{
+					"name": "Healthy Bridge",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/health",
+							"host": ["{{base_url}}"],
+							"path": ["api", "health"]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						}
+					],
+					"cookie": [],
+					"body": "{\n  \"status\": \"healthy\",\n  \"timestamp\": \"2025-10-16T14:30:00Z\",\n  \"uptime_seconds\": 86400,\n  \"system_info\": {\n    \"hostname\": \"rallymate-bridge-001\",\n    \"operating_system\": \"Linux\",\n    \"architecture\": \"arm64\",\n    \"cpu_cores\": 4,\n    \"memory_total\": 4294967296,\n    \"disk_total\": 32212254720\n  },\n  \"resource_usage\": {\n    \"cpu_usage_percent\": 15.5,\n    \"memory_usage_bytes\": 524288000,\n    \"memory_usage_percent\": 12.2,\n    \"disk_usage_bytes\": 8053063680,\n    \"disk_usage_percent\": 25.0,\n    \"network_rx_bytes\": 1073741824,\n    \"network_tx_bytes\": 536870912\n  },\n  \"software_info\": {\n    \"version\": \"1.2.0\",\n    \"build_time\": \"2025-10-01T10:00:00Z\",\n    \"git_commit\": \"abc123def456\",\n    \"go_version\": \"go1.21.5\"\n  },\n  \"mqtt_connectivity\": {\n    \"connected\": true,\n    \"broker_url\": \"mqtt://10.10.100.165:1883\",\n    \"last_connected\": \"2025-10-16T14:25:00Z\",\n    \"connection_duration\": \"300s\",\n    \"reconnect_count\": 0,\n    \"command_topic\": \"rallymate/bridge/bridge-001/command\",\n    \"status_topic\": \"rallymate/bridge/bridge-001/status\"\n  },\n  \"backend_connectivity\": {\n    \"grpc_endpoint\": \"10.10.100.165:50051\",\n    \"grpc_connected\": true,\n    \"last_grpc_call\": \"2025-10-16T14:29:45Z\",\n    \"grpc_latency_ms\": 25.5\n  },\n  \"network_connectivity\": {\n    \"ip_address\": \"10.10.100.150\",\n    \"gateway_reachable\": true,\n    \"dns_reachable\": true,\n    \"internet_reachable\": true\n  },\n  \"device_connectivity\": {\n    \"total_devices\": 5,\n    \"connected_devices\": 4,\n    \"disconnected_devices\": 1,\n    \"last_discovery\": \"2025-10-16T14:20:00Z\"\n  }\n}"
+				},
+				{
+					"name": "Degraded Bridge",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/health",
+							"host": ["{{base_url}}"],
+							"path": ["api", "health"]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						}
+					],
+					"cookie": [],
+					"body": "{\n  \"status\": \"degraded\",\n  \"timestamp\": \"2025-10-16T14:30:00Z\",\n  \"uptime_seconds\": 3600,\n  \"system_info\": {\n    \"hostname\": \"rallymate-bridge-002\",\n    \"operating_system\": \"Linux\",\n    \"architecture\": \"arm64\",\n    \"cpu_cores\": 4,\n    \"memory_total\": 4294967296,\n    \"disk_total\": 32212254720\n  },\n  \"resource_usage\": {\n    \"cpu_usage_percent\": 85.2,\n    \"memory_usage_bytes\": 3865470976,\n    \"memory_usage_percent\": 90.0,\n    \"disk_usage_bytes\": 28991029248,\n    \"disk_usage_percent\": 90.0,\n    \"network_rx_bytes\": 10737418240,\n    \"network_tx_bytes\": 5368709120\n  },\n  \"software_info\": {\n    \"version\": \"1.1.5\",\n    \"build_time\": \"2025-09-15T10:00:00Z\",\n    \"git_commit\": \"old123def456\",\n    \"go_version\": \"go1.21.3\"\n  },\n  \"mqtt_connectivity\": {\n    \"connected\": false,\n    \"broker_url\": \"mqtt://10.10.100.165:1883\",\n    \"last_connected\": \"2025-10-16T14:00:00Z\",\n    \"connection_duration\": \"0s\",\n    \"reconnect_count\": 5,\n    \"command_topic\": \"rallymate/bridge/bridge-002/command\",\n    \"status_topic\": \"rallymate/bridge/bridge-002/status\"\n  },\n  \"backend_connectivity\": {\n    \"grpc_endpoint\": \"10.10.100.165:50051\",\n    \"grpc_connected\": true,\n    \"last_grpc_call\": \"2025-10-16T14:29:30Z\",\n    \"grpc_latency_ms\": 150.8\n  },\n  \"network_connectivity\": {\n    \"ip_address\": \"10.10.100.151\",\n    \"gateway_reachable\": true,\n    \"dns_reachable\": false,\n    \"internet_reachable\": false\n  },\n  \"device_connectivity\": {\n    \"total_devices\": 8,\n    \"connected_devices\": 3,\n    \"disconnected_devices\": 5,\n    \"last_discovery\": \"2025-10-16T13:00:00Z\"\n  }\n}"
+				}
+			]
+		},
+		{
+			"name": "Get System Info",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/api/health/system",
+					"host": ["{{base_url}}"],
+					"path": ["api", "health", "system"]
+				},
+				"description": "Get detailed system information:\n- Hostname\n- Operating system and architecture\n- CPU cores\n- Total memory and disk space\n- Resource usage (CPU, memory, disk, network)\n\n**Endpoint**: GET /api/health/system\n**Returns**: GetSystemInfoResponse"
+			},
+			"response": [
+				{
+					"name": "System Info",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/health/system",
+							"host": ["{{base_url}}"],
+							"path": ["api", "health", "system"]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						}
+					],
+					"cookie": [],
+					"body": "{\n  \"system_info\": {\n    \"hostname\": \"rallymate-bridge-001\",\n    \"operating_system\": \"Linux 5.15.0-rallymate\",\n    \"architecture\": \"aarch64\",\n    \"cpu_cores\": 4,\n    \"memory_total\": 4294967296,\n    \"disk_total\": 32212254720\n  },\n  \"resource_usage\": {\n    \"cpu_usage_percent\": 15.5,\n    \"memory_usage_bytes\": 524288000,\n    \"memory_usage_percent\": 12.2,\n    \"disk_usage_bytes\": 8053063680,\n    \"disk_usage_percent\": 25.0,\n    \"network_rx_bytes\": 1073741824,\n    \"network_tx_bytes\": 536870912\n  }\n}"
+				}
+			]
+		},
+		{
+			"name": "Get Connectivity Status",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/api/health/connectivity",
+					"host": ["{{base_url}}"],
+					"path": ["api", "health", "connectivity"]
+				},
+				"description": "Get connectivity status for all bridge connections:\n- MQTT broker connectivity\n- Backend gRPC connectivity  \n- Network connectivity (gateway, DNS, internet)\n- Device connectivity (total, connected, disconnected devices)\n\n**Endpoint**: GET /api/health/connectivity\n**Returns**: GetConnectivityResponse"
+			},
+			"response": [
+				{
+					"name": "All Connected",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/health/connectivity",
+							"host": ["{{base_url}}"],
+							"path": ["api", "health", "connectivity"]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						}
+					],
+					"cookie": [],
+					"body": "{\n  \"mqtt_connectivity\": {\n    \"connected\": true,\n    \"broker_url\": \"mqtt://10.10.100.165:1883\",\n    \"last_connected\": \"2025-10-16T14:25:00Z\",\n    \"connection_duration\": \"300s\",\n    \"reconnect_count\": 0,\n    \"command_topic\": \"rallymate/bridge/bridge-001/command\",\n    \"status_topic\": \"rallymate/bridge/bridge-001/status\"\n  },\n  \"backend_connectivity\": {\n    \"grpc_endpoint\": \"10.10.100.165:50051\",\n    \"grpc_connected\": true,\n    \"last_grpc_call\": \"2025-10-16T14:29:45Z\",\n    \"grpc_latency_ms\": 25.5\n  },\n  \"network_connectivity\": {\n    \"ip_address\": \"10.10.100.150\",\n    \"gateway_reachable\": true,\n    \"dns_reachable\": true,\n    \"internet_reachable\": true\n  },\n  \"device_connectivity\": {\n    \"total_devices\": 5,\n    \"connected_devices\": 5,\n    \"disconnected_devices\": 0,\n    \"last_discovery\": \"2025-10-16T14:20:00Z\"\n  }\n}"
+				}
+			]
+		},
+		{
+			"name": "Get Metrics",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/api/health/metrics",
+					"host": ["{{base_url}}"],
+					"path": ["api", "health", "metrics"]
+				},
+				"description": "Get operational metrics for the bridge:\n- Performance metrics (request counts, latencies, throughput)\n- Operational metrics (device scans, tunnels, MQTT messages)\n- Error metrics (error counts, rates by type)\n- Timestamps for metrics collection\n\n**Endpoint**: GET /api/health/metrics\n**Returns**: GetMetricsResponse"
+			},
+			"response": [
+				{
+					"name": "Bridge Metrics",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/health/metrics",
+							"host": ["{{base_url}}"],
+							"path": ["api", "health", "metrics"]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						}
+					],
+					"cookie": [],
+					"body": "{\n  \"timestamp\": \"2025-10-16T14:30:00Z\",\n  \"performance_metrics\": {\n    \"total_requests\": 15420,\n    \"successful_requests\": 15200,\n    \"failed_requests\": 220,\n    \"average_latency_ms\": 45.2,\n    \"p95_latency_ms\": 120.5,\n    \"p99_latency_ms\": 250.8,\n    \"requests_per_second\": 125.5,\n    \"bytes_sent\": 536870912,\n    \"bytes_received\": 1073741824\n  },\n  \"operational_metrics\": {\n    \"total_device_scans\": 144,\n    \"device_scan_duration_ms\": 2500,\n    \"active_tunnels\": 3,\n    \"total_tunnels_created\": 45,\n    \"mqtt_messages_sent\": 8640,\n    \"mqtt_messages_received\": 12960,\n    \"grpc_calls\": 1440,\n    \"cache_hits\": 10000,\n    \"cache_misses\": 500\n  },\n  \"error_metrics\": {\n    \"total_errors\": 220,\n    \"error_rate\": 1.43,\n    \"device_errors\": 50,\n    \"network_errors\": 80,\n    \"mqtt_errors\": 40,\n    \"grpc_call_failures\": 30,\n    \"authentication_errors\": 20\n  }\n}"
+				}
+			]
+		}
+	]
+}

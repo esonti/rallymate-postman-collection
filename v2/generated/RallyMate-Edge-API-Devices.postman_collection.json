@@ -1,0 +1,629 @@
+{
+	"info": {
+		"_postman_id": "edge-api-devices-001",
+		"name": "RallyMate Edge API - Devices Service",
+		"description": "Unified device discovery, listing, and control for all edge devices (bridges, cameras, locks). This service provides local device management on the bridge.\n\n**Service**: edge.devices.DevicesService\n**Base URL**: http://{{bridge_ip}}:{{bridge_port}}\n**Port**: 8090 (default)\n**Authentication**: None (local bridge access)\n\n**Features**:\n- Discover devices on local network\n- List cached devices with filtering\n- Get individual device details\n- Control devices (lock/unlock, camera start/stop, etc.)",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"variable": [
+		{
+			"key": "bridge_ip",
+			"value": "10.10.100.150",
+			"type": "string"
+		},
+		{
+			"key": "bridge_port",
+			"value": "8090",
+			"type": "string"
+		},
+		{
+			"key": "base_url",
+			"value": "http://{{bridge_ip}}:{{bridge_port}}",
+			"type": "string"
+		},
+		{
+			"key": "camera_device_id",
+			"value": "camera-living-room-001",
+			"type": "string"
+		},
+		{
+			"key": "lock_device_id",
+			"value": "lock-front-door-001",
+			"type": "string"
+		},
+		{
+			"key": "bridge_device_id",
+			"value": "bridge-001",
+			"type": "string"
+		}
+	],
+	"item": [
+		{
+			"name": "Device Discovery",
+			"item": [
+				{
+					"name": "Discover All Devices",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Response has devices array\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property('devices');",
+									"    pm.expect(jsonData.devices).to.be.an('array');",
+									"});",
+									"",
+									"pm.test(\"Response has scan duration\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property('scan_duration_ms');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"timeout_seconds\": 15,\n  \"force_rescan\": false,\n  \"device_types\": []\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/devices/discover",
+							"host": ["{{base_url}}"],
+							"path": ["api", "devices", "discover"]
+						},
+						"description": "Discover all devices on the local network. Scans for bridges, cameras, and locks.\n\n**Endpoint**: POST /api/devices/discover\n**Request**: DiscoverDevicesRequest\n**Response**: DiscoverDevicesResponse\n\n**Parameters**:\n- `timeout_seconds`: Scan timeout (default: 15, max: 30)\n- `force_rescan`: Force new scan vs use cache\n- `device_types`: Filter by device types (empty = all)"
+					},
+					"response": [
+						{
+							"name": "All Devices Discovered",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"timeout_seconds\": 15,\n  \"force_rescan\": false,\n  \"device_types\": []\n}"
+								},
+								"url": {
+									"raw": "{{base_url}}/api/devices/discover",
+									"host": ["{{base_url}}"],
+									"path": ["api", "devices", "discover"]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"devices\": [\n    {\n      \"device_type\": 1,\n      \"bridge\": {\n        \"registration\": {\n          \"id\": 1,\n          \"facility_id\": 101\n        },\n        \"metadata\": {\n          \"device_id\": \"bridge-001\",\n          \"name\": \"Main Bridge\",\n          \"firmware_version\": \"1.2.0\",\n          \"updated_at\": \"2025-10-16T14:00:00Z\",\n          \"additional_info\": [\n            {\"key\": \"network_ip_address\", \"value\": \"10.10.100.150\"},\n            {\"key\": \"network_api_port\", \"value\": \"8090\"},\n            {\"key\": \"network_hostname\", \"value\": \"bridge-001.local\"},\n            {\"key\": \"network_mac_address\", \"value\": \"AA:BB:CC:DD:EE:FF\"}\n          ]\n        },\n        \"connectivity\": 1,\n        \"operation_state\": 2,\n        \"last_activity_at\": \"2025-10-16T14:29:00Z\"\n      }\n    },\n    {\n      \"device_type\": 2,\n      \"camera\": {\n        \"registration\": {\n          \"id\": 10,\n          \"facility_id\": 101\n        },\n        \"metadata\": {\n          \"device_id\": \"camera-living-room-001\",\n          \"name\": \"Living Room Camera\",\n          \"firmware_version\": \"2.1.5\",\n          \"updated_at\": \"2025-10-16T13:00:00Z\",\n          \"additional_info\": [\n            {\"key\": \"ip_address\", \"value\": \"10.10.100.210\"},\n            {\"key\": \"rtsp_port\", \"value\": \"554\"},\n            {\"key\": \"model\", \"value\": \"Axis M1065-L\"},\n            {\"key\": \"resolution\", \"value\": \"1920x1080\"}\n          ]\n        },\n        \"connectivity\": 1,\n        \"edge_connectivity\": 1,\n        \"operation_state\": 2,\n        \"last_activity_at\": \"2025-10-16T14:28:00Z\"\n      }\n    },\n    {\n      \"device_type\": 3,\n      \"lock\": {\n        \"registration\": {\n          \"id\": 20,\n          \"facility_id\": 101\n        },\n        \"metadata\": {\n          \"device_id\": \"lock-front-door-001\",\n          \"name\": \"Front Door Lock\",\n          \"firmware_version\": \"3.0.2\",\n          \"updated_at\": \"2025-10-16T12:00:00Z\",\n          \"additional_info\": [\n            {\"key\": \"ip_address\", \"value\": \"10.10.100.220\"},\n            {\"key\": \"api_port\", \"value\": \"8080\"},\n            {\"key\": \"model\", \"value\": \"PDK Cloud Lock\"},\n            {\"key\": \"battery_level\", \"value\": \"85\"}\n          ]\n        },\n        \"connectivity\": 1,\n        \"edge_connectivity\": 1,\n        \"operation_state\": 1,\n        \"last_activity_at\": \"2025-10-16T14:25:00Z\"\n      }\n    }\n  ],\n  \"scan_duration_ms\": 2345,\n  \"cached\": false\n}"
+						}
+					]
+				},
+				{
+					"name": "Discover Bridges Only",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"timeout_seconds\": 10,\n  \"force_rescan\": true,\n  \"device_types\": [1]\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/devices/discover",
+							"host": ["{{base_url}}"],
+							"path": ["api", "devices", "discover"]
+						},
+						"description": "Discover only bridge devices (self-discovery).\n\n**DeviceType**: 1 = BRIDGE"
+					},
+					"response": [
+						{
+							"name": "Bridge Discovered",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"timeout_seconds\": 10,\n  \"force_rescan\": true,\n  \"device_types\": [1]\n}"
+								},
+								"url": {
+									"raw": "{{base_url}}/api/devices/discover",
+									"host": ["{{base_url}}"],
+									"path": ["api", "devices", "discover"]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"devices\": [\n    {\n      \"device_type\": 1,\n      \"bridge\": {\n        \"registration\": {\n          \"id\": 1,\n          \"facility_id\": 101\n        },\n        \"metadata\": {\n          \"device_id\": \"bridge-001\",\n          \"name\": \"Main Bridge\",\n          \"firmware_version\": \"1.2.0\",\n          \"updated_at\": \"2025-10-16T14:00:00Z\",\n          \"additional_info\": [\n            {\"key\": \"network_ip_address\", \"value\": \"10.10.100.150\"},\n            {\"key\": \"network_api_port\", \"value\": \"8090\"},\n            {\"key\": \"network_grpc_port\", \"value\": \"9090\"},\n            {\"key\": \"network_hostname\", \"value\": \"bridge-001.local\"},\n            {\"key\": \"network_mac_address\", \"value\": \"AA:BB:CC:DD:EE:FF\"},\n            {\"key\": \"network_mdns_enabled\", \"value\": \"true\"},\n            {\"key\": \"capabilities_device_discovery\", \"value\": \"true\"},\n            {\"key\": \"capabilities_device_management\", \"value\": \"true\"},\n            {\"key\": \"capabilities_mqtt\", \"value\": \"true\"},\n            {\"key\": \"capabilities_grpc\", \"value\": \"true\"}\n          ]\n        },\n        \"connectivity\": 1,\n        \"operation_state\": 2,\n        \"last_activity_at\": \"2025-10-16T14:29:00Z\"\n      }\n    }\n  ],\n  \"scan_duration_ms\": 850,\n  \"cached\": false\n}"
+						}
+					]
+				},
+				{
+					"name": "Discover Cameras and Locks",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"timeout_seconds\": 20,\n  \"force_rescan\": false,\n  \"device_types\": [2, 3]\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/devices/discover",
+							"host": ["{{base_url}}"],
+							"path": ["api", "devices", "discover"]
+						},
+						"description": "Discover only edge devices (cameras and locks), excluding bridge.\n\n**DeviceTypes**: 2 = CAMERA, 3 = LOCK"
+					},
+					"response": []
+				}
+			],
+			"description": "Device discovery endpoints for finding devices on the local network."
+		},
+		{
+			"name": "Device Listing",
+			"item": [
+				{
+					"name": "List All Devices",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/devices",
+							"host": ["{{base_url}}"],
+							"path": ["api", "devices"]
+						},
+						"description": "List all cached devices. Returns devices from cache without network scan.\n\n**Endpoint**: GET /api/devices\n**Response**: ListDevicesResponse"
+					},
+					"response": [
+						{
+							"name": "All Devices Listed",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/api/devices",
+									"host": ["{{base_url}}"],
+									"path": ["api", "devices"]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"devices\": [\n    {\n      \"device_type\": 1,\n      \"bridge\": {\n        \"registration\": {\"id\": 1, \"facility_id\": 101},\n        \"metadata\": {\n          \"device_id\": \"bridge-001\",\n          \"name\": \"Main Bridge\",\n          \"firmware_version\": \"1.2.0\"\n        },\n        \"connectivity\": 1,\n        \"operation_state\": 2\n      }\n    },\n    {\n      \"device_type\": 2,\n      \"camera\": {\n        \"registration\": {\"id\": 10, \"facility_id\": 101},\n        \"metadata\": {\n          \"device_id\": \"camera-living-room-001\",\n          \"name\": \"Living Room Camera\",\n          \"firmware_version\": \"2.1.5\"\n        },\n        \"connectivity\": 1,\n        \"operation_state\": 2\n      }\n    },\n    {\n      \"device_type\": 3,\n      \"lock\": {\n        \"registration\": {\"id\": 20, \"facility_id\": 101},\n        \"metadata\": {\n          \"device_id\": \"lock-front-door-001\",\n          \"name\": \"Front Door Lock\",\n          \"firmware_version\": \"3.0.2\"\n        },\n        \"connectivity\": 1,\n        \"operation_state\": 1\n      }\n    }\n  ],\n  \"total_count\": 3,\n  \"last_discovery\": \"2025-10-16T14:20:00Z\"\n}"
+						}
+					]
+				},
+				{
+					"name": "List Cameras Only",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/devices?device_types=2&include_offline=false",
+							"host": ["{{base_url}}"],
+							"path": ["api", "devices"],
+							"query": [
+								{
+									"key": "device_types",
+									"value": "2",
+									"description": "CAMERA"
+								},
+								{
+									"key": "include_offline",
+									"value": "false"
+								}
+							]
+						},
+						"description": "List only camera devices that are online.\n\n**Query Parameters**:\n- `device_types`: 2 (CAMERA)\n- `include_offline`: false"
+					},
+					"response": []
+				},
+				{
+					"name": "List Locks Only",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/devices?device_types=3&connectivity_status=1",
+							"host": ["{{base_url}}"],
+							"path": ["api", "devices"],
+							"query": [
+								{
+									"key": "device_types",
+									"value": "3",
+									"description": "LOCK"
+								},
+								{
+									"key": "connectivity_status",
+									"value": "1",
+									"description": "CONNECTED"
+								}
+							]
+						},
+						"description": "List only lock devices that are connected.\n\n**ConnectivityStatus**: 1 = CONNECTED"
+					},
+					"response": []
+				},
+				{
+					"name": "Search Devices",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/devices?search=front",
+							"host": ["{{base_url}}"],
+							"path": ["api", "devices"],
+							"query": [
+								{
+									"key": "search",
+									"value": "front",
+									"description": "Search in name/hostname/IP"
+								}
+							]
+						},
+						"description": "Search devices by name, hostname, or IP address."
+					},
+					"response": []
+				}
+			],
+			"description": "Device listing endpoints for querying cached devices with filtering."
+		},
+		{
+			"name": "Device Details",
+			"item": [
+				{
+					"name": "Get Camera Device",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/devices/{{camera_device_id}}",
+							"host": ["{{base_url}}"],
+							"path": ["api", "devices", "{{camera_device_id}}"]
+						},
+						"description": "Get detailed information about a specific camera device.\n\n**Endpoint**: GET /api/devices/{device_id}\n**Response**: GetDeviceResponse"
+					},
+					"response": [
+						{
+							"name": "Camera Details",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/api/devices/camera-living-room-001",
+									"host": ["{{base_url}}"],
+									"path": ["api", "devices", "camera-living-room-001"]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"device\": {\n    \"device_type\": 2,\n    \"camera\": {\n      \"registration\": {\n        \"id\": 10,\n        \"facility_id\": 101\n      },\n      \"metadata\": {\n        \"device_id\": \"camera-living-room-001\",\n        \"name\": \"Living Room Camera\",\n        \"firmware_version\": \"2.1.5\",\n        \"updated_at\": \"2025-10-16T13:00:00Z\",\n        \"additional_info\": [\n          {\"key\": \"ip_address\", \"value\": \"10.10.100.210\"},\n          {\"key\": \"rtsp_port\", \"value\": \"554\"},\n          {\"key\": \"model\", \"value\": \"Axis M1065-L\"},\n          {\"key\": \"manufacturer\", \"value\": \"Axis Communications\"},\n          {\"key\": \"resolution\", \"value\": \"1920x1080\"},\n          {\"key\": \"fps\", \"value\": \"30\"},\n          {\"key\": \"codec\", \"value\": \"H.264\"},\n          {\"key\": \"ptz_capable\", \"value\": \"false\"},\n          {\"key\": \"night_vision\", \"value\": \"true\"},\n          {\"key\": \"motion_detection\", \"value\": \"true\"}\n        ]\n      },\n      \"connectivity\": 1,\n      \"edge_connectivity\": 1,\n      \"operation_state\": 2,\n      \"last_activity_at\": \"2025-10-16T14:28:00Z\"\n    },\n    \"services\": [\n      {\n        \"service_id\": \"rtsp-main\",\n        \"service_type\": 1,\n        \"port\": 554,\n        \"camera_state\": 2,\n        \"properties\": [\n          {\"key\": \"stream_url\", \"value\": \"rtsp://10.10.100.210:554/axis-media/media.amp\"},\n          {\"key\": \"stream_type\", \"value\": \"main\"},\n          {\"key\": \"bitrate\", \"value\": \"4000000\"}\n        ]\n      },\n      {\n        \"service_id\": \"http-config\",\n        \"service_type\": 2,\n        \"port\": 80,\n        \"properties\": [\n          {\"key\": \"config_url\", \"value\": \"http://10.10.100.210/\"}\n        ]\n      }\n    ]\n  }\n}"
+						}
+					]
+				},
+				{
+					"name": "Get Lock Device",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/devices/{{lock_device_id}}",
+							"host": ["{{base_url}}"],
+							"path": ["api", "devices", "{{lock_device_id}}"]
+						},
+						"description": "Get detailed information about a specific lock device."
+					},
+					"response": [
+						{
+							"name": "Lock Details",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/api/devices/lock-front-door-001",
+									"host": ["{{base_url}}"],
+									"path": ["api", "devices", "lock-front-door-001"]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"device\": {\n    \"device_type\": 3,\n    \"lock\": {\n      \"registration\": {\n        \"id\": 20,\n        \"facility_id\": 101\n      },\n      \"metadata\": {\n        \"device_id\": \"lock-front-door-001\",\n        \"name\": \"Front Door Lock\",\n        \"firmware_version\": \"3.0.2\",\n        \"updated_at\": \"2025-10-16T12:00:00Z\",\n        \"additional_info\": [\n          {\"key\": \"ip_address\", \"value\": \"10.10.100.220\"},\n          {\"key\": \"api_port\", \"value\": \"8080\"},\n          {\"key\": \"model\", \"value\": \"PDK Cloud Lock\"},\n          {\"key\": \"manufacturer\", \"value\": \"PDK\"},\n          {\"key\": \"battery_level\", \"value\": \"85\"},\n          {\"key\": \"battery_powered\", \"value\": \"true\"},\n          {\"key\": \"supports_remote_unlock\", \"value\": \"true\"},\n          {\"key\": \"supports_scheduled_unlock\", \"value\": \"true\"},\n          {\"key\": \"supports_access_codes\", \"value\": \"true\"}\n        ]\n      },\n      \"connectivity\": 1,\n      \"edge_connectivity\": 1,\n      \"operation_state\": 1,\n      \"last_activity_at\": \"2025-10-16T14:25:00Z\"\n    },\n    \"services\": [\n      {\n        \"service_id\": \"http-api\",\n        \"service_type\": 2,\n        \"port\": 8080,\n        \"lock_state\": 1,\n        \"properties\": [\n          {\"key\": \"api_url\", \"value\": \"http://10.10.100.220:8080/api\"},\n          {\"key\": \"api_version\", \"value\": \"v1\"}\n        ]\n      }\n    ]\n  }\n}"
+						}
+					]
+				},
+				{
+					"name": "Get Bridge Device",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/devices/{{bridge_device_id}}",
+							"host": ["{{base_url}}"],
+							"path": ["api", "devices", "{{bridge_device_id}}"]
+						},
+						"description": "Get detailed information about the bridge itself (self-query)."
+					},
+					"response": []
+				}
+			],
+			"description": "Get detailed information about individual devices."
+		},
+		{
+			"name": "Device Control",
+			"item": [
+				{
+					"name": "Lock - Lock Door",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"device_id\": \"{{lock_device_id}}\",\n  \"lock_action\": 1,\n  \"reason\": \"User requested lock via mobile app\",\n  \"parameters\": {\n    \"timeout_seconds\": \"10\",\n    \"force\": \"false\"\n  }\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/devices/{{lock_device_id}}/control",
+							"host": ["{{base_url}}"],
+							"path": ["api", "devices", "{{lock_device_id}}", "control"]
+						},
+						"description": "Send lock command to a lock device.\n\n**Endpoint**: POST /api/devices/{device_id}/control\n**Request**: DeviceControlRequest\n**Response**: DeviceControlResponse\n\n**LockAction Values**:\n- 1 = LOCK\n- 2 = UNLOCK\n- 3 = UNLOCK_MOMENTARY"
+					},
+					"response": [
+						{
+							"name": "Lock Success",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"device_id\": \"lock-front-door-001\",\n  \"lock_action\": 1,\n  \"reason\": \"User requested lock via mobile app\"\n}"
+								},
+								"url": {
+									"raw": "{{base_url}}/api/devices/lock-front-door-001/control",
+									"host": ["{{base_url}}"],
+									"path": ["api", "devices", "lock-front-door-001", "control"]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"success\": true,\n  \"message\": \"Lock command executed successfully\",\n  \"device_id\": \"lock-front-door-001\",\n  \"action_timestamp\": \"2025-10-16T14:30:00Z\",\n  \"lock_previous_state\": 2,\n  \"lock_new_state\": 1,\n  \"execution_duration_ms\": 450\n}"
+						}
+					]
+				},
+				{
+					"name": "Lock - Unlock Door",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"device_id\": \"{{lock_device_id}}\",\n  \"lock_action\": 2,\n  \"reason\": \"User authorized entry\",\n  \"parameters\": {\n    \"unlock_duration_seconds\": \"30\"\n  }\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/devices/{{lock_device_id}}/control",
+							"host": ["{{base_url}}"],
+							"path": ["api", "devices", "{{lock_device_id}}", "control"]
+						},
+						"description": "Send unlock command to a lock device.\n\n**LockAction**: 2 = UNLOCK"
+					},
+					"response": []
+				},
+				{
+					"name": "Lock - Momentary Unlock",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"device_id\": \"{{lock_device_id}}\",\n  \"lock_action\": 3,\n  \"reason\": \"Delivery access\",\n  \"parameters\": {\n    \"duration_seconds\": \"10\"\n  }\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/devices/{{lock_device_id}}/control",
+							"host": ["{{base_url}}"],
+							"path": ["api", "devices", "{{lock_device_id}}", "control"]
+						},
+						"description": "Unlock for a brief moment then auto-lock.\n\n**LockAction**: 3 = UNLOCK_MOMENTARY"
+					},
+					"response": []
+				},
+				{
+					"name": "Camera - Start Recording",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"device_id\": \"{{camera_device_id}}\",\n  \"camera_action\": 1,\n  \"reason\": \"Motion detected\",\n  \"parameters\": {\n    \"duration_seconds\": \"300\",\n    \"quality\": \"high\"\n  }\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/devices/{{camera_device_id}}/control",
+							"host": ["{{base_url}}"],
+							"path": ["api", "devices", "{{camera_device_id}}", "control"]
+						},
+						"description": "Start recording on a camera device.\n\n**CameraAction Values**:\n- 1 = START_RECORDING\n- 2 = STOP_RECORDING\n- 3 = TAKE_SNAPSHOT\n- 4 = ENABLE_MOTION_DETECTION\n- 5 = DISABLE_MOTION_DETECTION"
+					},
+					"response": [
+						{
+							"name": "Recording Started",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"device_id\": \"camera-living-room-001\",\n  \"camera_action\": 1,\n  \"reason\": \"Motion detected\"\n}"
+								},
+								"url": {
+									"raw": "{{base_url}}/api/devices/camera-living-room-001/control",
+									"host": ["{{base_url}}"],
+									"path": ["api", "devices", "camera-living-room-001", "control"]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"success\": true,\n  \"message\": \"Camera recording started\",\n  \"device_id\": \"camera-living-room-001\",\n  \"action_timestamp\": \"2025-10-16T14:30:00Z\",\n  \"camera_previous_state\": 1,\n  \"camera_new_state\": 2,\n  \"execution_duration_ms\": 120,\n  \"result_data\": {\n    \"recording_id\": \"rec-20251016-143000-001\",\n    \"stream_url\": \"rtsp://10.10.100.210:554/axis-media/media.amp\"\n  }\n}"
+						}
+					]
+				},
+				{
+					"name": "Camera - Stop Recording",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"device_id\": \"{{camera_device_id}}\",\n  \"camera_action\": 2,\n  \"reason\": \"Recording complete\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/devices/{{camera_device_id}}/control",
+							"host": ["{{base_url}}"],
+							"path": ["api", "devices", "{{camera_device_id}}", "control"]
+						},
+						"description": "Stop recording on a camera device.\n\n**CameraAction**: 2 = STOP_RECORDING"
+					},
+					"response": []
+				},
+				{
+					"name": "Camera - Take Snapshot",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"device_id\": \"{{camera_device_id}}\",\n  \"camera_action\": 3,\n  \"reason\": \"User requested snapshot\",\n  \"parameters\": {\n    \"resolution\": \"1920x1080\",\n    \"quality\": \"high\"\n  }\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/devices/{{camera_device_id}}/control",
+							"host": ["{{base_url}}"],
+							"path": ["api", "devices", "{{camera_device_id}}", "control"]
+						},
+						"description": "Capture a snapshot from camera.\n\n**CameraAction**: 3 = TAKE_SNAPSHOT"
+					},
+					"response": []
+				}
+			],
+			"description": "Device control endpoints for executing actions on devices (lock/unlock, camera start/stop, etc.)."
+		}
+	]
+}

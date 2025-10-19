@@ -1,0 +1,381 @@
+{
+  "info": {
+    "name": "RallyMate FacilitiesService",
+    "description": "Auto-generated collection for FacilitiesService service with realistic test data",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_postman_id": "9656da5c-1dba-440a-aa86-1ac75f18eecc",
+    "version": "2.0.0"
+  },
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{session_token}}",
+        "type": "string"
+      }
+    ]
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:8080",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Get Facilities",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/api/facilities",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "facilities"
+          ]
+        },
+        "description": "**RPC:** GetFacilities\n\n**Request:** GetFacilitiesRequest\n\n**Response:** GetFacilitiesResponse\n\n**Endpoint:** GET /api/facilities"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "// Validate response status",
+              "pm.test('Status is 200 OK', function() {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "// Validate response time",
+              "pm.test('Response time under 2s', function() {",
+              "    pm.expect(pm.response.responseTime).to.be.below(2000);",
+              "});",
+              "",
+              "// Parse and extract response data",
+              "if (pm.response.code === 200) {",
+              "    try {",
+              "        const response = pm.response.json();",
+              "        console.log('\u2705 Response:', JSON.stringify(response, null, 2));",
+              "",
+              "    } catch (e) {",
+              "        console.log('\u26a0\ufe0f Could not parse response:', e);",
+              "    }",
+              "}"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Get Facility",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/api/facilities/{{id}}",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "facilities",
+            "{{id}}"
+          ]
+        },
+        "description": "**RPC:** GetFacility\n\n**Request:** GetFacilityRequest\n\n**Response:** GetFacilityResponse\n\n**Endpoint:** GET /api/facilities/{id}"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "// Validate response status",
+              "pm.test('Status is 200 OK', function() {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "// Validate response time",
+              "pm.test('Response time under 2s', function() {",
+              "    pm.expect(pm.response.responseTime).to.be.below(2000);",
+              "});",
+              "",
+              "// Parse and extract response data",
+              "if (pm.response.code === 200) {",
+              "    try {",
+              "        const response = pm.response.json();",
+              "        console.log('\u2705 Response:', JSON.stringify(response, null, 2));",
+              "",
+              "    } catch (e) {",
+              "        console.log('\u26a0\ufe0f Could not parse response:', e);",
+              "    }",
+              "}"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Create Facility",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/api/facilities",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "facilities"
+          ]
+        },
+        "description": "**RPC:** CreateFacility\n\n**Request:** CreateFacilityRequest\n\n**Response:** CreateFacilityResponse\n\n**Endpoint:** POST /api/facilities",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Downtown Tennis Club\",\n  \"address\": \"123 Main St, City, State 12345\",\n  \"description\": \"Automated test description\",\n  \"timezone\": \"America/New_York\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "// Validate response status",
+              "pm.test('Status is 200 OK', function() {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "// Validate response time",
+              "pm.test('Response time under 2s', function() {",
+              "    pm.expect(pm.response.responseTime).to.be.below(2000);",
+              "});",
+              "",
+              "// Parse and extract response data",
+              "if (pm.response.code === 200) {",
+              "    try {",
+              "        const response = pm.response.json();",
+              "        console.log('\u2705 Response:', JSON.stringify(response, null, 2));",
+              "",
+              "        // Extract facility ID",
+              "        if (response.facility && response.facility.id) {",
+              "            pm.collectionVariables.set('facility_id', response.facility.id);",
+              "            console.log('\ud83c\udfe2 Facility ID:', response.facility.id);",
+              "        }",
+              "",
+              "    } catch (e) {",
+              "        console.log('\u26a0\ufe0f Could not parse response:', e);",
+              "    }",
+              "}"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Update Facility",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/api/facilities/{{id}}",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "facilities",
+            "{{id}}"
+          ]
+        },
+        "description": "**RPC:** UpdateFacility\n\n**Request:** UpdateFacilityRequest\n\n**Response:** UpdateFacilityResponse\n\n**Endpoint:** PUT /api/facilities/{id}",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Downtown Tennis Club\",\n  \"address\": \"123 Main St, City, State 12345\",\n  \"description\": \"Automated test description\",\n  \"timezone\": \"America/New_York\",\n  \"is_active\": true\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "// Validate response status",
+              "pm.test('Status is 200 OK', function() {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "// Validate response time",
+              "pm.test('Response time under 2s', function() {",
+              "    pm.expect(pm.response.responseTime).to.be.below(2000);",
+              "});",
+              "",
+              "// Parse and extract response data",
+              "if (pm.response.code === 200) {",
+              "    try {",
+              "        const response = pm.response.json();",
+              "        console.log('\u2705 Response:', JSON.stringify(response, null, 2));",
+              "",
+              "    } catch (e) {",
+              "        console.log('\u26a0\ufe0f Could not parse response:', e);",
+              "    }",
+              "}"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Delete Facility",
+      "request": {
+        "method": "DELETE",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/api/facilities/{{id}}",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "facilities",
+            "{{id}}"
+          ]
+        },
+        "description": "**RPC:** DeleteFacility\n\n**Request:** DeleteFacilityRequest\n\n**Response:** DeleteFacilityResponse\n\n**Endpoint:** DELETE /api/facilities/{id}"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "// Validate response status",
+              "pm.test('Status is 200 OK', function() {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "// Validate response time",
+              "pm.test('Response time under 2s', function() {",
+              "    pm.expect(pm.response.responseTime).to.be.below(2000);",
+              "});",
+              "",
+              "// Parse and extract response data",
+              "if (pm.response.code === 200) {",
+              "    try {",
+              "        const response = pm.response.json();",
+              "        console.log('\u2705 Response:', JSON.stringify(response, null, 2));",
+              "",
+              "    } catch (e) {",
+              "        console.log('\u26a0\ufe0f Could not parse response:', e);",
+              "    }",
+              "}"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Get User Facilities",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/api/facilities/user/{{user_id}}",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "facilities",
+            "user",
+            "{{user_id}}"
+          ]
+        },
+        "description": "**RPC:** GetUserFacilities\n\n**Request:** GetUserFacilitiesRequest\n\n**Response:** GetUserFacilitiesResponse\n\n**Endpoint:** GET /api/facilities/user/{user_id}"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "// Validate response status",
+              "pm.test('Status is 200 OK', function() {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "// Validate response time",
+              "pm.test('Response time under 2s', function() {",
+              "    pm.expect(pm.response.responseTime).to.be.below(2000);",
+              "});",
+              "",
+              "// Parse and extract response data",
+              "if (pm.response.code === 200) {",
+              "    try {",
+              "        const response = pm.response.json();",
+              "        console.log('\u2705 Response:', JSON.stringify(response, null, 2));",
+              "",
+              "    } catch (e) {",
+              "        console.log('\u26a0\ufe0f Could not parse response:', e);",
+              "    }",
+              "}"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ]
+    }
+  ]
+}

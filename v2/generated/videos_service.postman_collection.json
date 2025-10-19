@@ -1,0 +1,682 @@
+{
+  "info": {
+    "name": "RallyMate VideosService",
+    "description": "Auto-generated collection for VideosService service with realistic test data",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_postman_id": "64f40610-a3aa-41b5-9aa9-a958ed3df429",
+    "version": "2.0.0"
+  },
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{session_token}}",
+        "type": "string"
+      }
+    ]
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:8080",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Get Videos",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/api/videos",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "videos"
+          ]
+        },
+        "description": "**RPC:** GetVideos\n\n**Request:** GetVideosRequest\n\n**Response:** GetVideosResponse\n\n**Endpoint:** GET /api/videos"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "// Validate response status",
+              "pm.test('Status is 200 OK', function() {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "// Validate response time",
+              "pm.test('Response time under 2s', function() {",
+              "    pm.expect(pm.response.responseTime).to.be.below(2000);",
+              "});",
+              "",
+              "// Parse and extract response data",
+              "if (pm.response.code === 200) {",
+              "    try {",
+              "        const response = pm.response.json();",
+              "        console.log('\u2705 Response:', JSON.stringify(response, null, 2));",
+              "",
+              "    } catch (e) {",
+              "        console.log('\u26a0\ufe0f Could not parse response:', e);",
+              "    }",
+              "}"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Get Video",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/api/videos/{{id}}",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "videos",
+            "{{id}}"
+          ]
+        },
+        "description": "**RPC:** GetVideo\n\n**Request:** GetVideoRequest\n\n**Response:** GetVideoResponse\n\n**Endpoint:** GET /api/videos/{id}"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "// Validate response status",
+              "pm.test('Status is 200 OK', function() {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "// Validate response time",
+              "pm.test('Response time under 2s', function() {",
+              "    pm.expect(pm.response.responseTime).to.be.below(2000);",
+              "});",
+              "",
+              "// Parse and extract response data",
+              "if (pm.response.code === 200) {",
+              "    try {",
+              "        const response = pm.response.json();",
+              "        console.log('\u2705 Response:', JSON.stringify(response, null, 2));",
+              "",
+              "    } catch (e) {",
+              "        console.log('\u26a0\ufe0f Could not parse response:', e);",
+              "    }",
+              "}"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Get User Videos",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/api/videos/user/{{user_id}}",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "videos",
+            "user",
+            "{{user_id}}"
+          ]
+        },
+        "description": "**RPC:** GetUserVideos\n\n**Request:** GetUserVideosRequest\n\n**Response:** GetUserVideosResponse\n\n**Endpoint:** GET /api/videos/user/{user_id}"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "// Validate response status",
+              "pm.test('Status is 200 OK', function() {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "// Validate response time",
+              "pm.test('Response time under 2s', function() {",
+              "    pm.expect(pm.response.responseTime).to.be.below(2000);",
+              "});",
+              "",
+              "// Parse and extract response data",
+              "if (pm.response.code === 200) {",
+              "    try {",
+              "        const response = pm.response.json();",
+              "        console.log('\u2705 Response:', JSON.stringify(response, null, 2));",
+              "",
+              "    } catch (e) {",
+              "        console.log('\u26a0\ufe0f Could not parse response:', e);",
+              "    }",
+              "}"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Upload Video",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/api/videos/upload",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "videos",
+            "upload"
+          ]
+        },
+        "description": "**RPC:** UploadVideo\n\n**Request:** UploadVideoRequest\n\n**Response:** UploadVideoResponse\n\n**Endpoint:** POST /api/videos/upload",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"facility_id\": \"{{facility_id}}\",\n  \"camera_device_id\": \"device-001\",\n  \"recording_type\": \"manual\",\n  \"filename\": \"test-video-recording.mp4\",\n  \"file_size_bytes\": 1048576,\n  \"duration_seconds\": 60,\n  \"start_time\": \"2025-10-16T11:57:47.552515Z\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "// Validate response status",
+              "pm.test('Status is 200 OK', function() {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "// Validate response time",
+              "pm.test('Response time under 2s', function() {",
+              "    pm.expect(pm.response.responseTime).to.be.below(2000);",
+              "});",
+              "",
+              "// Parse and extract response data",
+              "if (pm.response.code === 200) {",
+              "    try {",
+              "        const response = pm.response.json();",
+              "        console.log('\u2705 Response:', JSON.stringify(response, null, 2));",
+              "",
+              "        // Extract video ID",
+              "        if (response.video && response.video.id) {",
+              "            pm.collectionVariables.set('video_id', response.video.id);",
+              "            console.log('\ud83c\udfa5 Video ID:', response.video.id);",
+              "        }",
+              "",
+              "    } catch (e) {",
+              "        console.log('\u26a0\ufe0f Could not parse response:', e);",
+              "    }",
+              "}"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Update Video",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/api/videos/{{id}}",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "videos",
+            "{{id}}"
+          ]
+        },
+        "description": "**RPC:** UpdateVideo\n\n**Request:** UpdateVideoRequest\n\n**Response:** UpdateVideoResponse\n\n**Endpoint:** PUT /api/videos/{id}",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"facility_id\": \"{{facility_id}}\",\n  \"camera_device_id\": \"device-001\",\n  \"file_url\": \"https://example.com/resource\",\n  \"thumbnail_url\": \"https://example.com/resource\",\n  \"start_timestamp\": \"2025-10-16T11:57:47.552528Z\",\n  \"duration_seconds\": 60,\n  \"file_size_bytes\": 1048576,\n  \"recording_type\": \"manual\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "// Validate response status",
+              "pm.test('Status is 200 OK', function() {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "// Validate response time",
+              "pm.test('Response time under 2s', function() {",
+              "    pm.expect(pm.response.responseTime).to.be.below(2000);",
+              "});",
+              "",
+              "// Parse and extract response data",
+              "if (pm.response.code === 200) {",
+              "    try {",
+              "        const response = pm.response.json();",
+              "        console.log('\u2705 Response:', JSON.stringify(response, null, 2));",
+              "",
+              "    } catch (e) {",
+              "        console.log('\u26a0\ufe0f Could not parse response:', e);",
+              "    }",
+              "}"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Delete Video",
+      "request": {
+        "method": "DELETE",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/api/videos/{{id}}",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "videos",
+            "{{id}}"
+          ]
+        },
+        "description": "**RPC:** DeleteVideo\n\n**Request:** DeleteVideoRequest\n\n**Response:** DeleteVideoResponse\n\n**Endpoint:** DELETE /api/videos/{id}"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "// Validate response status",
+              "pm.test('Status is 200 OK', function() {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "// Validate response time",
+              "pm.test('Response time under 2s', function() {",
+              "    pm.expect(pm.response.responseTime).to.be.below(2000);",
+              "});",
+              "",
+              "// Parse and extract response data",
+              "if (pm.response.code === 200) {",
+              "    try {",
+              "        const response = pm.response.json();",
+              "        console.log('\u2705 Response:', JSON.stringify(response, null, 2));",
+              "",
+              "    } catch (e) {",
+              "        console.log('\u26a0\ufe0f Could not parse response:', e);",
+              "    }",
+              "}"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Associate Video To User",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/api/videos/{{video_id}}/users/{{user_id}}",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "videos",
+            "{{video_id}}",
+            "users",
+            "{{user_id}}"
+          ]
+        },
+        "description": "**RPC:** AssociateVideoToUser\n\n**Request:** AssociateVideoToUserRequest\n\n**Response:** AssociateVideoToUserResponse\n\n**Endpoint:** POST /api/videos/{video_id}/users/{user_id}",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"expires_at\": \"2025-11-15T11:57:47.552541Z\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "// Validate response status",
+              "pm.test('Status is 200 OK', function() {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "// Validate response time",
+              "pm.test('Response time under 2s', function() {",
+              "    pm.expect(pm.response.responseTime).to.be.below(2000);",
+              "});",
+              "",
+              "// Parse and extract response data",
+              "if (pm.response.code === 200) {",
+              "    try {",
+              "        const response = pm.response.json();",
+              "        console.log('\u2705 Response:', JSON.stringify(response, null, 2));",
+              "",
+              "    } catch (e) {",
+              "        console.log('\u26a0\ufe0f Could not parse response:', e);",
+              "    }",
+              "}"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Remove Video User Association",
+      "request": {
+        "method": "DELETE",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/api/videos/{{video_id}}/users/{{user_id}}",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "videos",
+            "{{video_id}}",
+            "users",
+            "{{user_id}}"
+          ]
+        },
+        "description": "**RPC:** RemoveVideoUserAssociation\n\n**Request:** RemoveVideoUserAssociationRequest\n\n**Response:** RemoveVideoUserAssociationResponse\n\n**Endpoint:** DELETE /api/videos/{video_id}/users/{user_id}"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "// Validate response status",
+              "pm.test('Status is 200 OK', function() {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "// Validate response time",
+              "pm.test('Response time under 2s', function() {",
+              "    pm.expect(pm.response.responseTime).to.be.below(2000);",
+              "});",
+              "",
+              "// Parse and extract response data",
+              "if (pm.response.code === 200) {",
+              "    try {",
+              "        const response = pm.response.json();",
+              "        console.log('\u2705 Response:', JSON.stringify(response, null, 2));",
+              "",
+              "    } catch (e) {",
+              "        console.log('\u26a0\ufe0f Could not parse response:', e);",
+              "    }",
+              "}"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Get Video Associations",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/api/videos/{{video_id}}/associations",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "videos",
+            "{{video_id}}",
+            "associations"
+          ]
+        },
+        "description": "**RPC:** GetVideoAssociations\n\n**Request:** GetVideoAssociationsRequest\n\n**Response:** GetVideoAssociationsResponse\n\n**Endpoint:** GET /api/videos/{video_id}/associations"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "// Validate response status",
+              "pm.test('Status is 200 OK', function() {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "// Validate response time",
+              "pm.test('Response time under 2s', function() {",
+              "    pm.expect(pm.response.responseTime).to.be.below(2000);",
+              "});",
+              "",
+              "// Parse and extract response data",
+              "if (pm.response.code === 200) {",
+              "    try {",
+              "        const response = pm.response.json();",
+              "        console.log('\u2705 Response:', JSON.stringify(response, null, 2));",
+              "",
+              "    } catch (e) {",
+              "        console.log('\u26a0\ufe0f Could not parse response:', e);",
+              "    }",
+              "}"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Bulk Associate Videos",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/api/videos/associate/bulk",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "videos",
+            "associate",
+            "bulk"
+          ]
+        },
+        "description": "**RPC:** BulkAssociateVideos\n\n**Request:** BulkAssociateVideosRequest\n\n**Response:** BulkAssociateVideosResponse\n\n**Endpoint:** POST /api/videos/associate/bulk",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"video_ids\": [\n    1\n  ],\n  \"user_ids\": [\n    1\n  ],\n  \"expires_at\": \"2025-11-15T11:57:47.552557Z\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "// Validate response status",
+              "pm.test('Status is 200 OK', function() {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "// Validate response time",
+              "pm.test('Response time under 2s', function() {",
+              "    pm.expect(pm.response.responseTime).to.be.below(2000);",
+              "});",
+              "",
+              "// Parse and extract response data",
+              "if (pm.response.code === 200) {",
+              "    try {",
+              "        const response = pm.response.json();",
+              "        console.log('\u2705 Response:', JSON.stringify(response, null, 2));",
+              "",
+              "    } catch (e) {",
+              "        console.log('\u26a0\ufe0f Could not parse response:', e);",
+              "    }",
+              "}"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Get User Video Associations",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/api/users/{{user_id}}/video-associations",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "users",
+            "{{user_id}}",
+            "video-associations"
+          ]
+        },
+        "description": "**RPC:** GetUserVideoAssociations\n\n**Request:** GetUserVideoAssociationsRequest\n\n**Response:** GetUserVideoAssociationsResponse\n\n**Endpoint:** GET /api/users/{user_id}/video-associations"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "// Validate response status",
+              "pm.test('Status is 200 OK', function() {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "// Validate response time",
+              "pm.test('Response time under 2s', function() {",
+              "    pm.expect(pm.response.responseTime).to.be.below(2000);",
+              "});",
+              "",
+              "// Parse and extract response data",
+              "if (pm.response.code === 200) {",
+              "    try {",
+              "        const response = pm.response.json();",
+              "        console.log('\u2705 Response:', JSON.stringify(response, null, 2));",
+              "",
+              "    } catch (e) {",
+              "        console.log('\u26a0\ufe0f Could not parse response:', e);",
+              "    }",
+              "}"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ]
+    }
+  ]
+}

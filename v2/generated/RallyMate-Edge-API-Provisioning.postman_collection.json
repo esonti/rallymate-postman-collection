@@ -1,0 +1,633 @@
+{
+	"info": {
+		"_postman_id": "edge-api-provisioning-001",
+		"name": "RallyMate Edge API - Provisioning Service",
+		"description": "Bridge provisioning and lifecycle management. Handles bridge registration with the cloud backend, authentication token management, and unprovisioning.\n\n**Service**: edge.provisioning.ProvisioningService\n**Base URL**: http://{{bridge_ip}}:{{bridge_port}}\n**Port**: 8090 (default)\n**Authentication**: None (local bridge access)\n\n**Provisioning Flow**:\n1. User generates One-Time Code (OTC) in mobile app\n2. User enters OTC on bridge (via keypad/display)\n3. Bridge calls ProvisionWithOTC to register with cloud\n4. Bridge receives auth tokens and facility assignment\n5. Bridge operates with periodic token refresh\n6. Optional: ResetProvisioning to unprovision\n\n**Token Management**:\n- Initial tokens from ProvisionWithOTC\n- Periodic refresh via RefreshToken\n- Validation via ValidateToken\n- Status monitoring via GetProvisioningStatus",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"variable": [
+		{
+			"key": "bridge_ip",
+			"value": "10.10.100.150",
+			"type": "string"
+		},
+		{
+			"key": "bridge_port",
+			"value": "8090",
+			"type": "string"
+		},
+		{
+			"key": "base_url",
+			"value": "http://{{bridge_ip}}:{{bridge_port}}",
+			"type": "string"
+		},
+		{
+			"key": "one_time_code",
+			"value": "ABC-DEF-123",
+			"type": "string",
+			"description": "OTC from mobile app"
+		},
+		{
+			"key": "access_token",
+			"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+			"type": "string",
+			"description": "Bridge auth token"
+		},
+		{
+			"key": "refresh_token",
+			"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+			"type": "string",
+			"description": "Token refresh"
+		}
+	],
+	"item": [
+		{
+			"name": "Provision Bridge",
+			"item": [
+				{
+					"name": "Provision with OTC",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Response has provisioning success\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.success).to.be.true;",
+									"});",
+									"",
+									"pm.test(\"Response has tokens\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property('access_token');",
+									"    pm.expect(jsonData).to.have.property('refresh_token');",
+									"});",
+									"",
+									"// Store tokens for subsequent requests",
+									"var jsonData = pm.response.json();",
+									"if (jsonData.access_token) {",
+									"    pm.collectionVariables.set('access_token', jsonData.access_token);",
+									"}",
+									"if (jsonData.refresh_token) {",
+									"    pm.collectionVariables.set('refresh_token', jsonData.refresh_token);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"one_time_code\": \"{{one_time_code}}\",\n  \"device_info\": {\n    \"device_id\": \"bridge-001\",\n    \"name\": \"Main Bridge\",\n    \"firmware_version\": \"1.2.0\",\n    \"additional_info\": [\n      {\"key\": \"network_hostname\", \"value\": \"bridge-001.local\"},\n      {\"key\": \"network_mac_address\", \"value\": \"AA:BB:CC:DD:EE:FF\"},\n      {\"key\": \"network_ip_address\", \"value\": \"10.10.100.150\"},\n      {\"key\": \"hardware_serial\", \"value\": \"BRG-12345-67890\"},\n      {\"key\": \"hardware_model\", \"value\": \"RallyMate Bridge v2\"}\n    ]\n  }\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/provision/otc",
+							"host": ["{{base_url}}"],
+							"path": ["api", "provision", "otc"]
+						},
+						"description": "Provision bridge using a one-time code generated in the mobile app.\n\n**Endpoint**: POST /api/provision/otc\n**Request**: ProvisionWithOTCRequest\n**Response**: ProvisionResponse\n\n**Flow**:\n1. User generates OTC in mobile app (valid for 10 minutes)\n2. User enters OTC on bridge device\n3. Bridge sends OTC + device info to this endpoint\n4. Backend validates OTC and returns auth tokens + facility assignment\n5. Bridge stores tokens and begins operation\n\n**Request Fields**:\n- `one_time_code`: From mobile app (format: XXX-XXX-XXX)\n- `device_info`: Bridge metadata for registration\n\n**Response Fields**:\n- `success`: Provisioning succeeded\n- `access_token`: JWT for API authentication\n- `refresh_token`: Token for refreshing access\n- `facility_id`: Assigned facility\n- `backend_url`: Cloud API endpoint\n- `mqtt_config`: MQTT connection details"
+					},
+					"response": [
+						{
+							"name": "Provisioning Success",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"one_time_code\": \"ABC-DEF-123\",\n  \"device_info\": {\n    \"device_id\": \"bridge-001\",\n    \"name\": \"Main Bridge\",\n    \"firmware_version\": \"1.2.0\",\n    \"additional_info\": [\n      {\"key\": \"network_hostname\", \"value\": \"bridge-001.local\"},\n      {\"key\": \"network_mac_address\", \"value\": \"AA:BB:CC:DD:EE:FF\"},\n      {\"key\": \"network_ip_address\", \"value\": \"10.10.100.150\"}\n    ]\n  }\n}"
+								},
+								"url": {
+									"raw": "{{base_url}}/api/provision/otc",
+									"host": ["{{base_url}}"],
+									"path": ["api", "provision", "otc"]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"success\": true,\n  \"message\": \"Bridge provisioned successfully\",\n  \"access_token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJicmlkZ2UtMDAxIiwiZmFjaWxpdHlfaWQiOjEwMSwiZXhwIjoxNzI5MTc4NDAwfQ.signature\",\n  \"refresh_token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJicmlkZ2UtMDAxIiwidHlwZSI6InJlZnJlc2giLCJleHAiOjE3Mjk1MjQwMDB9.signature\",\n  \"token_type\": \"Bearer\",\n  \"expires_in\": 3600,\n  \"facility_id\": 101,\n  \"facility_name\": \"Main Facility\",\n  \"backend_url\": \"https://api.rallymate.com\",\n  \"mqtt_config\": {\n    \"broker_url\": \"mqtt.rallymate.com\",\n    \"port\": 8883,\n    \"use_tls\": true,\n    \"username\": \"bridge-001\",\n    \"password\": \"mqtt-password-token\",\n    \"client_id\": \"bridge-001\",\n    \"topics\": {\n      \"command\": \"rallymate/facility/101/bridge/001/command\",\n      \"status\": \"rallymate/facility/101/bridge/001/status\",\n      \"events\": \"rallymate/facility/101/bridge/001/events\"\n    }\n  },\n  \"provisioned_at\": \"2025-10-16T14:30:00Z\"\n}"
+						},
+						{
+							"name": "Invalid OTC",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"one_time_code\": \"INVALID-CODE\",\n  \"device_info\": {\n    \"device_id\": \"bridge-001\",\n    \"name\": \"Main Bridge\"\n  }\n}"
+								},
+								"url": {
+									"raw": "{{base_url}}/api/provision/otc",
+									"host": ["{{base_url}}"],
+									"path": ["api", "provision", "otc"]
+								}
+							},
+							"status": "Bad Request",
+							"code": 400,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"success\": false,\n  \"message\": \"Invalid or expired one-time code\",\n  \"error_code\": \"INVALID_OTC\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Provision with OTC - Minimal",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"one_time_code\": \"{{one_time_code}}\",\n  \"device_info\": {\n    \"device_id\": \"bridge-002\",\n    \"name\": \"Secondary Bridge\"\n  }\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/provision/otc",
+							"host": ["{{base_url}}"],
+							"path": ["api", "provision", "otc"]
+						},
+						"description": "Minimal provisioning request with only required fields."
+					},
+					"response": []
+				}
+			],
+			"description": "Bridge provisioning endpoints for initial registration with cloud backend."
+		},
+		{
+			"name": "Provisioning Status",
+			"item": [
+				{
+					"name": "Get Provisioning Status",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/provision/status",
+							"host": ["{{base_url}}"],
+							"path": ["api", "provision", "status"]
+						},
+						"description": "Get current provisioning status of the bridge.\n\n**Endpoint**: GET /api/provision/status\n**Response**: ProvisioningStatusResponse\n\n**States**:\n- NOT_PROVISIONED: Bridge not registered\n- PROVISIONING: Registration in progress\n- PROVISIONED: Successfully registered\n- ERROR: Provisioning failed\n- EXPIRED: Token expired, needs refresh"
+					},
+					"response": [
+						{
+							"name": "Provisioned",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/api/provision/status",
+									"host": ["{{base_url}}"],
+									"path": ["api", "provision", "status"]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"status\": \"PROVISIONED\",\n  \"is_provisioned\": true,\n  \"facility_id\": 101,\n  \"facility_name\": \"Main Facility\",\n  \"device_id\": \"bridge-001\",\n  \"backend_url\": \"https://api.rallymate.com\",\n  \"mqtt_connected\": true,\n  \"mqtt_broker\": \"mqtt.rallymate.com:8883\",\n  \"provisioned_at\": \"2025-10-16T14:30:00Z\",\n  \"last_token_refresh\": \"2025-10-16T14:25:00Z\",\n  \"token_expires_at\": \"2025-10-16T15:30:00Z\",\n  \"token_valid\": true,\n  \"backend_connectivity\": true,\n  \"last_backend_ping\": \"2025-10-16T14:29:00Z\"\n}"
+						},
+						{
+							"name": "Not Provisioned",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/api/provision/status",
+									"host": ["{{base_url}}"],
+									"path": ["api", "provision", "status"]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"status\": \"NOT_PROVISIONED\",\n  \"is_provisioned\": false,\n  \"device_id\": \"bridge-001\",\n  \"message\": \"Bridge is not provisioned. Use OTC to provision.\"\n}"
+						},
+						{
+							"name": "Token Expired",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/api/provision/status",
+									"host": ["{{base_url}}"],
+									"path": ["api", "provision", "status"]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"status\": \"EXPIRED\",\n  \"is_provisioned\": true,\n  \"facility_id\": 101,\n  \"device_id\": \"bridge-001\",\n  \"token_valid\": false,\n  \"token_expires_at\": \"2025-10-16T13:30:00Z\",\n  \"message\": \"Authentication token expired. Refresh required.\"\n}"
+						}
+					]
+				}
+			],
+			"description": "Check current provisioning and authentication status."
+		},
+		{
+			"name": "Token Management",
+			"item": [
+				{
+					"name": "Refresh Token",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Response has new access token\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property('access_token');",
+									"});",
+									"",
+									"// Update stored token",
+									"var jsonData = pm.response.json();",
+									"if (jsonData.access_token) {",
+									"    pm.collectionVariables.set('access_token', jsonData.access_token);",
+									"}",
+									"if (jsonData.refresh_token) {",
+									"    pm.collectionVariables.set('refresh_token', jsonData.refresh_token);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"refresh_token\": \"{{refresh_token}}\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/provision/refresh",
+							"host": ["{{base_url}}"],
+							"path": ["api", "provision", "refresh"]
+						},
+						"description": "Refresh authentication token using refresh token.\n\n**Endpoint**: POST /api/provision/refresh\n**Request**: RefreshTokenRequest\n**Response**: RefreshTokenResponse\n\n**Usage**:\n- Called automatically before token expiration\n- Recommended: Refresh at 80% of token lifetime\n- Default access token lifetime: 1 hour\n- Refresh token lifetime: 30 days\n\n**Response**:\n- New access_token (1 hour)\n- Optionally new refresh_token (rotation)"
+					},
+					"response": [
+						{
+							"name": "Token Refreshed",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"refresh_token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...\"\n}"
+								},
+								"url": {
+									"raw": "{{base_url}}/api/provision/refresh",
+									"host": ["{{base_url}}"],
+									"path": ["api", "provision", "refresh"]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"access_token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJicmlkZ2UtMDAxIiwiZmFjaWxpdHlfaWQiOjEwMSwiZXhwIjoxNzI5MTgyMDAwfQ.new-signature\",\n  \"refresh_token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJicmlkZ2UtMDAxIiwidHlwZSI6InJlZnJlc2giLCJleHAiOjE3Mjk1MjQwMDB9.new-signature\",\n  \"token_type\": \"Bearer\",\n  \"expires_in\": 3600,\n  \"refreshed_at\": \"2025-10-16T14:30:00Z\"\n}"
+						},
+						{
+							"name": "Invalid Refresh Token",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"refresh_token\": \"invalid-token\"\n}"
+								},
+								"url": {
+									"raw": "{{base_url}}/api/provision/refresh",
+									"host": ["{{base_url}}"],
+									"path": ["api", "provision", "refresh"]
+								}
+							},
+							"status": "Unauthorized",
+							"code": 401,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"error\": \"Invalid or expired refresh token\",\n  \"error_code\": \"INVALID_REFRESH_TOKEN\",\n  \"message\": \"Re-provisioning required\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Validate Token",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"token\": \"{{access_token}}\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/provision/validate",
+							"host": ["{{base_url}}"],
+							"path": ["api", "provision", "validate"]
+						},
+						"description": "Validate an authentication token.\n\n**Endpoint**: POST /api/provision/validate\n**Request**: ValidateTokenRequest\n**Response**: ValidateTokenResponse\n\n**Usage**:\n- Verify token is still valid\n- Check token claims (facility_id, permissions)\n- Get token expiration time"
+					},
+					"response": [
+						{
+							"name": "Token Valid",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...\"\n}"
+								},
+								"url": {
+									"raw": "{{base_url}}/api/provision/validate",
+									"host": ["{{base_url}}"],
+									"path": ["api", "provision", "validate"]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"valid\": true,\n  \"device_id\": \"bridge-001\",\n  \"facility_id\": 101,\n  \"issued_at\": \"2025-10-16T14:30:00Z\",\n  \"expires_at\": \"2025-10-16T15:30:00Z\",\n  \"remaining_seconds\": 2400,\n  \"permissions\": [\n    \"device:discover\",\n    \"device:control\",\n    \"mqtt:publish\",\n    \"mqtt:subscribe\"\n  ]\n}"
+						},
+						{
+							"name": "Token Invalid",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"token\": \"expired-or-invalid-token\"\n}"
+								},
+								"url": {
+									"raw": "{{base_url}}/api/provision/validate",
+									"host": ["{{base_url}}"],
+									"path": ["api", "provision", "validate"]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"valid\": false,\n  \"error\": \"Token expired or invalid\",\n  \"error_code\": \"TOKEN_EXPIRED\"\n}"
+						}
+					]
+				}
+			],
+			"description": "Token refresh and validation endpoints."
+		},
+		{
+			"name": "Reset Provisioning",
+			"item": [
+				{
+					"name": "Reset Provisioning",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Provisioning reset successful\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.success).to.be.true;",
+									"});",
+									"",
+									"// Clear stored tokens",
+									"pm.collectionVariables.unset('access_token');",
+									"pm.collectionVariables.unset('refresh_token');"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"confirm\": true,\n  \"reason\": \"Bridge being relocated to different facility\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/provision/reset",
+							"host": ["{{base_url}}"],
+							"path": ["api", "provision", "reset"]
+						},
+						"description": "Reset (unprovision) the bridge. Removes all provisioning data, tokens, and facility associations.\n\n**Endpoint**: POST /api/provision/reset\n**Request**: ResetProvisioningRequest\n**Response**: ResetProvisioningResponse\n\n**WARNING**: This operation:\n- Deletes all authentication tokens\n- Removes facility association\n- Disconnects from MQTT broker\n- Clears device registration from cloud\n- Resets bridge to factory provisioning state\n\n**Use Cases**:\n- Bridge relocation to different facility\n- Security incident (compromised credentials)\n- Facility decommissioning\n- Bridge replacement/RMA\n\n**Post-Reset**:\n- Bridge requires new OTC provisioning\n- All edge devices remain cached locally\n- Bridge can still operate in local-only mode"
+					},
+					"response": [
+						{
+							"name": "Reset Success",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"confirm\": true,\n  \"reason\": \"Bridge being relocated\"\n}"
+								},
+								"url": {
+									"raw": "{{base_url}}/api/provision/reset",
+									"host": ["{{base_url}}"],
+									"path": ["api", "provision", "reset"]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"success\": true,\n  \"message\": \"Bridge provisioning reset successfully\",\n  \"previous_facility_id\": 101,\n  \"previous_device_id\": \"bridge-001\",\n  \"reset_at\": \"2025-10-16T14:30:00Z\",\n  \"mqtt_disconnected\": true,\n  \"tokens_cleared\": true,\n  \"local_cache_retained\": true\n}"
+						},
+						{
+							"name": "Reset Not Confirmed",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"confirm\": false\n}"
+								},
+								"url": {
+									"raw": "{{base_url}}/api/provision/reset",
+									"host": ["{{base_url}}"],
+									"path": ["api", "provision", "reset"]
+								}
+							},
+							"status": "Bad Request",
+							"code": 400,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"success\": false,\n  \"error\": \"Reset not confirmed\",\n  \"message\": \"Must set confirm=true to reset provisioning\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Reset with Full Wipe",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"confirm\": true,\n  \"clear_device_cache\": true,\n  \"clear_logs\": true,\n  \"reason\": \"Full factory reset for RMA\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/provision/reset",
+							"host": ["{{base_url}}"],
+							"path": ["api", "provision", "reset"]
+						},
+						"description": "Reset provisioning and clear all cached data (full factory reset).\n\n**Additional Options**:\n- `clear_device_cache`: Remove cached device discoveries\n- `clear_logs`: Remove operational logs"
+					},
+					"response": []
+				}
+			],
+			"description": "Unprovision bridge and clear authentication data."
+		}
+	]
+}

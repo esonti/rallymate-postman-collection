@@ -1,0 +1,398 @@
+{
+  "info": {
+    "name": "RallyMate LocksService",
+    "description": "Auto-generated collection for LocksService service with realistic test data",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_postman_id": "ef6cb42f-be30-479d-a3de-ac4a88efc64c",
+    "version": "2.0.0"
+  },
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{session_token}}",
+        "type": "string"
+      }
+    ]
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:8080",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Register Lock",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/api/locks/register",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "locks",
+            "register"
+          ]
+        },
+        "description": "**RPC:** RegisterLock\n\n**Request:** RegisterLockRequest\n\n**Response:** RegisterLockResponse\n\n**Endpoint:** POST /api/locks/register",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"facility_id\": \"{{facility_id}}\",\n  \"device_id\": \"lock-court-01\",\n  \"name\": \"Court 1 Gate Lock\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "// Validate response status",
+              "pm.test('Status is 200 OK', function() {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "// Validate response time",
+              "pm.test('Response time under 2s', function() {",
+              "    pm.expect(pm.response.responseTime).to.be.below(2000);",
+              "});",
+              "",
+              "// Parse and extract response data",
+              "if (pm.response.code === 200) {",
+              "    try {",
+              "        const response = pm.response.json();",
+              "        console.log('\u2705 Response:', JSON.stringify(response, null, 2));",
+              "",
+              "        // Extract lock device ID",
+              "        if (response.lock && response.lock.device_id) {",
+              "            pm.collectionVariables.set('lock_device_id', response.lock.device_id);",
+              "            console.log('\ud83d\udd12 Lock ID:', response.lock.device_id);",
+              "        }",
+              "",
+              "    } catch (e) {",
+              "        console.log('\u26a0\ufe0f Could not parse response:', e);",
+              "    }",
+              "}"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Unregister Lock",
+      "request": {
+        "method": "DELETE",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/api/locks/{{device_id}}/unregister",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "locks",
+            "{{device_id}}",
+            "unregister"
+          ]
+        },
+        "description": "**RPC:** UnregisterLock\n\n**Request:** UnregisterLockRequest\n\n**Response:** UnregisterLockResponse\n\n**Endpoint:** DELETE /api/locks/{device_id}/unregister"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "// Validate response status",
+              "pm.test('Status is 200 OK', function() {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "// Validate response time",
+              "pm.test('Response time under 2s', function() {",
+              "    pm.expect(pm.response.responseTime).to.be.below(2000);",
+              "});",
+              "",
+              "// Parse and extract response data",
+              "if (pm.response.code === 200) {",
+              "    try {",
+              "        const response = pm.response.json();",
+              "        console.log('\u2705 Response:', JSON.stringify(response, null, 2));",
+              "",
+              "        // Extract lock device ID",
+              "        if (response.lock && response.lock.device_id) {",
+              "            pm.collectionVariables.set('lock_device_id', response.lock.device_id);",
+              "            console.log('\ud83d\udd12 Lock ID:', response.lock.device_id);",
+              "        }",
+              "",
+              "    } catch (e) {",
+              "        console.log('\u26a0\ufe0f Could not parse response:', e);",
+              "    }",
+              "}"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Update Lock",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/api/locks/{{device_id}}",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "locks",
+            "{{device_id}}"
+          ]
+        },
+        "description": "**RPC:** UpdateLock\n\n**Request:** UpdateLockRequest\n\n**Response:** UpdateLockResponse\n\n**Endpoint:** PUT /api/locks/{device_id}",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"facility_id\": \"{{facility_id}}\",\n  \"name\": \"Court 1 Gate Lock\",\n  \"firmware_version\": \"v1.2.3\",\n  \"edge_connectivity\": \"ENUM_VALUE_rallymate.common.ConnectivityStatus\",\n  \"state\": \"ENUM_VALUE_rallymate.devices.lock.LockOperationState\",\n  \"additional_info\": []\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "// Validate response status",
+              "pm.test('Status is 200 OK', function() {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "// Validate response time",
+              "pm.test('Response time under 2s', function() {",
+              "    pm.expect(pm.response.responseTime).to.be.below(2000);",
+              "});",
+              "",
+              "// Parse and extract response data",
+              "if (pm.response.code === 200) {",
+              "    try {",
+              "        const response = pm.response.json();",
+              "        console.log('\u2705 Response:', JSON.stringify(response, null, 2));",
+              "",
+              "    } catch (e) {",
+              "        console.log('\u26a0\ufe0f Could not parse response:', e);",
+              "    }",
+              "}"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Get Locks",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/api/locks",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "locks"
+          ]
+        },
+        "description": "**RPC:** GetLocks\n\n**Request:** GetLocksRequest\n\n**Response:** GetLocksResponse\n\n**Endpoint:** GET /api/locks"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "// Validate response status",
+              "pm.test('Status is 200 OK', function() {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "// Validate response time",
+              "pm.test('Response time under 2s', function() {",
+              "    pm.expect(pm.response.responseTime).to.be.below(2000);",
+              "});",
+              "",
+              "// Parse and extract response data",
+              "if (pm.response.code === 200) {",
+              "    try {",
+              "        const response = pm.response.json();",
+              "        console.log('\u2705 Response:', JSON.stringify(response, null, 2));",
+              "",
+              "    } catch (e) {",
+              "        console.log('\u26a0\ufe0f Could not parse response:', e);",
+              "    }",
+              "}"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Lock Control",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/api/locks/{{device_id}}/control",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "locks",
+            "{{device_id}}",
+            "control"
+          ]
+        },
+        "description": "**RPC:** LockControl\n\n**Request:** LockControlRequest\n\n**Response:** LockControlResponse\n\n**Endpoint:** POST /api/locks/{device_id}/control",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"facility_id\": \"{{facility_id}}\",\n  \"user_id\": \"{{user_id}}\",\n  \"action\": \"ENUM_VALUE_rallymate.devices.lock.LockAction\",\n  \"reason\": \"Testing via Postman collection\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "// Validate response status",
+              "pm.test('Status is 200 OK', function() {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "// Validate response time",
+              "pm.test('Response time under 2s', function() {",
+              "    pm.expect(pm.response.responseTime).to.be.below(2000);",
+              "});",
+              "",
+              "// Parse and extract response data",
+              "if (pm.response.code === 200) {",
+              "    try {",
+              "        const response = pm.response.json();",
+              "        console.log('\u2705 Response:', JSON.stringify(response, null, 2));",
+              "",
+              "    } catch (e) {",
+              "        console.log('\u26a0\ufe0f Could not parse response:', e);",
+              "    }",
+              "}"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Get Lock Activities",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/api/locks/activities",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "locks",
+            "activities"
+          ]
+        },
+        "description": "**RPC:** GetLockActivities\n\n**Request:** GetLockActivitiesRequest\n\n**Response:** GetLockActivitiesResponse\n\n**Endpoint:** GET /api/locks/activities"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "// Validate response status",
+              "pm.test('Status is 200 OK', function() {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "// Validate response time",
+              "pm.test('Response time under 2s', function() {",
+              "    pm.expect(pm.response.responseTime).to.be.below(2000);",
+              "});",
+              "",
+              "// Parse and extract response data",
+              "if (pm.response.code === 200) {",
+              "    try {",
+              "        const response = pm.response.json();",
+              "        console.log('\u2705 Response:', JSON.stringify(response, null, 2));",
+              "",
+              "    } catch (e) {",
+              "        console.log('\u26a0\ufe0f Could not parse response:', e);",
+              "    }",
+              "}"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ]
+    }
+  ]
+}

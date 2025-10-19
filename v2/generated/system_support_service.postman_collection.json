@@ -1,0 +1,345 @@
+{
+  "info": {
+    "name": "RallyMate SystemSupportService",
+    "description": "Auto-generated collection for SystemSupportService service with realistic test data",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_postman_id": "bfa42a9c-67ac-4419-bd22-e6fc7c0a610c",
+    "version": "2.0.0"
+  },
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{session_token}}",
+        "type": "string"
+      }
+    ]
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:8080",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Get System Support",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/api/system-support/user/{{user_id}}",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "system-support",
+            "user",
+            "{{user_id}}"
+          ]
+        },
+        "description": "**RPC:** GetSystemSupport\n\n**Request:** GetSystemSupportRequest\n\n**Response:** GetSystemSupportResponse\n\n**Endpoint:** GET /api/system-support/user/{user_id}"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "// Validate response status",
+              "pm.test('Status is 200 OK', function() {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "// Validate response time",
+              "pm.test('Response time under 2s', function() {",
+              "    pm.expect(pm.response.responseTime).to.be.below(2000);",
+              "});",
+              "",
+              "// Parse and extract response data",
+              "if (pm.response.code === 200) {",
+              "    try {",
+              "        const response = pm.response.json();",
+              "        console.log('\u2705 Response:', JSON.stringify(response, null, 2));",
+              "",
+              "        // Extract support ID",
+              "        if (response.system_support && response.system_support.id) {",
+              "            pm.collectionVariables.set('support_id', response.system_support.id);",
+              "            console.log('\ud83d\udee0\ufe0f Support ID:', response.system_support.id);",
+              "        }",
+              "",
+              "    } catch (e) {",
+              "        console.log('\u26a0\ufe0f Could not parse response:', e);",
+              "    }",
+              "}"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Create System Support",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/api/system-support",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "system-support"
+          ]
+        },
+        "description": "**RPC:** CreateSystemSupport\n\n**Request:** CreateSystemSupportRequest\n\n**Response:** CreateSystemSupportResponse\n\n**Endpoint:** POST /api/system-support",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"user_id\": \"{{user_id}}\",\n  \"support_role\": 12886,\n  \"start_date\": \"2025-10-16T11:57:47.555958Z\",\n  \"expiry_date\": \"2025-11-15T11:57:47.555962Z\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "// Validate response status",
+              "pm.test('Status is 200 OK', function() {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "// Validate response time",
+              "pm.test('Response time under 2s', function() {",
+              "    pm.expect(pm.response.responseTime).to.be.below(2000);",
+              "});",
+              "",
+              "// Parse and extract response data",
+              "if (pm.response.code === 200) {",
+              "    try {",
+              "        const response = pm.response.json();",
+              "        console.log('\u2705 Response:', JSON.stringify(response, null, 2));",
+              "",
+              "        // Extract support ID",
+              "        if (response.system_support && response.system_support.id) {",
+              "            pm.collectionVariables.set('support_id', response.system_support.id);",
+              "            console.log('\ud83d\udee0\ufe0f Support ID:', response.system_support.id);",
+              "        }",
+              "",
+              "    } catch (e) {",
+              "        console.log('\u26a0\ufe0f Could not parse response:', e);",
+              "    }",
+              "}"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Update System Support",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/api/system-support/{{support_id}}",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "system-support",
+            "{{support_id}}"
+          ]
+        },
+        "description": "**RPC:** UpdateSystemSupport\n\n**Request:** UpdateSystemSupportRequest\n\n**Response:** UpdateSystemSupportResponse\n\n**Endpoint:** PUT /api/system-support/{support_id}",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"support_role\": 12886,\n  \"start_date\": \"2025-10-16T11:57:47.555975Z\",\n  \"expiry_date\": \"2025-11-15T11:57:47.555976Z\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "// Validate response status",
+              "pm.test('Status is 200 OK', function() {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "// Validate response time",
+              "pm.test('Response time under 2s', function() {",
+              "    pm.expect(pm.response.responseTime).to.be.below(2000);",
+              "});",
+              "",
+              "// Parse and extract response data",
+              "if (pm.response.code === 200) {",
+              "    try {",
+              "        const response = pm.response.json();",
+              "        console.log('\u2705 Response:', JSON.stringify(response, null, 2));",
+              "",
+              "        // Extract support ID",
+              "        if (response.system_support && response.system_support.id) {",
+              "            pm.collectionVariables.set('support_id', response.system_support.id);",
+              "            console.log('\ud83d\udee0\ufe0f Support ID:', response.system_support.id);",
+              "        }",
+              "",
+              "    } catch (e) {",
+              "        console.log('\u26a0\ufe0f Could not parse response:', e);",
+              "    }",
+              "}"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Delete System Support",
+      "request": {
+        "method": "DELETE",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/api/system-support/{{support_id}}",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "system-support",
+            "{{support_id}}"
+          ]
+        },
+        "description": "**RPC:** DeleteSystemSupport\n\n**Request:** DeleteSystemSupportRequest\n\n**Response:** DeleteSystemSupportResponse\n\n**Endpoint:** DELETE /api/system-support/{support_id}"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "// Validate response status",
+              "pm.test('Status is 200 OK', function() {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "// Validate response time",
+              "pm.test('Response time under 2s', function() {",
+              "    pm.expect(pm.response.responseTime).to.be.below(2000);",
+              "});",
+              "",
+              "// Parse and extract response data",
+              "if (pm.response.code === 200) {",
+              "    try {",
+              "        const response = pm.response.json();",
+              "        console.log('\u2705 Response:', JSON.stringify(response, null, 2));",
+              "",
+              "        // Extract support ID",
+              "        if (response.system_support && response.system_support.id) {",
+              "            pm.collectionVariables.set('support_id', response.system_support.id);",
+              "            console.log('\ud83d\udee0\ufe0f Support ID:', response.system_support.id);",
+              "        }",
+              "",
+              "    } catch (e) {",
+              "        console.log('\u26a0\ufe0f Could not parse response:', e);",
+              "    }",
+              "}"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ]
+    },
+    {
+      "name": "List Admins",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/api/system-support/admins",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "system-support",
+            "admins"
+          ]
+        },
+        "description": "**RPC:** ListAdmins\n\n**Request:** ListAdminsRequest\n\n**Response:** ListAdminsResponse\n\n**Endpoint:** GET /api/system-support/admins"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "// Validate response status",
+              "pm.test('Status is 200 OK', function() {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "// Validate response time",
+              "pm.test('Response time under 2s', function() {",
+              "    pm.expect(pm.response.responseTime).to.be.below(2000);",
+              "});",
+              "",
+              "// Parse and extract response data",
+              "if (pm.response.code === 200) {",
+              "    try {",
+              "        const response = pm.response.json();",
+              "        console.log('\u2705 Response:', JSON.stringify(response, null, 2));",
+              "",
+              "    } catch (e) {",
+              "        console.log('\u26a0\ufe0f Could not parse response:', e);",
+              "    }",
+              "}"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ]
+    }
+  ]
+}
