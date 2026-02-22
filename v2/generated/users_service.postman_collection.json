@@ -1,6 +1,6 @@
 {
   "info": {
-    "name": "RallyMate UsersService",
+    "name": "rallymate UsersService",
     "description": "Auto-generated collection for UsersService service with realistic test data",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
     "_postman_id": "ac3742fc-abaa-460f-b10f-83d6c7f27d82",

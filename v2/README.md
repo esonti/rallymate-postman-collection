@@ -1,6 +1,6 @@
-# 🚀 RallyMate Services - Postman Collections v2
+# 🚀 rallymate Services - Postman Collections v2
 
-**Comprehensive, auto-generated Postman collections with realistic test data for all RallyMate Services**
+**Comprehensive, auto-generated Postman collections with realistic test data for all rallymate Services**
 
 > **NEW:** Complete generator that creates collections from proto files with intelligent test data!
 
@@ -18,10 +18,10 @@ chmod +x generate-all.sh
 ### 2️⃣ Import to Postman
 1. Open Postman
 2. Click **Import** → Select all `.json` files from `generated/` folder
-3. Select **"RallyMate - Local"** environment
+3. Select **"rallymate - Local"** environment
 
 ### 3️⃣ Start Testing
-1. Open **"RallyMate AuthService"**
+1. Open **"rallymate AuthService"**
 2. Run **"Send OTP"** → **"Verify OTP"**
 3. ✅ Session token auto-saved - test other endpoints!
 
@@ -296,18 +296,18 @@ The sections below describe the original manually-created collections.
 
 ### Collections
 
-1. **`RallyMate_Services_HTTP_REST_API_v2.postman_collection.json`**
+1. **`rallymate_Services_HTTP_REST_API_v2.postman_collection.json`**
    - Complete HTTP REST API coverage via gRPC-Gateway
    - All services: Auth, Users, Facilities, Bridge, Locks, Cameras, Videos, System Support
    - Realistic test data for all endpoints
    - Automated response validation and variable extraction
 
-2. **`RallyMate_Services_gRPC_API_v2.postman_collection.json`**
+2. **`rallymate_Services_gRPC_API_v2.postman_collection.json`**
    - Direct gRPC endpoint testing
    - Protobuf message examples
    - Binary payload handling
 
-3. **`RallyMate_Bridge_Edge_API_v2.postman_collection.json`**
+3. **`rallymate_Bridge_Edge_API_v2.postman_collection.json`**
    - Bridge device API endpoints
    - Health, Provisioning, and Device management
    - Edge-specific testing scenarios

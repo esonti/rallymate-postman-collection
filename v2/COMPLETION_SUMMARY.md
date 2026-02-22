@@ -22,7 +22,7 @@
 
 ### Collection Files (1)
 
-1. **RallyMate_Services_HTTP_REST_API.postman_collection.json** - Base collection structure with global scripts
+1. **rallymate_Services_HTTP_REST_API.postman_collection.json** - Base collection structure with global scripts
 
 ---
 
@@ -201,12 +201,12 @@ rallymate-postman-collection/v2/
 │   └── README_GENERATOR.sh        ← Doc generator
 │
 ├── 📦 Collections
-│   └── RallyMate_Services_HTTP_REST_API.postman_collection.json
+│   └── rallymate_Services_HTTP_REST_API.postman_collection.json
 │
 ├── 🏭 Generated (after running script)
 │   └── generated/
-│       ├── RallyMate_Auth_Service.postman_collection.json
-│       ├── RallyMate_Users_Service.postman_collection.json
+│       ├── rallymate_Auth_Service.postman_collection.json
+│       ├── rallymate_Users_Service.postman_collection.json
 │       └── ... (8 service collections)
 │
 └── 🌍 Environments (to be created)
@@ -352,7 +352,7 @@ chmod +x quick-generate.sh
 
 ## 🎉 Summary
 
-**You now have everything needed to build comprehensive Postman collections for RallyMate:**
+**You now have everything needed to build comprehensive Postman collections for rallymate:**
 
 ✅ Complete documentation covering 79 endpoints  
 ✅ Copy-paste ready examples with test scripts  

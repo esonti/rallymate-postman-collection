@@ -1,8 +1,8 @@
 {
 	"info": {
 		"_postman_id": "edge-api-health-001",
-		"name": "RallyMate Edge API - Health Service",
-		"description": "Health and monitoring endpoints for RallyMate Edge Bridge. Provides bridge health status, system metrics, connectivity checks, and operational metrics.\n\n**Service**: edge.health.HealthService\n**Base URL**: http://{{bridge_ip}}:{{bridge_port}}\n**Port**: 8090 (default)\n**Authentication**: None (local bridge access)",
+		"name": "rallymate Edge API - Health Service",
+		"description": "Health and monitoring endpoints for rallymate Edge Bridge. Provides bridge health status, system metrics, connectivity checks, and operational metrics.\n\n**Service**: edge.health.HealthService\n**Base URL**: http://{{bridge_ip}}:{{bridge_port}}\n**Port**: 8090 (default)\n**Authentication**: None (local bridge access)",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"variable": [

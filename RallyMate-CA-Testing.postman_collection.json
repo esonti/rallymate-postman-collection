@@ -1,7 +1,7 @@
 {
     "info": {
-        "name": "RallyMate CA Testing Collection",
-        "description": "Comprehensive API testing collection for RallyMate Certificate Authority service",
+        "name": "rallymate CA Testing Collection",
+        "description": "Comprehensive API testing collection for rallymate Certificate Authority service",
         "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
         "version": "1.0.0"
     },
@@ -9,22 +9,22 @@
         {
             "key": "rallymate_ca_http_url",
             "value": "http://localhost:8082",
-            "description": "RallyMate CA HTTP API base URL"
+            "description": "rallymate CA HTTP API base URL"
         },
         {
             "key": "rallymate_ca_grpc_url",
             "value": "localhost:50052",
-            "description": "RallyMate CA gRPC API endpoint"
+            "description": "rallymate CA gRPC API endpoint"
         },
         {
             "key": "rallymate_services_http_url",
             "value": "http://localhost:8080",
-            "description": "RallyMate Services HTTP API base URL"
+            "description": "rallymate Services HTTP API base URL"
         },
         {
             "key": "rallymate_services_grpc_url",
             "value": "localhost:50051",
-            "description": "RallyMate Services gRPC API endpoint"
+            "description": "rallymate Services gRPC API endpoint"
         },
         {
             "key": "sonti_ca_url",
@@ -51,7 +51,7 @@
             "description": "Verify all services are running and healthy",
             "item": [
                 {
-                    "name": "RallyMate CA Health Check",
+                    "name": "rallymate CA Health Check",
                     "request": {
                         "method": "GET",
                         "header": [],
@@ -64,7 +64,7 @@
                                 "health"
                             ]
                         },
-                        "description": "Check if RallyMate CA service is healthy"
+                        "description": "Check if rallymate CA service is healthy"
                     },
                     "response": []
                 },
@@ -87,7 +87,7 @@
                     "response": []
                 },
                 {
-                    "name": "RallyMate Services Health Check",
+                    "name": "rallymate Services Health Check",
                     "request": {
                         "method": "GET",
                         "header": [],
@@ -100,7 +100,7 @@
                                 "health"
                             ]
                         },
-                        "description": "Check if RallyMate Services is healthy"
+                        "description": "Check if rallymate Services is healthy"
                     },
                     "response": []
                 }
@@ -111,7 +111,7 @@
             "description": "Get session tokens for authenticated requests",
             "item": [
                 {
-                    "name": "Login to RallyMate Services",
+                    "name": "Login to rallymate Services",
                     "request": {
                         "method": "POST",
                         "header": [

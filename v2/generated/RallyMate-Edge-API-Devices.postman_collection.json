@@ -1,7 +1,7 @@
 {
 	"info": {
 		"_postman_id": "edge-api-devices-001",
-		"name": "RallyMate Edge API - Devices Service",
+		"name": "rallymate Edge API - Devices Service",
 		"description": "Unified device discovery, listing, and control for all edge devices (bridges, cameras, locks). This service provides local device management on the bridge.\n\n**Service**: edge.devices.DevicesService\n**Base URL**: http://{{bridge_ip}}:{{bridge_port}}\n**Port**: 8090 (default)\n**Authentication**: None (local bridge access)\n\n**Features**:\n- Discover devices on local network\n- List cached devices with filtering\n- Get individual device details\n- Control devices (lock/unlock, camera start/stop, etc.)",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},

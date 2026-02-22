@@ -3,7 +3,7 @@
 
 set -e
 
-echo "🚀 RallyMate Postman Collection Generator"
+echo "🚀 rallymate Postman Collection Generator"
 echo "=========================================="
 echo ""
 
@@ -44,7 +44,7 @@ for service in "${SERVICES[@]}"; do
         continue
     fi
     
-    output_file="$OUTPUT_DIR/RallyMate_${service^}_Service.postman_collection.json"
+    output_file="$OUTPUT_DIR/rallymate_${service^}_Service.postman_collection.json"
     
     python3 generate_collection.py \
         --proto-dir "$PROTO_DIR" \

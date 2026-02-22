@@ -1,7 +1,7 @@
 {
     "info": {
-        "name": "RallyMate Edge API",
-        "description": "Comprehensive collection for testing RallyMate Bridge Edge API endpoints. This collection covers all device discovery, management, health monitoring, and provisioning operations.",
+        "name": "rallymate Edge API",
+        "description": "Comprehensive collection for testing rallymate Bridge Edge API endpoints. This collection covers all device discovery, management, health monitoring, and provisioning operations.",
         "version": "1.0.0",
         "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
     },
@@ -539,7 +539,7 @@
                                 "otc"
                             ]
                         },
-                        "description": "Provisions the bridge using a One-Time Code from the RallyMate platform"
+                        "description": "Provisions the bridge using a One-Time Code from the rallymate platform"
                     },
                     "response": []
                 },
@@ -664,7 +664,7 @@
                                 "reset"
                             ]
                         },
-                        "description": "Resets the bridge to unprovisioned state (WARNING: This will disconnect the bridge from RallyMate platform)"
+                        "description": "Resets the bridge to unprovisioned state (WARNING: This will disconnect the bridge from rallymate platform)"
                     },
                     "response": []
                 }
@@ -804,7 +804,7 @@
                     "// Common headers and setup",
                     "pm.request.headers.add({",
                     "    key: 'User-Agent',",
-                    "    value: 'RallyMate-EdgeAPI-Test/1.0'",
+                    "    value: 'rallymate-EdgeAPI-Test/1.0'",
                     "});"
                 ]
             }

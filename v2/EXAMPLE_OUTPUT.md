@@ -7,7 +7,7 @@ This is an example of what gets generated. The actual collections will be create
 ```json
 {
   "info": {
-    "name": "RallyMate AuthService",
+    "name": "rallymate AuthService",
     "description": "Auto-generated collection for AuthService service with realistic test data",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
     "version": "2.0.0"
@@ -226,7 +226,7 @@ This is an example of what gets generated. The actual collections will be create
 ```json
 {
   "id": "rallymate-local",
-  "name": "RallyMate - Local",
+  "name": "rallymate - Local",
   "values": [
     {
       "key": "base_url",

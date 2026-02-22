@@ -1,7 +1,7 @@
 {
     "info": {
-        "name": "RallyMate CA gRPC Testing Collection",
-        "description": "gRPC API testing collection for RallyMate Certificate Authority service",
+        "name": "rallymate CA gRPC Testing Collection",
+        "description": "gRPC API testing collection for rallymate Certificate Authority service",
         "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
         "version": "1.0.0"
     },
@@ -9,12 +9,12 @@
         {
             "key": "rallymate_ca_grpc_url",
             "value": "localhost:50052",
-            "description": "RallyMate CA gRPC endpoint"
+            "description": "rallymate CA gRPC endpoint"
         },
         {
             "key": "rallymate_services_grpc_url",
             "value": "localhost:50051",
-            "description": "RallyMate Services gRPC endpoint"
+            "description": "rallymate Services gRPC endpoint"
         },
         {
             "key": "session_token",

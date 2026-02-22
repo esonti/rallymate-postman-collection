@@ -149,7 +149,7 @@ class PostmanCollectionGenerator:
         
         collection = {
             "info": {
-                "name": f"RallyMate {service_name} Service API",
+                "name": f"rallymate {service_name} Service API",
                 "description": f"Auto-generated collection for {service_name} service",
                 "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
             },

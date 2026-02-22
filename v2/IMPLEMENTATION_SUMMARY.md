@@ -111,7 +111,7 @@ chmod +x generate-all.sh
 
 Expected output:
 ```
-🚀 RallyMate Postman Collection Generator
+🚀 rallymate Postman Collection Generator
 ============================================================
 
 📄 Processing auth.proto...
@@ -148,12 +148,12 @@ Expected output:
 1. Open Postman
 2. Click "Import"
 3. Drag all JSON files from `generated/` folder
-4. Select "RallyMate - Local" environment
+4. Select "rallymate - Local" environment
 5. Start testing!
 
 ### First Test:
 ```
-1. Open "RallyMate AuthService" collection
+1. Open "rallymate AuthService" collection
 2. Run "Send OTP" request
 3. Run "Verify OTP" request with received code
 4. ✅ Session token automatically saved!

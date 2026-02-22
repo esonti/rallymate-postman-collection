@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Enhanced Postman Collection Generator for RallyMate Services
+Enhanced Postman Collection Generator for rallymate Services
 
 Generates comprehensive Postman collections from proto files with:
 - Realistic test data based on field types and names
@@ -433,7 +433,7 @@ class PostmanCollectionGenerator:
         
         collection = {
             "info": {
-                "name": f"RallyMate {service_name}",
+                "name": f"rallymate {service_name}",
                 "description": f"Auto-generated collection for {service_name} service with realistic test data",
                 "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
                 "_postman_id": self._generate_uuid(),
@@ -765,7 +765,7 @@ def generate_environment(name: str, base_url: str) -> Dict:
     """Generate Postman environment file."""
     return {
         "id": f"rallymate-{name.lower()}",
-        "name": f"RallyMate - {name}",
+        "name": f"rallymate - {name}",
         "values": [
             {
                 "key": "base_url",
@@ -836,7 +836,7 @@ def main():
         'system_support'
     ]
     
-    print("🚀 RallyMate Postman Collection Generator")
+    print("🚀 rallymate Postman Collection Generator")
     print("=" * 60)
     print()
     

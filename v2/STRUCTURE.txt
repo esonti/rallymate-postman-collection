@@ -1,5 +1,5 @@
 ```
-📦 RallyMate Postman Collection Infrastructure v2
+📦 rallymate Postman Collection Infrastructure v2
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 📚 DOCUMENTATION (Start Here!)
@@ -21,15 +21,15 @@
 
 📦 COLLECTIONS
 ┌─────────────────────────────────────────────────────────────┐
-│ RallyMate_Services_HTTP_REST_API.postman_collection.json   │
+│ rallymate_Services_HTTP_REST_API.postman_collection.json   │
 │   ├── Base structure with global scripts                    │
 │   ├── Auth config (Bearer token)                            │
 │   ├── Collection variables                                  │
 │   └── Empty items array (ready for endpoints)               │
 │                                                              │
 │ 🚧 TO BE CREATED:                                           │
-│ ├── RallyMate_Services_gRPC_API_v2.postman_collection.json │
-│ └── RallyMate_Bridge_Edge_API_v2.postman_collection.json   │
+│ ├── rallymate_Services_gRPC_API_v2.postman_collection.json │
+│ └── rallymate_Bridge_Edge_API_v2.postman_collection.json   │
 └─────────────────────────────────────────────────────────────┘
 
 🌍 ENVIRONMENTS (✅ Complete!)

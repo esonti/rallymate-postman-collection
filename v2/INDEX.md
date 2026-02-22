@@ -1,6 +1,6 @@
-# 📚 RallyMate Postman Collections - Complete Index
+# 📚 rallymate Postman Collections - Complete Index
 
-**Version 2.0** - Comprehensive testing infrastructure for RallyMate APIs
+**Version 2.0** - Comprehensive testing infrastructure for rallymate APIs
 
 ---
 
@@ -52,7 +52,7 @@
 
 ### HTTP REST API Collections
 
-**Target**: `RallyMate_Services_HTTP_REST_API_v2.postman_collection.json`
+**Target**: `rallymate_Services_HTTP_REST_API_v2.postman_collection.json`
 
 ```
 Authentication Service (11 endpoints)
@@ -154,7 +154,7 @@ System Support Service (5 endpoints)
 
 ### gRPC API Collection
 
-**Target**: `RallyMate_Services_gRPC_API_v2.postman_collection.json`
+**Target**: `rallymate_Services_gRPC_API_v2.postman_collection.json`
 
 - Same endpoints as HTTP REST
 - Uses gRPC protocol
@@ -163,7 +163,7 @@ System Support Service (5 endpoints)
 
 ### Bridge Edge API Collection
 
-**Target**: `RallyMate_Bridge_Edge_API_v2.postman_collection.json`
+**Target**: `rallymate_Bridge_Edge_API_v2.postman_collection.json`
 
 ```
 Health Service
@@ -461,7 +461,7 @@ rallymate-postman-collection/v2/
 ├── generate_collection.py                 # Proto → JSON tool
 ├── quick-generate.sh                      # One-command generation
 ├── README_GENERATOR.sh                    # Documentation generator
-├── RallyMate_Services_HTTP_REST_API.postman_collection.json  # Base structure
+├── rallymate_Services_HTTP_REST_API.postman_collection.json  # Base structure
 ├── generated/                             # Auto-generated collections
 └── environments/                          # Environment configs
     ├── rallymate-local.postman_environment.json
@@ -548,6 +548,6 @@ rallymate-postman-collection/v2/
 
 ---
 
-**🎉 Ready to build comprehensive Postman collections for RallyMate APIs!**
+**🎉 Ready to build comprehensive Postman collections for rallymate APIs!**
 
 Start with [MANUAL_EXAMPLES.md](./MANUAL_EXAMPLES.md) for copy-paste ready examples, or run `./quick-generate.sh` for automated scaffolding.

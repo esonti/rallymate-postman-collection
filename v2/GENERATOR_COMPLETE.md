@@ -1,4 +1,4 @@
-# 🎯 RallyMate Postman Collection Generator - Complete
+# 🎯 rallymate Postman Collection Generator - Complete
 
 ## ✅ What Was Created
 
@@ -108,12 +108,12 @@ python3 generate_postman_collections.py
 2. Click **"Import"**
 3. Select all files from `generated/` folder
 4. Click **"Import"**
-5. Select **"RallyMate - Local"** environment
+5. Select **"rallymate - Local"** environment
 
 ### Step 3: Start Testing
 
 ```
-1. Open "RallyMate AuthService"
+1. Open "rallymate AuthService"
 2. Run "Send OTP" → Check console for OTP
 3. Run "Verify OTP" → Session token auto-saved
 4. Test other endpoints! ✨
@@ -464,7 +464,7 @@ Comprehensive documentation included:
 
 You now have a **complete, production-ready Postman collection generator** that:
 
-1. ✅ Parses all 8 RallyMate service proto files
+1. ✅ Parses all 8 rallymate service proto files
 2. ✅ Generates realistic test data for every field
 3. ✅ Creates smart test scripts with automatic variable extraction
 4. ✅ Produces valid Postman v2.1 collections

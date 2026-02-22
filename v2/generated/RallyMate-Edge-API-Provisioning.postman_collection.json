@@ -1,7 +1,7 @@
 {
 	"info": {
 		"_postman_id": "edge-api-provisioning-001",
-		"name": "RallyMate Edge API - Provisioning Service",
+		"name": "rallymate Edge API - Provisioning Service",
 		"description": "Bridge provisioning and lifecycle management. Handles bridge registration with the cloud backend, authentication token management, and unprovisioning.\n\n**Service**: edge.provisioning.ProvisioningService\n**Base URL**: http://{{bridge_ip}}:{{bridge_port}}\n**Port**: 8090 (default)\n**Authentication**: None (local bridge access)\n\n**Provisioning Flow**:\n1. User generates One-Time Code (OTC) in mobile app\n2. User enters OTC on bridge (via keypad/display)\n3. Bridge calls ProvisionWithOTC to register with cloud\n4. Bridge receives auth tokens and facility assignment\n5. Bridge operates with periodic token refresh\n6. Optional: ResetProvisioning to unprovision\n\n**Token Management**:\n- Initial tokens from ProvisionWithOTC\n- Periodic refresh via RefreshToken\n- Validation via ValidateToken\n- Status monitoring via GetProvisioningStatus",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -89,7 +89,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"one_time_code\": \"{{one_time_code}}\",\n  \"device_info\": {\n    \"device_id\": \"bridge-001\",\n    \"name\": \"Main Bridge\",\n    \"firmware_version\": \"1.2.0\",\n    \"additional_info\": [\n      {\"key\": \"network_hostname\", \"value\": \"bridge-001.local\"},\n      {\"key\": \"network_mac_address\", \"value\": \"AA:BB:CC:DD:EE:FF\"},\n      {\"key\": \"network_ip_address\", \"value\": \"10.10.100.150\"},\n      {\"key\": \"hardware_serial\", \"value\": \"BRG-12345-67890\"},\n      {\"key\": \"hardware_model\", \"value\": \"RallyMate Bridge v2\"}\n    ]\n  }\n}"
+							"raw": "{\n  \"one_time_code\": \"{{one_time_code}}\",\n  \"device_info\": {\n    \"device_id\": \"bridge-001\",\n    \"name\": \"Main Bridge\",\n    \"firmware_version\": \"1.2.0\",\n    \"additional_info\": [\n      {\"key\": \"network_hostname\", \"value\": \"bridge-001.local\"},\n      {\"key\": \"network_mac_address\", \"value\": \"AA:BB:CC:DD:EE:FF\"},\n      {\"key\": \"network_ip_address\", \"value\": \"10.10.100.150\"},\n      {\"key\": \"hardware_serial\", \"value\": \"BRG-12345-67890\"},\n      {\"key\": \"hardware_model\", \"value\": \"rallymate Bridge v2\"}\n    ]\n  }\n}"
 						},
 						"url": {
 							"raw": "{{base_url}}/api/provision/otc",

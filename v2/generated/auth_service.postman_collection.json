@@ -1,6 +1,6 @@
 {
   "info": {
-    "name": "RallyMate AuthService",
+    "name": "rallymate AuthService",
     "description": "Auto-generated collection for AuthService service with realistic test data",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
     "_postman_id": "1bc1f2ba-9cec-4032-8dc8-7afc6b3a62e9",

@@ -1,7 +1,7 @@
 {
     "info": {
-        "name": "RallyMate HTTP REST API v2 - Complete",
-        "description": "Complete HTTP REST API collection for RallyMate services with all endpoints from the latest service implementation.\n\nIMPORTANT ENUM VALUES:\n\n**Membership Roles:**\n- MEMBERSHIP_ROLE_UNSPECIFIED\n- MEMBERSHIP_ROLE_PLAYER  \n- MEMBERSHIP_ROLE_MANAGER\n\n**Lock Actions:**\n- LOCK_ACTION_UNSPECIFIED\n- LOCK\n- UNLOCK\n- STATUS_CHECK\n\n**Lock States:**\n- LOCK_STATE_UNSPECIFIED\n- LOCKED\n- UNLOCKED\n- JAMMED\n\n**Camera Actions:**\n- CAMERA_ACTION_UNSPECIFIED\n- START_LIVE_STREAM\n- STOP_LIVE_STREAM\n- START_RECORD\n- STOP_RECORD\n- STATUS_CHECK\n\n**Connection Status (for locks, cameras, bridges):**\n- UNKNOWN\n- CONNECTED\n- DISCONNECTED\n- DEGRADED",
+        "name": "rallymate HTTP REST API v2 - Complete",
+        "description": "Complete HTTP REST API collection for rallymate services with all endpoints from the latest service implementation.\n\nIMPORTANT ENUM VALUES:\n\n**Membership Roles:**\n- MEMBERSHIP_ROLE_UNSPECIFIED\n- MEMBERSHIP_ROLE_PLAYER  \n- MEMBERSHIP_ROLE_MANAGER\n\n**Lock Actions:**\n- LOCK_ACTION_UNSPECIFIED\n- LOCK\n- UNLOCK\n- STATUS_CHECK\n\n**Lock States:**\n- LOCK_STATE_UNSPECIFIED\n- LOCKED\n- UNLOCKED\n- JAMMED\n\n**Camera Actions:**\n- CAMERA_ACTION_UNSPECIFIED\n- START_LIVE_STREAM\n- STOP_LIVE_STREAM\n- START_RECORD\n- STOP_RECORD\n- STATUS_CHECK\n\n**Connection Status (for locks, cameras, bridges):**\n- UNKNOWN\n- CONNECTED\n- DISCONNECTED\n- DEGRADED",
         "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
     },
     "auth": {

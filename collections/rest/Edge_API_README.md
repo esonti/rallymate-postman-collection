@@ -1,6 +1,6 @@
-# RallyMate Edge API Postman Collection
+# rallymate Edge API Postman Collection
 
-This collection provides comprehensive testing capabilities for the RallyMate Bridge Edge API, covering all device discovery, management, health monitoring, and provisioning operations.
+This collection provides comprehensive testing capabilities for the rallymate Bridge Edge API, covering all device discovery, management, health monitoring, and provisioning operations.
 
 ## 📁 Collection Structure
 
@@ -53,7 +53,7 @@ For Pi Zero bridge testing:
 
 1. **Import the Collection**
    ```
-   Import: RallyMate_Edge_API.postman_collection.json
+   Import: rallymate_Edge_API.postman_collection.json
    ```
 
 2. **Import Environment**
@@ -86,7 +86,7 @@ For Pi Zero bridge testing:
 ### Provisioning Variables
 - `facility_id` - Facility identifier
 - `bridge_name` - Human-readable bridge name
-- `otc_code` - One-Time Code from RallyMate platform
+- `otc_code` - One-Time Code from rallymate platform
 
 ## 📋 Common Workflows
 
@@ -157,7 +157,7 @@ The collection includes automated test scripts that:
 
 **Provisioning Fails**
 - Verify OTC is valid and not expired
-- Check network connectivity to RallyMate platform
+- Check network connectivity to rallymate platform
 - Ensure facility_id is correct
 
 ## 📝 API Documentation
@@ -201,4 +201,4 @@ For issues with:
 - **Collection**: Check repository issues
 - **Bridge API**: Review bridge logs (`journalctl -u rallymate-bridge`)
 - **Device Discovery**: Verify network and mDNS configuration
-- **Provisioning**: Contact RallyMate platform support
+- **Provisioning**: Contact rallymate platform support

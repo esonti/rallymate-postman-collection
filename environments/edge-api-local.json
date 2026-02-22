@@ -1,6 +1,6 @@
 {
     "id": "edge-api-environment-001",
-    "name": "RallyMate Edge API - Local Bridge",
+    "name": "rallymate Edge API - Local Bridge",
     "values": [
         {
             "key": "bridge_host",
@@ -47,7 +47,7 @@
         {
             "key": "otc_code",
             "value": "",
-            "description": "One-Time Code for provisioning (get from RallyMate platform)",
+            "description": "One-Time Code for provisioning (get from rallymate platform)",
             "enabled": true
         },
         {

@@ -722,7 +722,7 @@ Create these variables in your Postman environment:
 
 ```json
 {
-  "name": "RallyMate Local",
+  "name": "rallymate Local",
   "values": [
     {"key": "base_url", "value": "http://localhost:8080"},
     {"key": "grpc_url", "value": "localhost:50051"},

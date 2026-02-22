@@ -1,4 +1,4 @@
-# Postman Collection Updates - RallyMate API
+# Postman Collection Updates - rallymate API
 
 ## Summary of Changes Made
 

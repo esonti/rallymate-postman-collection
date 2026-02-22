@@ -1,12 +1,12 @@
 #!/bin/bash
 
-# Script to generate comprehensive Postman collections for RallyMate Services
+# Script to generate comprehensive Postman collections for rallymate Services
 # This creates both HTTP REST and gRPC collections with realistic test data
 
 set -e
 
 echo "=============================================="
-echo "RallyMate Services - Postman Collection Generator"
+echo "rallymate Services - Postman Collection Generator"
 echo "=============================================="
 echo ""
 
@@ -26,9 +26,9 @@ fi
 echo "✅ Ready to generate Postman collections"
 echo ""
 echo "Collections to be generated:"
-echo "  1. RallyMate_Services_HTTP_REST_API_v2.postman_collection.json"
-echo "  2. RallyMate_Services_gRPC_API_v2.postman_collection.json"
-echo "  3. RallyMate_Bridge_Edge_API_v2.postman_collection.json"
+echo "  1. rallymate_Services_HTTP_REST_API_v2.postman_collection.json"
+echo "  2. rallymate_Services_gRPC_API_v2.postman_collection.json"
+echo "  3. rallymate_Bridge_Edge_API_v2.postman_collection.json"
 echo ""
 echo "Environments to be generated:"
 echo "  1. rallymate-local.postman_environment.json"

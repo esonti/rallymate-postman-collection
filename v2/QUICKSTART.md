@@ -1,4 +1,4 @@
-# 🚀 Quick Start - RallyMate Postman Collections
+# 🚀 Quick Start - rallymate Postman Collections
 
 ## 3-Step Setup
 
@@ -14,10 +14,10 @@ chmod +x generate-all.sh
 2. Click **Import** (top left)
 3. Drag all `.json` files from `generated/` folder
 4. Click **Import**
-5. Select **"RallyMate - Local"** environment (top right)
+5. Select **"rallymate - Local"** environment (top right)
 
 ### 3️⃣ Test Authentication
-1. Open **"RallyMate AuthService"** collection
+1. Open **"rallymate AuthService"** collection
 2. Run **"Send OTP"** request
 3. Check console for OTP code
 4. Run **"Verify OTP"** request

@@ -1,11 +1,11 @@
-# RallyMate API Testing Collections
+# rallymate API Testing Collections
 
-Comprehensive Postman collections for testing all RallyMate platform services, including REST APIs, gRPC services, and integration scenarios.
+Comprehensive Postman collections for testing all rallymate platform services, including REST APIs, gRPC services, and integration scenarios.
 
 ## Overview
 
 This collection provides complete API testing capabilities for:
-- **Core Platform APIs**: Main RallyMate services (HTTP/gRPC)
+- **Core Platform APIs**: Main rallymate services (HTTP/gRPC)
 - **Certificate Authority**: CA service testing and validation
 - **Bridge Services**: Device bridge API testing
 - **Integration Scenarios**: End-to-end workflow testing
@@ -22,14 +22,14 @@ This collection provides complete API testing capabilities for:
 ### API Collections
 
 #### Core Platform APIs
-- **`RallyMate_HTTP_REST_API_v2.postman_collection.json`**
+- **`rallymate_HTTP_REST_API_v2.postman_collection.json`**
   - Complete REST API testing for main services
   - User authentication and management
   - Facility management operations
   - Device control and monitoring
   - Video and media management
 
-- **`RallyMate_gRPC_API_v2.postman_collection.json`**
+- **`rallymate_gRPC_API_v2.postman_collection.json`**
   - gRPC service testing with Postman
   - High-performance API testing
   - Protocol buffer message validation
@@ -48,7 +48,7 @@ This collection provides complete API testing capabilities for:
   - Tunnel management operations
   - Health monitoring endpoints
 
-- **`RallyMate_Edge_API.postman_collection.json`**
+- **`rallymate_Edge_API.postman_collection.json`**
   - Edge device API testing
   - Local network device control
   - mDNS discovery testing
@@ -56,7 +56,7 @@ This collection provides complete API testing capabilities for:
 
 ## Quick Setup
 
-### Core API Testing (RallyMate Platform)
+### Core API Testing (rallymate Platform)
 
 1. **Import Environment**
    - Open Postman
@@ -76,7 +76,7 @@ This collection provides complete API testing capabilities for:
 ### Edge API Testing (Bridge Devices)
 
 1. **Import Edge API Collection**
-   - Import `collections/rest/RallyMate_Edge_API.postman_collection.json`
+   - Import `collections/rest/rallymate_Edge_API.postman_collection.json`
 
 2. **Import Environment**
    - For local bridge: Import `environments/edge-api-local.json`
@@ -92,7 +92,7 @@ This collection provides complete API testing capabilities for:
 
 ### Prerequisites
 - Postman installed and running
-- RallyMate services running locally (via `docker-compose up`)
+- rallymate services running locally (via `docker-compose up`)
 - Network access to target environment
 
 ### Core Platform Testing
@@ -104,13 +104,13 @@ This collection provides complete API testing capabilities for:
 
 2. **Import Core Collections**:
    ```
-   File → Import → RallyMate_HTTP_REST_API_v2.postman_collection.json
-   File → Import → RallyMate_gRPC_API_v2.postman_collection.json
+   File → Import → rallymate_HTTP_REST_API_v2.postman_collection.json
+   File → Import → rallymate_gRPC_API_v2.postman_collection.json
    ```
 
 3. **Set Active Environment**:
    - Click environment dropdown
-   - Select "RallyMate Local v2"
+   - Select "rallymate Local v2"
 
 4. **Verify Services**:
    ```
@@ -310,13 +310,13 @@ Use Postman's Collection Runner or Newman:
 npm install -g newman
 
 # Run collection with multiple iterations
-newman run RallyMate_HTTP_REST_API_v2.postman_collection.json \
+newman run rallymate_HTTP_REST_API_v2.postman_collection.json \
   -e local-updated-v2.json \
   -n 100 \
   --delay-request 100
 
 # Generate HTML report
-newman run RallyMate_HTTP_REST_API_v2.postman_collection.json \
+newman run rallymate_HTTP_REST_API_v2.postman_collection.json \
   -e local-updated-v2.json \
   -r htmlextra
 ```
@@ -452,7 +452,7 @@ jobs:
       run: sleep 30
     - name: Run Postman tests
       run: |
-        npx newman run rallymate-postman-collection/RallyMate_HTTP_REST_API_v2.postman_collection.json \
+        npx newman run rallymate-postman-collection/rallymate_HTTP_REST_API_v2.postman_collection.json \
         -e rallymate-postman-collection/local-updated-v2.json \
         --reporters cli,junit
     - name: Cleanup

@@ -1,8 +1,8 @@
 {
 	"info": {
 		"_postman_id": "rallymate-services-http-v2",
-		"name": "RallyMate Services - HTTP REST API v2",
-		"description": "Comprehensive HTTP REST API collection for RallyMate Services with gRPC-Gateway support.\n\nThis collection covers all services:\n- Authentication (OTP, OTC, Sessions)\n- Users (Profile, Memberships, Discovery)\n- Facilities (CRUD operations)\n- Bridge (Registration, Edge Connections, Tunnels)\n- Locks (Registration, Control, Activities)\n- Cameras (Registration, Control, Activities)\n- Videos (Upload, Association, Management)\n- System Support (Admin roles)\n\nFeatures:\n- Realistic test data with examples\n- Automated test scripts for data extraction\n- Response validation\n- Variable management for chained requests\n- Authentication token handling",
+		"name": "rallymate Services - HTTP REST API v2",
+		"description": "Comprehensive HTTP REST API collection for rallymate Services with gRPC-Gateway support.\n\nThis collection covers all services:\n- Authentication (OTP, OTC, Sessions)\n- Users (Profile, Memberships, Discovery)\n- Facilities (CRUD operations)\n- Bridge (Registration, Edge Connections, Tunnels)\n- Locks (Registration, Control, Activities)\n- Cameras (Registration, Control, Activities)\n- Videos (Upload, Association, Management)\n- System Support (Admin roles)\n\nFeatures:\n- Realistic test data with examples\n- Automated test scripts for data extraction\n- Response validation\n- Variable management for chained requests\n- Authentication token handling",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "rallymate-v2"
 	},

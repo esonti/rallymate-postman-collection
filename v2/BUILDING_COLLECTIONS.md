@@ -1,6 +1,6 @@
 # 🏗️ Building Comprehensive Postman Collections
 
-This guide explains how to create comprehensive Postman collections for RallyMate Services with all the features you requested.
+This guide explains how to create comprehensive Postman collections for rallymate Services with all the features you requested.
 
 ## 📋 Requirements
 
@@ -113,7 +113,7 @@ Generate collections from proto files programmatically.
 
 ### Step 1: Create Base Collection Structure
 
-Create file: `RallyMate_Services_HTTP_REST_API_v2.postman_collection.json`
+Create file: `rallymate_Services_HTTP_REST_API_v2.postman_collection.json`
 
 Add:
 - Collection info
@@ -473,9 +473,9 @@ pm.collectionVariables.set('expires_timestamp', expiresAt.getTime());
 v2/
 ├── README.md (this file)
 ├── BUILDING_COLLECTIONS.md (current file)
-├── RallyMate_Services_HTTP_REST_API_v2.postman_collection.json
-├── RallyMate_Services_gRPC_API_v2.postman_collection.json
-├── RallyMate_Bridge_Edge_API_v2.postman_collection.json
+├── rallymate_Services_HTTP_REST_API_v2.postman_collection.json
+├── rallymate_Services_gRPC_API_v2.postman_collection.json
+├── rallymate_Bridge_Edge_API_v2.postman_collection.json
 ├── environments/
 │   ├── rallymate-local.postman_environment.json
 │   ├── rallymate-development.postman_environment.json

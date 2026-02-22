@@ -1,12 +1,12 @@
-# 📦 RallyMate Postman Collections - Generated
+# 📦 rallymate Postman Collections - Generated
 
-**Auto-generated Postman collections with realistic test data for all RallyMate services**
+**Auto-generated Postman collections with realistic test data for all rallymate services**
 
 ---
 
 ## 🎯 What's Included
 
-This package contains **8 comprehensive Postman collections** for testing RallyMate Services:
+This package contains **8 comprehensive Postman collections** for testing rallymate Services:
 
 1. **auth_service.postman_collection.json** - Authentication (OTP/OTC, Sessions, Logout)
 2. **users_service.postman_collection.json** - User Management & Memberships
@@ -44,7 +44,7 @@ Plus **3 environment files**:
 
 **User Authentication (Mobile App):**
 ```
-1. Open "RallyMate AuthService" collection
+1. Open "rallymate AuthService" collection
 2. Run "Send OTP" request
    - Uses phone_number from environment
    - Check console for OTP code (or SMS in production)

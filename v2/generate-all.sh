@@ -1,9 +1,9 @@
 #!/bin/bash
-# Generate all RallyMate Postman collections with realistic test data
+# Generate all rallymate Postman collections with realistic test data
 
 set -e
 
-echo "🚀 RallyMate Postman Collection Generator v2"
+echo "🚀 rallymate Postman Collection Generator v2"
 echo "=============================================="
 echo ""
 
@@ -27,7 +27,7 @@ echo "  1. Open Postman"
 echo "  2. Click 'Import' in the top left"
 echo "  3. Select all .json files from the 'generated/' folder"
 echo "  4. Click 'Import'"
-echo "  5. Select the 'RallyMate - Local' environment"
+echo "  5. Select the 'rallymate - Local' environment"
 echo "  6. Start testing!"
 echo ""
 echo "💡 Tips:"
